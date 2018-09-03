@@ -1,0 +1,22 @@
+{
+  "name": "boringbits",
+  "version": "1.0.0",
+  "description": "Frameworks should be boring, applications they build should be exciting",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha src/test/*"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ryanstevens/boring.git"
+  },
+  "author": "Ryan Stevens",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ryanstevens/boring/issues"
+  },
+  "homepage": "https://github.com/ryanstevens/boring#readme",
+  "devDependencies": {
+    "mocha": "^5.2.0"
+  }
+}
