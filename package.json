@@ -2,7 +2,7 @@
   "name": "boringbits",
   "version": "1.0.0",
   "description": "Frameworks should be boring, applications they build should be exciting",
-  "main": "./dist/boring.js",
+  "main": "dist/boring.js",
   "scripts": {
     "test": "mocha --require babel-polyfill --require babel-register src/**/*-test.js src/**/**/*-test.js src/**/**/**/*-test.js src/**/**/**/**/*-test.js src/**/**/**/**/**/*-test.js",
     "test-debug": "node --inspect-brk=9229 node_modules/mocha/bin/_mocha src/**/*-test.js src/**/**/*-test.js src/**/**/**/*-test.js src/**/**/**/**/*-test.js src/**/**/**/**/**/*-test.js",
