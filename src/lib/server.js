@@ -4,7 +4,7 @@ const initEndpoints = require('./init-endpoints');
 const logger = require('boring-logger');
 
 async function startExpress(configValues) {
-
+  
   return new Promise(async function(resolve, reject) {
 
     const app = express();
