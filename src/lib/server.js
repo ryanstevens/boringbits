@@ -9,19 +9,19 @@ async function startExpress(configValues) {
 
     const app = express();
 
-    const boringObj = {
+    const boringDependencies = {
       app,
       config,
       logger
     }
 
-    const endpoints = await initEndpoints(boringObj);
+    const endpoints = await initEndpoints(boringDependencies);
     const port = config.get('app.port', 4000);
 
     app.listen(port, (e) => {
       if (e) return reject(e);
       logger.info('Listening on port ' + port);
-      resolve(boringObj);
+      resolve(boringDependencies);
     });
   });
 
