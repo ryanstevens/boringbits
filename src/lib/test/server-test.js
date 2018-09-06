@@ -15,12 +15,11 @@ describe('Boring Server', function() {
 
   it('start can take an options callback', function(done) {
 
-    server.start(function(config) {
-      return Object.assign({}, config);
-    }).then((boringObj) => {
-      assert.ok(boringObj.app, 'There is no express object');
-      done();
-    })
+    server.start(config => Object.assign({}, config))
+      .then((boringObj) => {
+        assert.ok(boringObj.app, 'There is no express object');
+        done();
+      })
 
   });
 
