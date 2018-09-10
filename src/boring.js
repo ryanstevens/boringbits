@@ -1,9 +1,3 @@
-import config from 'boring-config'
-import server from './lib/server'
+import Server from './lib/server'
 
-const boring = {
-  config,
-  server
-};
-
-module.exports = boring
+module.exports = new Server()

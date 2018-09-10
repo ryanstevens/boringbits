@@ -1,11 +1,15 @@
 var assert = require('assert');
 
 describe('Boring entrypoint', function() {
-  it('should export server', async function() {
+  
+  this.timeout(5000);
+  
+  it('should export server', function() {
+
     const boring = require('../boring');
 
     assert.ok(boring);
-    assert.ok(boring.server);
+    assert.ok(boring.start);
     assert.ok(boring.config);
   });
 
