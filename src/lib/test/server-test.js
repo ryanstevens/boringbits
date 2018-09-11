@@ -18,9 +18,16 @@ describe('Boring Server', function() {
   it('start can take an options callback', async function() {
 
     const server = new Server();
-    const boringObj = await server.start(config => Object.assign({}, config))
-    
-    assert.ok(boringObj.app, 'There is no express object');
+    server.before('listen', async function(bootOptions) {
+      assert.ok(bootOptions.webpack, 'should have access to webpack in before hook');
+      bootOptions.mutateMe = 'ryan'
+    });
+
+    const final_config = await server.start(config => Object.assign({}, config))
+
+    assert.ok(final_config.boring.app, 'should have access to express');
+    assert.ok(final_config.mutateMe, 'ryan', 'before hook did not run');
+    assert.ok(final_config.webpack, 'There should be a webpack object');
 
   });
 

@@ -20,30 +20,28 @@ class Server extends EventEmitter  {
     this.config = config;
     this.logger = logger;
     this.paths = paths;
+
+    this.app = express();
   }
 
   async start(options = {}) {
 
     let configObj = {
+      boring: this,
       webpack: {}
     }
 
-    const app = express();
-    this.app = app;
-    
-    
     const endpoints = await initEndpoints(this);
     const port = config.get('app.port', 4000);
 
-    this.finalConfig = await this.perform('listen', configObj, async () => {
+    return await this.perform('listen', configObj, async () => {
 
-      startExpress(port);
+      startExpress(this.app, port);
       logger.info('Listening on port ' + port);
 
+      return configObj;
     });
 
-    this.finalConfig;
-    return this;
   }
 }
 
