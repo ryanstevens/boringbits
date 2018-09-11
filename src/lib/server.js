@@ -3,40 +3,47 @@ const express = require('express');
 const initEndpoints = require('./init-endpoints');
 const logger = require('boring-logger');
 const EventEmitter = require('eventemitter2');
+const paths = require('paths');
+const Understudy = require('boring-understudy');
+const util = require('util');
 
+async function startExpress(app, port) {
+  app.listen = util.promisify(app.listen);
+  return listen(port);
+}
 
 class Server extends EventEmitter  {
 
   constructor() {
     super({wildcard: true});
+    Understudy.call(this);
     this.config = config;
     this.logger = logger;
+    this.paths = paths;
   }
 
-  start(fn) {
+  async start(options = {}) {
+
     let configObj = {
-      webpack: {},
-      node: {}
+      webpack: {}
     }
 
-    if (fn && typeof fn === 'function') {
-      var configFromApp = fn(config);
-      //TODO: merge configs
-    }
-  
-    this.app = express();
+    const app = express();
+    this.app = app;
+    
+    
+    const endpoints = await initEndpoints(this);
+    const port = config.get('app.port', 4000);
 
-    return new Promise(async function(resolve, reject) {
+    this.finalConfig = await this.perform('listen', configObj, async () => {
 
-      const endpoints = await initEndpoints(this);
-      const port = config.get('app.port', 4000);
+      startExpress(port);
+      logger.info('Listening on port ' + port);
 
-      this.app.listen(port, (e) => {
-        if (e) return reject(e);
-        logger.info('Listening on port ' + port);
-        resolve(this);
-      });
-    }.bind(this));
+    });
+
+    this.finalConfig;
+    return this;
   }
 }
 

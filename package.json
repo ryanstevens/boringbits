@@ -9,7 +9,7 @@
     "test-watch": "nodemon --watch src --exec npm test",
     "build": "babel src -d dist --source-maps",
     "prepublish": "npm run build",
-    "meep":""
+    "meep": ""
   },
   "repository": {
     "type": "git",
@@ -43,7 +43,8 @@
     "deepmerge": "^2.1.1",
     "eventemitter2": "^5.0.1",
     "express": "^4.16.3",
-    "nodemon": "^1.18.4"
+    "nodemon": "^1.18.4",
+    "understudy": "^4.1.0"
   },
   "nodemon": {
     "ignoreRoot": [

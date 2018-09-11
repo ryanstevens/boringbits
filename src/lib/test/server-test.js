@@ -15,14 +15,12 @@ describe('Boring Server', function() {
     )
   })
 
-  it('start can take an options callback', function(done) {
+  it('start can take an options callback', async function() {
 
     const server = new Server();
-    server.start(config => Object.assign({}, config))
-      .then((boringObj) => {
-        assert.ok(boringObj.app, 'There is no express object');
-        done();
-      })
+    const boringObj = await server.start(config => Object.assign({}, config))
+    
+    assert.ok(boringObj.app, 'There is no express object');
 
   });
 

@@ -32,7 +32,7 @@ module.exports = async function initRoutes(boring) {
 
 
   return new Promise((resolve, reject) => {
-    requireInject(paths.serverEndpoints, boring)
+    requireInject(paths.server_endpoints, boring)
       .then(moduleData => {
         Object.keys(moduleData).forEach(moduleName => {
           const endpoint = moduleData[moduleName];
