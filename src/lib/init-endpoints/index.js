@@ -31,25 +31,23 @@ module.exports = async function initRoutes(boring) {
   });
 
 
-  return new Promise((resolve, reject) => {
-    requireInject(paths.server_endpoints, boring)
-      .then(moduleData => {
-        Object.keys(moduleData).forEach(moduleName => {
-          const endpoint = moduleData[moduleName];
+  
+  const moduleData = await requireInject([paths.boring_endpoints, paths.server_endpoints], boring)
 
-          // If the module had no return value
-          // or did not resolve a promise with a
-          // value, we will move on as there will
-          // be another pass for modules implementing
-          // the @endpoint API
-          if (endpoint === undefined) return
+  Object.keys(moduleData).forEach(moduleName => {
+    const endpoint = moduleData[moduleName];
 
-          // don't blow up if the endpoint structure isn't quite right
-          connectExpress(boring.app, endpoint);
+    // If the module had no return value
+    // or did not resolve a promise with a
+    // value, we will move on as there will
+    // be another pass for modules implementing
+    // the @endpoint API
+    if (endpoint === undefined) return
 
-        });
-        
-        resolve(moduleData)
-      })
+    // don't blow up if the endpoint structure isn't quite right
+    connectExpress(boring.app, endpoint);
+
   });
+  return moduleData;
+
 }
