@@ -42,32 +42,32 @@ class Server extends EventEmitter  {
 
   async start(options = {}) {
 
-    let configObj = {
+    let injections = {
       boring: this,
       webpack: {}
     }
 
-    const middleware = await this.perform('init-middleware', configObj, async () => {
+    const middleware = await this.perform('init-middleware', injections, async () => {
       return await initMiddleware(this);
     })
     
-    const hooks = await this.perform('init-hooks', configObj, async () => {
-      return await initHooks(this);
+    const hooks = await this.perform('init-hooks', injections, async () => {
+      return await initHooks(injections);
     })
   
-    const endpoints = await this.perform('init-endpoints', configObj, async () => {
+    const endpoints = await this.perform('init-endpoints', injections, async () => {
       return await initEndpoints(this);
     })
 
     const port = config.get('app.port', 4000);
-    configObj.port = port;
+    injections.port = port;
 
-    return await this.perform('listen', configObj, async () => {
+    return await this.perform('listen', injections, async () => {
 
       startExpress(this.app, port);
       logger.info('Listening on port ' + port);
 
-      return configObj;
+      return injections;
     });
 
   }

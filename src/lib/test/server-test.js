@@ -9,7 +9,12 @@ describe('Boring Server', function() {
   beforeEach(() => {  
     Server = proxyquire('../server', {
       express: function appToReturn() {
-          return { listen: ((port, fn) => fn()) }
+          return { 
+            listen: ((port, fn) => fn()),
+            use: function() {
+              
+            }
+          }
         }
       }
     )
