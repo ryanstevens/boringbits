@@ -4,8 +4,12 @@ import requireInject from 'require-inject-all'
 import connectExpress from './connect_express'
 import * as decorators from '../decorators';
 
-module.exports = async function initRoutes(boring) {
+module.exports = async function initRoutes(BoringInjections) {
 
+  const {
+    boring
+  } = BoringInjections;
+  
   // expose decorators to app 
   boring.decorators = decorators;
 

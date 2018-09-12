@@ -12,7 +12,7 @@ describe('Boring Server', function() {
           return { 
             listen: ((port, fn) => fn()),
             use: function() {
-              
+
             }
           }
         }
@@ -24,7 +24,7 @@ describe('Boring Server', function() {
 
     const server = new Server();
     server.before('listen', async function(bootOptions) {
-      assert.ok(bootOptions.webpack, 'should have access to webpack in before hook');
+      assert.ok(bootOptions.webpack_config, 'should have access to webpack in before hook');
       bootOptions.mutateMe = 'ryan'
     });
 
@@ -32,7 +32,7 @@ describe('Boring Server', function() {
 
     assert.ok(final_config.boring.app, 'should have access to express');
     assert.ok(final_config.mutateMe, 'ryan', 'before hook did not run');
-    assert.ok(final_config.webpack, 'There should be a webpack object');
+    assert.ok(final_config.webpack_config, 'There should be a webpack object');
 
   });
 

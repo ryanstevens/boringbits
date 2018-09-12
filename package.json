@@ -9,7 +9,7 @@
     "test-debug": "node --inspect-brk=9229 node_modules/mocha/bin/_mocha  --require @babel/register $(find ./src -name '*-test.js')",
     "test-watch": "nodemon --watch src --exec \"npm test && npm run build\"",
     "build": "babel src -d dist --source-maps",
-    "prepublish": "npm run build"
+    "prepublishOnly": "npm run build"
   },
   "bin": {
     "boring-build-node": "./bin/build.js"

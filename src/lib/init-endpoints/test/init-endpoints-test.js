@@ -57,7 +57,7 @@ describe('Init Endpoints', function() {
 
     const boring = new Boring();
 
-    init(boring).then(result => {
+    init({boring}).then(result => {
       assert.ok(result.pageA.endpoints);
       assert.ok(result.pageB.endpoints);
       
@@ -98,7 +98,7 @@ describe('Init Endpoints', function() {
       }
     );
 
-    init(boring).then(result => {
+    init({boring}).then(result => {
 
       const { 
         endpoint,

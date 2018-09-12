@@ -8,7 +8,10 @@ import requireInject from 'require-inject-all'
    */
 module.exports = async function initHooks(BoringInjections) {
 
-  const boring = BoringInjections.boring;
+  const {
+    boring
+  } = BoringInjections;
+  
 
   const moduleData = await requireInject([paths.boring_hooks, paths.server_hooks], BoringInjections)
 

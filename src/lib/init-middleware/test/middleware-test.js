@@ -13,11 +13,11 @@ describe('Init Middleware', function() {
     })
 
     const middlewareAdded = {};
-    const middlewareReturned = await init({
+    const middlewareReturned = await init({ boring: {
       add_middleware: function(name, middleware) {
         middlewareAdded[name] = middleware;
       }
-    });
+    }});
 
     assert.equal(Object.keys(middlewareReturned).length, 3);
     assert.ok(middlewareReturned.middlewareB, 'This one exported a function so we took the module as the key');

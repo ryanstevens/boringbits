@@ -22,23 +22,25 @@ module.exports = {
   // These are the "entry points" to our application.
   // This means they will be the "root" imports that are included in JS bundle.
   // The first two entry points enable "hot" CSS and auto-refreshes for JS.
-  entry: [
-
-  //  "webpack-hot-middleware/client?reload=true",
-    "webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000",
+  entry: {
+    main: [
+      "webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000",
+      paths.appIndexJs
+    ],
     
-    paths.appIndexJs,
-    // We include the app code last so that if there is a runtime error during
-    // initialization, it doesn't blow up the WebpackDevServer client, and
-    // changing JS code would still trigger a refresh.
-  ],
+    boop: [
+      "webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000",
+      paths.appIndexJs
+    ]
+    
+  },
   output: {
     // Add /* filename */ comments to generated require()s in the output.
     pathinfo: true,
     // This does not produce a real file. It's just the virtual path that is
     // served by WebpackDevServer in development. This is the JS bundle
     // containing code from all our entry points, and the Webpack runtime.
-    filename: 'static/js/bundle.js',
+    filename: 'static/js/[name].js',
     // There are also additional JS chunk files if you use code splitting.
     chunkFilename: 'static/js/[name].chunk.js',
     // This is the URL that app is served from. We use "/" in development.

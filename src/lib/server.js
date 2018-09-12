@@ -44,11 +44,12 @@ class Server extends EventEmitter  {
 
     let injections = {
       boring: this,
-      webpack: {}
+      start_options: options,
+      webpack_config: require(paths.boring_webpack_dev_config)
     }
 
     const middleware = await this.perform('init-middleware', injections, async () => {
-      return await initMiddleware(this);
+      return await initMiddleware(injections);
     })
     
     const hooks = await this.perform('init-hooks', injections, async () => {
@@ -56,7 +57,7 @@ class Server extends EventEmitter  {
     })
   
     const endpoints = await this.perform('init-endpoints', injections, async () => {
-      return await initEndpoints(this);
+      return await initEndpoints(injections);
     })
 
     const port = config.get('app.port', 4000);
