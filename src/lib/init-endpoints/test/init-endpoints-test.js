@@ -89,9 +89,9 @@ describe('Init Endpoints', function() {
 
           assert.equal(route.endpoints.length, 2, 'There should be two endpoints');
           assert.equal(route.endpoints[0].path, '/beep');
-          assert.equal(route.endpoints[0].methods.get, stuffProto.serveFoo);
+          assert.equal(route.endpoints[0].methods.get.handler, stuffProto.serveFoo);
           assert.equal(route.endpoints[1].path, '/guz');
-          assert.equal(route.endpoints[1].methods.get, stuffProto.meep);
+          assert.equal(route.endpoints[1].methods.get.handler, stuffProto.meep);
           done();
 
         }, 0)

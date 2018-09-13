@@ -16,6 +16,7 @@ describe('Connect Express', function() {
     }
 
     function handlerFooGet() {}
+    function handlerFooPost() {}
     function handlerBeepPost() {}
     function handlerBeepHead() {}
     
@@ -26,7 +27,10 @@ describe('Connect Express', function() {
           {
             path: '/foo',
             methods: {
-              get: handlerFooGet
+              get: handlerFooGet,
+              post: {
+                handler: handlerFooPost
+              }
             }
           }
         ]
@@ -51,10 +55,11 @@ describe('Connect Express', function() {
     }
 
     connect(mockExpressApp, routes.pageA);
-    assert.equal(Object.keys(handlers).length, 1, 'The get handler should have ran')
+    assert.equal(Object.keys(handlers).length, 2, 'The get handler should have ran')
     assert.ok(handlers['/meow/foo:get'] === handlerFooGet, 'Problem registering the handler into express for /foo :GET')
+    assert.ok(handlers['/meow/foo:post'] === handlerFooPost, 'Problem registering the handler into express for /foo :POST')
     connect(mockExpressApp, routes.pageB);
-    assert.equal(Object.keys(handlers).length, 3)
+    assert.equal(Object.keys(handlers).length, 4)
     assert.ok(handlers['/beep:post'] === handlerBeepPost, 'Problem registering the handler into express for /beep :POST')
     assert.ok(handlers['/beep:head'] === handlerBeepHead, 'Problem registering the handler into express for /beep :HEAD')
     done();

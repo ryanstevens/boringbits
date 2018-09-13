@@ -1,15 +1,16 @@
 
-import paths from 'paths'
-import requireInject from 'require-inject-all'
-import connectExpress from './connect_express'
+import paths from 'paths';
+import requireInject from 'require-inject-all';
 import * as decorators from '../decorators';
+import connectExpress from './connect_express';
+import logger from 'boring-logger'
 
 module.exports = async function initRoutes(BoringInjections) {
 
   const {
     boring
   } = BoringInjections;
-  
+
   // expose decorators to app 
   boring.decorators = decorators;
 
@@ -31,6 +32,7 @@ module.exports = async function initRoutes(BoringInjections) {
     class_props.endpoints = Object.keys(class_props.endpoints).map(name => {
       return class_props.endpoints[name];
     });
+    logger.info("******************" + JSON.stringify(class_props, null, 2))
     connectExpress(boring.app, class_props);
   });
 

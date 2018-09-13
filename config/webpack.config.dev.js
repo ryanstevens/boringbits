@@ -32,7 +32,6 @@ module.exports = {
       "webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000",
       paths.appIndexJs
     ]
-    
   },
   output: {
     // Add /* filename */ comments to generated require()s in the output.

@@ -10,7 +10,13 @@ module.exports = function(express_app, route) {
     const methods = endpoint.methods || {};
     Object.keys(methods).forEach(method => {
       let path = routePath + endpoint.path;
-      express_app[method](path, endpoint.methods[method]);
+      let handler = endpoint.methods[method];
+      // this IF checks to see
+      // if handler is an object rather
+      // than a function 
+      if (handler.handler) handler = handler.handler
+    
+      express_app[method](path, handler);
       logger.info(`Installed {${method.toUpperCase()}} for path ${path}`); 
     });       
   });
