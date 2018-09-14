@@ -117,12 +117,12 @@ describe('Init Endpoints', function() {
     const { 
       endpoint,
       get
-    }= decorators.endpoint;
+    }= decorators.router;
 
     const calls = [];
 
     // this is to simply fire the 
-    // event decorator.endpoint.endpoint
+    // event decorator.router.endpoint
     @endpoint('/meow')
     class Stuff {
 
@@ -172,7 +172,7 @@ describe('Init Endpoints', function() {
     const { 
       endpoint,
       get
-    }= decorators.endpoint;
+    }= decorators.router;
 
     const calls = [];
 

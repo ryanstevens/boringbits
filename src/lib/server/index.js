@@ -1,6 +1,6 @@
 const config = require('boring-config');
 const express = require('express');
-const initRouters = require('../init-endpoints');
+const initRouters = require('../init-routers');
 const initMiddleware = require('../init-middleware');
 const initHooks = require('../init-hooks');
 const logger = require('boring-logger');

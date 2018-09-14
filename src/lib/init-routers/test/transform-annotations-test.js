@@ -2,7 +2,7 @@
 const assert = require('assert');
 const proxyquire = require('proxyquire').noPreserveCache();
 const transformer = require('../transform-annotation');
-const decorators = require('../../decorators/endpoint');
+const decorators = require('../../decorators/router');
 
 describe('Transform Annotations', function() {
 
@@ -15,7 +15,7 @@ describe('Transform Annotations', function() {
 
 
     // this is to simply fire the 
-    // event decorator.endpoint.endpoint
+    // event decorator.router.endpoint
     @endpoint('/meow')
     class Stuff {
 

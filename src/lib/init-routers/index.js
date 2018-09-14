@@ -26,9 +26,9 @@ module.exports = async function initRoutes(BoringInjections) {
    * used by the @endpoint decorator.  THEN we can 
    * use requireInject to actually require the files 
    */
-  boring.on('decorator.endpoint.endpoint', function(eventData){
+  boring.on('decorator.router.endpoint', function(eventData){
     
-    const metadata= decorators.endpoint.getMetaDataByClass(eventData.target).metadata
+    const metadata= decorators.router.getMetaDataByClass(eventData.target).metadata
     endpoint_meta.push(endpoint_transformer(metadata));
   });
   boring.decorators.subscribeDecorators(boring);
@@ -38,15 +38,15 @@ module.exports = async function initRoutes(BoringInjections) {
    * let's grab all of the endpoints defined before 
    * this point in the boot sequence, such as middleware
    */
-  const instances = injecture.allInstances('decorator.endpoint.endpoint');
+  const instances = injecture.allInstances('decorator.router.endpoint');
 
   instances.forEach(Klass => {
-    const metadata= decorators.endpoint.getMetaDataByClass(Klass).metadata
+    const metadata= decorators.router.getMetaDataByClass(Klass).metadata
     endpoint_meta.push(endpoint_transformer(metadata));
   });
 
   
-  const moduleData = await requireInject([paths.boring_endpoints, paths.server_endpoints], boring)
+  const moduleData = await requireInject([paths.boring_routers, paths.server_routers], boring)
 
   const route_descriptors = endpoint_meta.concat(Object.keys(moduleData).map(name => {
   

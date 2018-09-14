@@ -12,7 +12,7 @@ const localEmitter = new EventEmitter({wildcard: true});
  */
 const injecture = require('injecture');
 
-localEmitter.on('decorator.endpoint.*', function(...args) {
+localEmitter.on('decorator.router.*', function(...args) {
   const eventName = this.event;
   const name_with_args = [eventName].concat(args);
 
@@ -116,7 +116,7 @@ export function get(path) {
     const class_metadata = addToProps(target, {
       endpoints: endpoint
     });
-    localEmitter.emit('decorator.endpoint.get', {
+    localEmitter.emit('decorator.router.get', {
       target,
       path,
       field,
@@ -142,7 +142,7 @@ export function post(path) {
     const class_metadata = addToProps(target, {
       endpoints: endpoint
     });
-    localEmitter.emit('decorator.endpoint.post', {
+    localEmitter.emit('decorator.router.post', {
       target,
       path,
       field,
@@ -171,7 +171,7 @@ export function entrypoint(js_file_path) {
     const class_metadata = addToProps(target, {
       endpoints: endpoint
     });
-    localEmitter.emit('decorator.endpoint.entrypoint', {
+    localEmitter.emit('decorator.router.entrypoint', {
       target,
       entrypoint,
       field,
@@ -183,7 +183,7 @@ export function entrypoint(js_file_path) {
 }
 
 
-injecture.register('decorator.endpoint.endpoint', 
+injecture.register('decorator.router.endpoint', 
   // since we are only using the container
   // to collect all the instances we give it a
   // dummy factory
@@ -206,8 +206,8 @@ export function endpoint(path = '') {
     // }
     // proxiedEndpoint.prototype = target.prototype;
 
-    injecture.create('decorator.endpoint.endpoint', target);
-    localEmitter.emit('decorator.endpoint.endpoint', {
+    injecture.create('decorator.router.endpoint', target);
+    localEmitter.emit('decorator.router.endpoint', {
       target,
       path,
       class_metadata

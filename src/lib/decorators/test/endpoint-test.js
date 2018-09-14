@@ -8,7 +8,7 @@ describe('Endpoint decorator', function() {
   let endpoint_decortators;
 
   beforeEach(() => {
-    endpoint_decortators = require('../endpoint');
+    endpoint_decortators = require('../router');
   })
   
 
@@ -75,7 +75,7 @@ describe('Endpoint decorator', function() {
     const emitter1 = new Emitter({wildcard: true});
     const emitterCollecter1 = []
     
-    emitter1.on('decorator.endpoint.*', function(...args) {
+    emitter1.on('decorator.router.*', function(...args) {
       emitterCollecter1.push({
         eventName: this.event,
         args
@@ -96,7 +96,7 @@ describe('Endpoint decorator', function() {
 
     assert.equal(emitterCollecter1.length, 2, 'There should be two classes that were created');
 
-    const instances = injecture.allInstances('decorator.endpoint.endpoint');
+    const instances = injecture.allInstances('decorator.router.endpoint');
 
     assert.ok(instances.indexOf(Class1) >= 0);
     assert.ok(instances.indexOf(Class2) >= 0);

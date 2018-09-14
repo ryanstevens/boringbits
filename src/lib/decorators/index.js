@@ -1,11 +1,11 @@
 
-import * as endpoint from './endpoint'
+import * as router from './router'
 
 function subscribeDecorators(emitter) {
-  endpoint.subscribeDecorators(emitter);
+  router.subscribeDecorators(emitter);
 }
 
 module.exports = {
-  endpoint,
+  router,
   subscribeDecorators: subscribeDecorators
 }
