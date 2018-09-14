@@ -29,9 +29,17 @@ module.exports = function createWebpackStack(BoringInjections) {
 
     const webpackDevPromise = new Promise((resolve, reject) => {
 
+      /**
+       * We cannot build the webpack middleware because
+       * there is no information on the entrypoints on each endpoint.  
+       * 
+       * Let's wait until AFTER the routes are init'd, but before they are added
+       * to boring.  Then we will collect all the entry points to 
+       * finalize the webpack config
+       */
+      boring.after('init-routers', function(endpoints) {
 
-      boring.after('init-endpoints', function(endpoints) {
-
+        logger.fatal(endpoints, '********************************************')
         // webpack_config.entry = entrypoints.reduce((prev, entry) => {
         //   // TODO!!!  THIS IS BROKE
         //   prev[pathitize(entry)] = [
@@ -53,7 +61,10 @@ module.exports = function createWebpackStack(BoringInjections) {
 
         resolve(compose([
           webpackDevMiddleware,
-          HMRMiddleware
+          HMRMiddleware, 
+          function(req, res, next) {
+            next();
+          }
         ]));
       });
   

@@ -21,7 +21,7 @@ module.exports = async function initMiddleware(BoringInjections) {
     }
 
     prev[name] = func;
-    boring.add_middleware(name, func);
+//    boring.add_middleware(name, func);
     return prev;
   }, {});
 

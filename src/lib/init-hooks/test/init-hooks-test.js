@@ -14,10 +14,6 @@ describe('Init Hooks', function() {
     const init = require('../index');
     const injectionMoch = {
       boring: {
-        add_hook: function(name, hook) {
-          assert.equal(name, 'boring-webpack', 'Should have required the core hook webpack-dev.js')
-          done();
-        },
         paths,
         config,
         app: {
@@ -31,5 +27,7 @@ describe('Init Hooks', function() {
     Understudy.call(injectionMoch.boring);
 
     init(injectionMoch)
+
+    done();
   });
 });

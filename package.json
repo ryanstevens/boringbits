@@ -8,6 +8,7 @@
     "test": "mocha node_modules/mocha/bin/_mocha --require @babel/register $(find ./src -name '*-test.js')",
     "test-debug": "node --inspect-brk=9229 node_modules/mocha/bin/_mocha  --require @babel/register $(find ./src -name '*-test.js')",
     "test-watch": "nodemon --watch src --exec \"npm test | npx bunyan\"",
+    "test-build": "nodemon --watch src --exec \"npm test && npm run build\"",
     "build": "rm -rf dist && babel src -d dist --source-maps",
     "prepublishOnly": "npm run build"
   },

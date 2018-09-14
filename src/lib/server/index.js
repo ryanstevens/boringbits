@@ -1,6 +1,6 @@
 const config = require('boring-config');
 const express = require('express');
-const initEndpoints = require('../init-endpoints');
+const initRouters = require('../init-endpoints');
 const initMiddleware = require('../init-middleware');
 const initHooks = require('../init-hooks');
 const logger = require('boring-logger');
@@ -40,7 +40,7 @@ class Server extends EventEmitter  {
     this.emit('added.hook', name, hook);
   }
 
-  add_endpoint(route) {
+  add_router(route) {
 
     const routePath = route.path || '';
     const app = this.app;
@@ -77,18 +77,28 @@ class Server extends EventEmitter  {
     const middleware = await this.perform('init-middleware', injections, async () => {
       return await initMiddleware(injections);
     })
-    
+
+    await this.perform('add-middleware', injections, async() => {
+      Object.keys(middleware).forEach(name => this.add_middleware(name, middleware[name]));
+      return middleware;
+    })
+  
     const hooks = await this.perform('init-hooks', injections, async () => {
       return await initHooks(injections);
     })
+
+    await this.perform('add-hooks', hooks, async() => {
+      Object.keys(hooks).forEach(name => this.add_hook(name, hooks[name]));
+      return hooks;
+    })
   
-    const routes = await this.perform('init-endpoints', injections, async () => {
-      return await initEndpoints(injections);
+    const routers = await this.perform('init-routers', injections, async () => {
+      return await initRouters(injections);
     })
 
-    await this.perform('mount-routes', routes, async() => {
-      routes.forEach(route => this.add_endpoint(route));
-      return routes;
+    await this.perform('add-routers', {middleware, routers}, async() => {
+      routers.forEach(route => this.add_router(route));
+      return {middleware, routers};
     })
    
     const port = config.get('app.port', 5000);

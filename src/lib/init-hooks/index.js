@@ -24,7 +24,6 @@ module.exports = async function initHooks(BoringInjections) {
     }
 
     prev[name] = hookExport || {};
-    boring.add_hook(name, hookExport);
     return prev;
   }, {});
 
