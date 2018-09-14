@@ -1,9 +1,12 @@
 
 import paths from 'paths';
 import requireInject from 'require-inject-all';
-import * as decorators from '../decorators';
-import connectExpress from './connect_express';
 import logger from 'boring-logger'
+import endpoint_transformer from './transform-annotation'
+import * as decorators from '../decorators'
+import injecture from 'injecture'
+import Understudy from 'boring-understudy'
+
 
 module.exports = async function initRoutes(BoringInjections) {
 
@@ -11,8 +14,9 @@ module.exports = async function initRoutes(BoringInjections) {
     boring
   } = BoringInjections;
 
-  // expose decorators to app 
   boring.decorators = decorators;
+  
+  const endpoint_meta = [];
 
   /**
    * !IMPORTANT!
@@ -22,38 +26,90 @@ module.exports = async function initRoutes(BoringInjections) {
    * used by the @endpoint decorator.  THEN we can 
    * use requireInject to actually require the files 
    */
-  boring.decorators.subscribeDecorators(boring);
   boring.on('decorator.endpoint.endpoint', function(eventData){
-    const Klass = eventData.target;
     
-    const instance = new Klass();
-    const class_props = instance.__decorated_props;
-    // rewrite endpoints from an object into an array.
-    class_props.endpoints = Object.keys(class_props.endpoints).map(name => {
-      return class_props.endpoints[name];
-    });
-    logger.info("******************" + JSON.stringify(class_props, null, 2))
-    connectExpress(boring.app, class_props);
+    const metadata= decorators.endpoint.getMetaDataByClass(eventData.target).metadata
+    endpoint_meta.push(endpoint_transformer(metadata));
   });
+  boring.decorators.subscribeDecorators(boring);
 
+  /**
+   * Now we just took care of any future enpoints, 
+   * let's grab all of the endpoints defined before 
+   * this point in the boot sequence, such as middleware
+   */
+  const instances = injecture.allInstances('decorator.endpoint.endpoint');
+
+  instances.forEach(Klass => {
+    const metadata= decorators.endpoint.getMetaDataByClass(Klass).metadata
+    endpoint_meta.push(endpoint_transformer(metadata));
+  });
 
   
   const moduleData = await requireInject([paths.boring_endpoints, paths.server_endpoints], boring)
 
-  Object.keys(moduleData).forEach(moduleName => {
-    const endpoint = moduleData[moduleName];
+  const route_descriptors = endpoint_meta.concat(Object.keys(moduleData).map(name => {
+  
+    const route = moduleData[name] || { endpoints: []};
+    //If the route does not already have a name
+    //then use the name of the module.  This object.name
+    //will be added to the route_meta array 
+    //and NOT guranteed to be unique.  The name
+    //serves simply as an identifier in logging
+    if (!route.name) route.name = name;
 
-    // If the module had no return value
-    // or did not resolve a promise with a
-    // value, we will move on as there will
-    // be another pass for modules implementing
-    // the @endpoint API
-    if (endpoint === undefined) return
+    return route;
+  }));
 
-    // don't blow up if the endpoint structure isn't quite right
-    connectExpress(boring.app, endpoint);
+  route_descriptors.forEach(route => {
 
-  });
-  return moduleData;
+    route.endpoints.forEach(endpoint => {
+
+      const methods = endpoint.methods || {};
+      Object.keys(methods).forEach(method => {
+        wrapHandler(boring, route, endpoint, methods, method);
+      });
+
+    });
+
+  })
+
+  return route_descriptors;
+}
+
+
+// this is extracted from the code
+// below to not enclose all the objects 
+// within initRoutes.  These handlers 
+// will be wrapped and always in the heap
+function wrapHandler(boring, route, endpoint, methods, method) {
+  
+  // normalize data structure to match
+  // decorator API
+  if (typeof methods[method] === 'function') {
+    const func = methods[method];
+    methods[method] = {
+      handler: func
+    }
+  }
+  
+  const handler = methods[method].handler;
+  methods[method].handler = function wrappedHandler(req, res, next) {
+    const ctx = {
+      req, 
+      res, 
+      next, 
+      route,
+      endpoint,
+      method
+    };
+    ctx[method] = methods[method];
+
+    boring.perform('http::'+method.toLowerCase(), ctx, async function() {
+      handler.call(this, ctx.req, ctx.res, ctx.next);
+      return ctx;
+    });
+
+  };
 
 }

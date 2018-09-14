@@ -29,20 +29,17 @@ module.exports = function createWebpackStack(BoringInjections) {
 
     const webpackDevPromise = new Promise((resolve, reject) => {
 
-      const entry_points = []
-      boring.on('decorator.endpoint.client', function({entry_point}) {
-        entry_points.push(entry_point);
-      })
 
       boring.after('init-endpoints', function(endpoints) {
 
-        webpack_config.entry = entry_points.reduce((prev, entry) => {
-          prev[pathitize(entry)] = [
-            "webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000",
-            entry
-          ];
-          return prev;
-        }, {});
+        // webpack_config.entry = entrypoints.reduce((prev, entry) => {
+        //   // TODO!!!  THIS IS BROKE
+        //   prev[pathitize(entry)] = [
+        //     "webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000",
+        //     entry
+        //   ];
+        //   return prev;
+        // }, {});
 
         const webpack = require('webpack')
         const compiler = webpack(webpack_config)

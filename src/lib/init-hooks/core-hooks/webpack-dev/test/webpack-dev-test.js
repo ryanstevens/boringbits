@@ -17,7 +17,6 @@ describe('Pathitize', function() {
 
   it('should convert jumk to a valid URL path', function() {
 
-    console.log(paths)
     const pathitize = require('../pathitize');
     assert.equal(pathitize('/foo/bar'), 'foo-bar');
     assert.equal(pathitize('foo/bar'), 'foo-bar');

@@ -5,14 +5,23 @@ import EventEmitter from 'eventemitter2'
 const extenrnalEmitters = [];
 const localEmitter = new EventEmitter({wildcard: true});
 
+/**
+ * We will use this DI container
+ * to track all the classes instantiated
+ * via a @endpoint decorator
+ */
+const injecture = require('injecture');
+
 localEmitter.on('decorator.endpoint.*', function(...args) {
   const eventName = this.event;
+  const name_with_args = [eventName].concat(args);
+
   // TODO: future enhancement, ensure ALL events
   // always emit for each external emitter.
   // This way emitters will ALWAYS get every endpoint
   // reguardless of when it was subscribed
   extenrnalEmitters.forEach(emitter => {
-    emitter.emit.apply(emitter, [eventName].concat(args))
+    emitter.emit.apply(emitter, name_with_args)
   });
 });
 
@@ -36,10 +45,36 @@ localEmitter.on('decorator.endpoint.*', function(...args) {
  */
 const class_prototypes = [];
 
+/**
+ * by desing, if there is no classs registered 
+ * then it will make a new metadata obj and push it 
+ * in the class_prototypes array
+ * @param {*} proto 
+ */
+function getShadowMetaData(proto) {
+  for (let i=0; i<class_prototypes.length; i++) {
+    if (class_prototypes[i].proto === proto) return class_prototypes[i]
+  }
+
+  const newProto = {
+    proto,
+    metadata: {}
+  };
+  class_prototypes.push(newProto);
+  return newProto;
+
+}
+
+export function getMetaDataByClass(Klass) {
+  return getShadowMetaData(Klass.prototype);
+}
+
+// deep merge... what could go wrong
 function addToProps(proto, val){
-  if (!proto.__decorated_props) proto.__decorated_props = {};
-  let prev = proto.__decorated_props|| {};
-  proto.__decorated_props = merge(prev, val);
+  const oldmetadata = getShadowMetaData(proto).metadata
+  const newMetadata = merge(oldmetadata, val);
+  getShadowMetaData(proto).metadata = newMetadata;
+  return newMetadata;
 }
 
 export function middleware(middleware) {
@@ -61,6 +96,14 @@ export function middleware(middleware) {
 export function get(path) {
   //convert to array
   return function decorator(target, field, descriptor) {
+
+    // const oldValue = descriptor.value
+    
+    // // fow now this wrapper does nothing
+    // descriptor.value = function proxiedFn(...args) {
+    //   oldValue.apply(this, args);
+    // }
+
     let endpoint = {}
     endpoint[field] = {
       methods : {
@@ -70,14 +113,15 @@ export function get(path) {
       },
       path
     }
-    addToProps(target, {
+    const class_metadata = addToProps(target, {
       endpoints: endpoint
     });
     localEmitter.emit('decorator.endpoint.get', {
       target,
       path,
       field,
-      descriptor
+      descriptor,
+      class_metadata
     });
     return descriptor;
   }
@@ -95,14 +139,15 @@ export function post(path) {
       },
       path
     }
-    addToProps(target, {
+    const class_metadata = addToProps(target, {
       endpoints: endpoint
     });
     localEmitter.emit('decorator.endpoint.post', {
       target,
       path,
       field,
-      descriptor
+      descriptor,
+      class_metadata
     });
     return descriptor;
   }
@@ -110,39 +155,62 @@ export function post(path) {
 
 /**
  * 
- * @param {absolute path from root} entry_point
+ * @param {absolute path from root} entrypoint
  */
-export function client(entry_point) {
+export function entrypoint(js_file_path) {
   return function decorator(target, field, descriptor) {
     let endpoint = {}
     endpoint[field] = {
       methods : {
         get: {
-          entry_point,
+          entrypoint: js_file_path,
           handler: descriptor.value
         }
       }
     }
-    addToProps(target, {
+    const class_metadata = addToProps(target, {
       endpoints: endpoint
     });
-    localEmitter.emit('decorator.endpoint.client', {
+    localEmitter.emit('decorator.endpoint.entrypoint', {
       target,
-      entry_point,
+      entrypoint,
       field,
-      descriptor
+      descriptor,
+      class_metadata
     });
     return descriptor;
   }
 }
 
 
+injecture.register('decorator.endpoint.endpoint', 
+  // since we are only using the container
+  // to collect all the instances we give it a
+  // dummy factory
+  function endpointFactor(Klass) {
+    return Klass
+  }, { 
+    map_instances: true
+  }
+);
+
+
 export function endpoint(path = '') {
   return function (target) {
-    addToProps(target.prototype, { path });
+    const endpoint_meta_data = { path }
+    const class_metadata = addToProps(target.prototype, endpoint_meta_data);
+
+    // fow now this wrapper does nothing
+    // function proxiedEndpoint() {
+    //   return new target();
+    // }
+    // proxiedEndpoint.prototype = target.prototype;
+
+    injecture.create('decorator.endpoint.endpoint', target);
     localEmitter.emit('decorator.endpoint.endpoint', {
       target,
-      path
+      path,
+      class_metadata
     });
     return target;
   }

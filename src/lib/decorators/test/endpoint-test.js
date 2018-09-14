@@ -1,13 +1,19 @@
 const assert = require('assert');
-const decorators = require('../endpoint');
 const logger = require('boring-logger');
+const Emitter = require('eventemitter2');
+const injecture = require('injecture');
 
-const { endpoint, get, middleware, post, client} = decorators
+describe('Endpoint decorator', function() {
 
+  let endpoint_decortators;
 
-describe.only('Endpoint decorator', function() {
+  beforeEach(() => {
+    endpoint_decortators = require('../endpoint');
+  })
+  
 
   it('will push a prop into the class prototype', done => {
+    const { endpoint, get, middleware, post, entrypoint, getMetaDataByClass} = endpoint_decortators;
 
     @endpoint('/foo')
     class Meow {
@@ -23,21 +29,26 @@ describe.only('Endpoint decorator', function() {
       }
     }
 
-    assert.equal(Meow.prototype.__decorated_props.path, '/foo');
-    assert.equal(Meow.prototype.__decorated_props.endpoints.bark.methods.get.handler, Meow.prototype.bark);
-    assert.equal(Meow.prototype.__decorated_props.endpoints.meow.methods.get.handler, Meow.prototype.meow);
+
+    const classMetaData = getMetaDataByClass(Meow).metadata;
+    assert.equal(classMetaData.path, '/foo');
+    assert.equal(classMetaData.endpoints.bark.path, '/beep');
+    assert.equal(classMetaData.endpoints.bark.methods.get.handler, Meow.prototype.bark);
+    assert.equal(classMetaData.endpoints.meow.path, '/boop');
+    assert.equal(classMetaData.endpoints.meow.methods.get.handler, Meow.prototype.meow);
     done();
   });
 
   
-  it('will combine annotations into the __decorated_props', done => {
+  it('will combine annotations into the metadata', done => {
+    const { endpoint, get, middleware, post, entrypoint, getMetaDataByClass} = endpoint_decortators;
 
     @endpoint('/bar')
     class Meow {
 
       @get('/beep')
       @middleware('meep')
-      @client('foo_client.js')
+      @entrypoint('foo_client.js')
       screetch() {
 
       }
@@ -48,13 +59,68 @@ describe.only('Endpoint decorator', function() {
       }
     }
 
-    assert.equal(Meow.prototype.__decorated_props.endpoints.screetch.middleware[0], 'meep');
-    assert.equal(Meow.prototype.__decorated_props.endpoints.screetch.path, '/beep');
-    assert.equal(Meow.prototype.__decorated_props.endpoints.screetch.methods.get.handler, Meow.prototype.screetch);
-    assert.equal(Meow.prototype.__decorated_props.endpoints.screetch.methods.get.entry_point, 'foo_client.js')
-    assert.equal(Meow.prototype.__decorated_props.endpoints.stopper.methods.post.handler, Meow.prototype.stopper);
+    const classMetaData = getMetaDataByClass(Meow).metadata;
+    assert.equal(classMetaData.endpoints.screetch.middleware[0], 'meep');
+    assert.equal(classMetaData.endpoints.screetch.path, '/beep');
+    assert.equal(classMetaData.endpoints.screetch.methods.get.handler, Meow.prototype.screetch);
+    assert.equal(classMetaData.endpoints.screetch.methods.get.entrypoint, 'foo_client.js')
+    assert.equal(classMetaData.endpoints.stopper.methods.post.handler, Meow.prototype.stopper);
     done();
   });
 
 
+  it('will reply all added decorated classes when a new emitter is added', done => {
+    const { endpoint, get, middleware, post, entrypoint, getMetaDataByClass, subscribeDecorators} = endpoint_decortators;
+
+    const emitter1 = new Emitter({wildcard: true});
+    const emitterCollecter1 = []
+    
+    emitter1.on('decorator.endpoint.*', function(...args) {
+      emitterCollecter1.push({
+        eventName: this.event,
+        args
+      });
+    })
+    subscribeDecorators(emitter1);
+
+    @endpoint('/foo')
+    class Class1 {
+
+    }
+
+    
+    @endpoint('/bar')
+    class Class2 {
+      
+    }
+
+    assert.equal(emitterCollecter1.length, 2, 'There should be two classes that were created');
+
+    const instances = injecture.allInstances('decorator.endpoint.endpoint');
+
+    assert.ok(instances.indexOf(Class1) >= 0);
+    assert.ok(instances.indexOf(Class2) >= 0);
+    done();
+
+  })
+
+  it('will ensure get is actually wrapped', done => {
+    const { endpoint, get, middleware, post, entrypoint, getMetaDataByClass, subscribeDecorators} = endpoint_decortators;
+
+    @endpoint('/foo')
+    class Clazz {
+
+      @get('/bar')
+      beep() {
+        console.log('beep');
+      }
+    }
+
+    const clazz = new Clazz();
+    clazz.beep();
+
+    done();
+  });
+
+  
 });

@@ -7,13 +7,13 @@ describe('Boring Server', function() {
   this.timeout(20000);
   let Server;
   beforeEach(() => {  
-    Server = proxyquire('../server', {
+    Server = proxyquire('../index', {
       express: function appToReturn() {
           return { 
             listen: ((port, fn) => fn()),
-            use: function() {
-
-            }
+            use: function() {},
+            get: function() {},
+            post: function() {}
           }
         }
       }
