@@ -1,5 +1,6 @@
 const logger = require('boring-logger');
 const paths = require('paths');
+const pathitize = require('./pathitize');
 
 let manifestAssets, devAssets;
 function assetsByManifest() {
@@ -9,42 +10,44 @@ function assetsByManifest() {
   const manifest = require(manifestPath);
   logger.info(manifest, 'Manifest loaded from path ' + manifestPath);
 
-  manifestAssets = {
-    js: [manifest['main.js']],
-    css: [manifest['main.css']]
-  }
+  manifestAssets = Object.keys(manifest).reduce((collector, name) => {
+    let assets = [].concat(manifest[name]).filter(asset => asset.endsWith('.js'));
+    if (assets.length === 0) return collector;
 
+    collector[name.split('.').shift()] = assets;
+    return collector;
+  }, {});
   return manifestAssets;
 }
 
 function assetsByDevserver(webpackStats) {
-  if (devAssets) return devAssets;
+//  if (devAssets) return devAssets; // no need to cache cause localhost 
   const chunks = webpackStats.toJson().assetsByChunkName;
   const js = [];
   const css = [];
+  
+  Object.keys(chunks).forEach(chunk_name => {
+    const chunk = chunks[chunk_name];
+    chunks[chunk_name] = chunk.filter(chunk => chunk.endsWith('.js'));
+  })
 
-  chunks.main.forEach(chunk => {
-    if (chunk.endsWith('.js')) js.push('/'+chunk);
-    else if (chunk.endsWith('.css')) css.push('/'+chunk);
-  });
-  devAssets = { js, css };
+  devAssets = chunks;
   return devAssets;
 }
 
-module.exports = function getStaticInjections(boring) {
+module.exports = function getStaticInjections(res, getContext) {
+  debugger;
+  const assets = (res.locals.webpackStats) ? assetsByDevserver(res.locals.webpackStats) : assetsByManifest();
 
-
-  return function addInjections(req, res, next) {
-    
-    let { js, css } = (res.locals.webpackStats) ? assetsByDevserver(res.locals.webpackStats) : assetsByManifest();
-    res.locals.js_injections = js.map(js => {
-      return `\n<script src="${js}"></script>`;
-    });
-    res.locals.css_injections = css.map(css => {
-      return `\n<link rel="stylesheet" href="="${js}"></link>`;
-    });
-    
-    next();
-  }
+  const js = assets[pathitize(getContext.entrypoint)] || [];
+  const css = [];
+//   js = ['/static/js/' +pathitize(getContext.entrypoint) + '.js'];
+  // var css = []
+  res.locals.js_injections = js.map(js => {
+    return `\n<script src="${js}"></script>`;
+  });
+  res.locals.css_injections = css.map(css => {
+    return `\n<link rel="stylesheet" href="="${js}"></link>`;
+  });
 
 }

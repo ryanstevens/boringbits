@@ -21,6 +21,7 @@ const checkRequiredFiles = require('react-dev-utils/checkRequiredFiles');
 const formatWebpackMessages = require('react-dev-utils/formatWebpackMessages');
 const FileSizeReporter = require('react-dev-utils/FileSizeReporter');
 const printBuildError = require('react-dev-utils/printBuildError');
+const init_pipline = require('../dist/lib/prod-webpack-build');
 
 const measureFileSizesBeforeBuild =
   FileSizeReporter.measureFileSizesBeforeBuild;
@@ -83,10 +84,13 @@ measureFileSizesBeforeBuild(paths.appBuild)
   );
 
 // Create the production build and print the deployment instructions.
-function build(previousFileSizes) {
+async function build(previousFileSizes) {
   console.log('Creating an optimized production build...');
 
-  let compiler = webpack(config);
+  const pipeline_result = await init_pipline.build(config);
+
+  console.log("######################", pipeline_result)
+  let compiler = webpack(pipeline_result.webpack_config);
   return new Promise((resolve, reject) => {
     compiler.run((err, stats) => {
       if (err) {

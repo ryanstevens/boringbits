@@ -24,8 +24,8 @@ module.exports = function createWebpackStack(BoringInjections) {
     webpack_config
   } = BoringInjections;
 
-  
-  if (config.get('use_webpack_dev_server', false)) {
+  // TODO: but this if within 
+ // if (config.get('use_webpack_dev_server', false)) {
 
     const webpackDevPromise = new Promise((resolve, reject) => {
 
@@ -37,44 +37,57 @@ module.exports = function createWebpackStack(BoringInjections) {
        * to boring.  Then we will collect all the entry points to 
        * finalize the webpack config
        */
-      boring.after('init-routers', function(endpoints) {
+      boring.before('add-routers', function({routers}) {
 
-        logger.fatal(endpoints, '********************************************')
-        // webpack_config.entry = entrypoints.reduce((prev, entry) => {
-        //   // TODO!!!  THIS IS BROKE
-        //   prev[pathitize(entry)] = [
-        //     "webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000",
-        //     entry
-        //   ];
-        //   return prev;
-        // }, {});
+        webpack_config.entry = routers.reduce((collector, router) => {
+          if (!router.endpoints) return;
+          router.endpoints.forEach(endpoint => {
+            if (!endpoint.methods) return;
+            Object.keys(endpoint.methods).forEach(method => {
+              const methodObj = endpoint.methods[method];
+              if (methodObj.entrypoint) {
+                const entrypoints = [methodObj.entrypoint];
+                if (config.get('use_webpack_dev_server', false)) {
+                  entrypoints.unshift("webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000");
+                }
 
-        const webpack = require('webpack')
-        const compiler = webpack(webpack_config)
+                collector[pathitize(methodObj.entrypoint)] = entrypoints;
+              }
+            })
+          })
+          return collector
+        }, {});
 
-        const webpackDevMiddleware = require('webpack-dev-middleware')(compiler, {
-          serverSideRender: true, 
-          publicPath: '/' 
-        });
-    
-        const HMRMiddleware = require('webpack-hot-middleware')(compiler);
+        if (config.get('use_webpack_dev_server', false)) {
+          
+          const webpack = require('webpack')
+          const compiler = webpack(webpack_config)
 
-        resolve(compose([
-          webpackDevMiddleware,
-          HMRMiddleware, 
-          function(req, res, next) {
-            next();
-          }
-        ]));
+          const webpackDevMiddleware = require('webpack-dev-middleware')(compiler, {
+            serverSideRender: true, 
+            publicPath: '/' 
+          });
+      
+          const HMRMiddleware = require('webpack-hot-middleware')(compiler);
+
+          resolve(compose([
+            webpackDevMiddleware,
+            HMRMiddleware, 
+            function(req, res, next) {
+              next();
+            }
+          ]));
+        }
+        else resolve(passthrough);
       });
   
     });
     
     return deferMiddleware(webpackDevPromise);
-  }
-  else {
-    //resolve an empty middleware 
-    return passthrough;
-  }
+  // }
+  // else {
+  //   //resolve an empty middleware 
+  //   return passthrough;
+  // }
 
 }

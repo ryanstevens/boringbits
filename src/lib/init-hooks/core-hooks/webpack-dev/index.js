@@ -8,22 +8,20 @@ module.exports = function(BoringInjections) {
     boring
   } = BoringInjections;
 
-  boring.after('init-hooks', function() {
+  boring.before('init-routers', function() {
 
-    const webpackStack = createWebpackStack(BoringInjections)
-
-    boring.app.use(function(req, res, next) {
-  
-      compose([
-        webpackStack,
-        staticInjectionMiddleware(boring)
-      ])(req, res, next)
-
-    });
-
+    boring.app.use(createWebpackStack(BoringInjections));
 
     // let everything else keep booting up, we will
     // queue until webpackStack resolves 
+    return Promise.resolve();
+  });
+
+  boring.before('http::get', function(ctx) {
+    if (ctx.get.entrypoint) {
+      staticInjectionMiddleware(ctx.res, ctx.get);
+    }
+
     return Promise.resolve();
   });
   
