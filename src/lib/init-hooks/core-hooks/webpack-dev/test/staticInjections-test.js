@@ -2,7 +2,7 @@ const assert = require('assert');
 const proxyquire = require('proxyquire').noPreserveCache()
 const logger = require('boring-logger');
 
-describe.only('Static Injections', function() {
+describe('Static Injections', function() {
 
   let staticInjections;
 
