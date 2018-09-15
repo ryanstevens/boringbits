@@ -4,7 +4,6 @@ const path = require('path');
 module.exports = function boringInection(boring) {
 
   boring.after('init-routers', function() {
-    console.log("###", boring.middleware)
     boring.app.use(boring.middleware.static)
   })
 

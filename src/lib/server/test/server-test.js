@@ -7,7 +7,7 @@ describe('Boring Server', function() {
   this.timeout(20000);
   let Server;
   beforeEach(() => {  
-    Server = proxyquire('../index', {
+    const init = proxyquire('../../init-pipeline', {
       express: function appToReturn() {
           return { 
             listen: ((port, fn) => fn()),
@@ -16,6 +16,11 @@ describe('Boring Server', function() {
             post: function() {}
           }
         }
+      }
+    )
+
+    Server = proxyquire('../index', {
+      '../init-pipeline': init
       }
     )
   })
@@ -34,6 +39,7 @@ describe('Boring Server', function() {
     assert.ok(final_config.mutateMe, 'ryan', 'before hook did not run');
     assert.ok(final_config.webpack_config, 'There should be a webpack object');
 
+    console.log("####")
   });
 
 });

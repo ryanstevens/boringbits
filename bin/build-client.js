@@ -89,7 +89,6 @@ async function build(previousFileSizes) {
 
   const pipeline_result = await init_pipline.build(config);
 
-  console.log("######################", pipeline_result)
   let compiler = webpack(pipeline_result.webpack_config);
   return new Promise((resolve, reject) => {
     compiler.run((err, stats) => {

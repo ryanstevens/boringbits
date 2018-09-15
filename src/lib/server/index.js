@@ -27,7 +27,7 @@ class BoringServer extends InitPipeline {
     const port = config.get('app.port', 5000);
     injections.port = port;
     
-    return this.perform('listen', injections, async() => {
+    return await this.perform('listen', injections, async() => {
       await startExpress(this.app, port);
       logger.info('Listening on port ' + port);
   
