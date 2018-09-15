@@ -22,7 +22,9 @@ class BoringServer extends InitPipeline {
 
   async start(options) {
     
-    const injections = await this.build(options);
+    const injections = await this.build(Object.assign({}, {
+      webpack_config: require(paths.boring_webpack_dev_config)
+    }, options));
 
     const port = config.get('app.port', 5000);
     injections.port = port;

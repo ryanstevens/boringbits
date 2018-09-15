@@ -14,7 +14,6 @@ process.on('unhandledRejection', err => {
 const chalk = require('chalk');
 const fs = require('fs-extra');
 const webpack = require('webpack');
-const config = require('../config/webpack.config.prod');
 const paths = require('../config/webpack-paths');
 const paths2 = require('../src/node_modules/paths');
 const checkRequiredFiles = require('react-dev-utils/checkRequiredFiles');
@@ -87,7 +86,7 @@ measureFileSizesBeforeBuild(paths.appBuild)
 async function build(previousFileSizes) {
   console.log('Creating an optimized production build...');
 
-  const pipeline_result = await init_pipline.build(config);
+  const pipeline_result = await init_pipline.start();
 
   let compiler = webpack(pipeline_result.webpack_config);
   return new Promise((resolve, reject) => {

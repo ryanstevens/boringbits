@@ -60,13 +60,11 @@ class InitPipeline extends EventEmitter  {
 
   }
 
-  async build(webpack_config) {
+  async build(options) {
 
-    let injections = {
-      boring: this,
-      start_options: {},
-      webpack_config
-    }
+    let injections = Object.assign({}, {
+      boring: this
+    }, options);
 
     const middleware = await this.perform('init-middleware', injections, async () => {
       return await initMiddleware(injections);

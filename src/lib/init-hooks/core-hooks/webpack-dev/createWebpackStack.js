@@ -24,70 +24,63 @@ module.exports = function createWebpackStack(BoringInjections) {
     webpack_config
   } = BoringInjections;
 
-  // TODO: but this if within 
- // if (config.get('use_webpack_dev_server', false)) {
 
-    const webpackDevPromise = new Promise((resolve, reject) => {
+  const webpackDevPromise = new Promise((resolve, reject) => {
 
-      /**
-       * We cannot build the webpack middleware because
-       * there is no information on the entrypoints on each endpoint.  
-       * 
-       * Let's wait until AFTER the routes are init'd, but before they are added
-       * to boring.  Then we will collect all the entry points to 
-       * finalize the webpack config
-       */
-      boring.before('add-routers', function({routers}) {
+    /**
+     * We cannot build the webpack middleware because
+     * there is no information on the entrypoints on each endpoint.  
+     * 
+     * Let's wait until AFTER the routes are init'd, but before they are added
+     * to boring.  Then we will collect all the entry points to 
+     * finalize the webpack config
+     */
+    boring.before('add-routers', function({routers}) {
 
-        webpack_config.entry = routers.reduce((collector, router) => {
-          if (!router.endpoints) return;
-          router.endpoints.forEach(endpoint => {
-            if (!endpoint.methods) return;
-            Object.keys(endpoint.methods).forEach(method => {
-              const methodObj = endpoint.methods[method];
-              if (methodObj.entrypoint) {
-                const entrypoints = [methodObj.entrypoint];
-                if (config.get('use_webpack_dev_server', false)) {
-                  entrypoints.unshift("webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000");
-                }
-
-                collector[pathitize(methodObj.entrypoint)] = entrypoints;
+      webpack_config.entry = routers.reduce((collector, router) => {
+        if (!router.endpoints) return;
+        router.endpoints.forEach(endpoint => {
+          if (!endpoint.methods) return;
+          Object.keys(endpoint.methods).forEach(method => {
+            const methodObj = endpoint.methods[method];
+            if (methodObj.entrypoint) {
+              const entrypoints = [methodObj.entrypoint];
+              if (config.get('use_webpack_dev_server', false)) {
+                entrypoints.unshift("webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000");
               }
-            })
-          })
-          return collector
-        }, {});
 
-        if (config.get('use_webpack_dev_server', false)) {
-          
-          const webpack = require('webpack')
-          const compiler = webpack(webpack_config)
-
-          const webpackDevMiddleware = require('webpack-dev-middleware')(compiler, {
-            serverSideRender: true, 
-            publicPath: '/' 
-          });
-      
-          const HMRMiddleware = require('webpack-hot-middleware')(compiler);
-
-          resolve(compose([
-            webpackDevMiddleware,
-            HMRMiddleware, 
-            function(req, res, next) {
-              next();
+              collector[pathitize(methodObj.entrypoint)] = entrypoints;
             }
-          ]));
-        }
-        else resolve(passthrough);
-      });
-  
-    });
+          })
+        })
+        return collector
+      }, {});
+
+      if (config.get('use_webpack_dev_server', false)) {
+        
+        const webpack = require('webpack')
+        const compiler = webpack(webpack_config)
+
+        const webpackDevMiddleware = require('webpack-dev-middleware')(compiler, {
+          serverSideRender: true, 
+          publicPath: '/' 
+        });
     
-    return deferMiddleware(webpackDevPromise);
-  // }
-  // else {
-  //   //resolve an empty middleware 
-  //   return passthrough;
-  // }
+        const HMRMiddleware = require('webpack-hot-middleware')(compiler);
+
+        resolve(compose([
+          webpackDevMiddleware,
+          HMRMiddleware, 
+          function(req, res, next) {
+            next();
+          }
+        ]));
+      }
+      else resolve(passthrough);
+    });
+
+  });
+  
+  return deferMiddleware(webpackDevPromise);
 
 }
