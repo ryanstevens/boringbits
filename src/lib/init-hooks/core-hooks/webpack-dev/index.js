@@ -19,7 +19,7 @@ module.exports = function(BoringInjections) {
 
   boring.before('http::get', function(ctx) {
     if (ctx.get.entrypoint) {
-      staticInjectionMiddleware(ctx.res, ctx.get);
+      staticInjectionMiddleware(ctx.res, ctx.get.entrypoint);
     }
 
     return Promise.resolve();

@@ -23,26 +23,24 @@ function assetsByManifest() {
 function assetsByDevserver(webpackStats) {
 //  if (devAssets) return devAssets; // no need to cache cause localhost 
   const chunks = webpackStats.toJson().assetsByChunkName;
-  const js = [];
-  const css = [];
   
-  Object.keys(chunks).forEach(chunk_name => {
-    const chunk = chunks[chunk_name];
-    chunks[chunk_name] = chunk.filter(chunk => chunk.endsWith('.js'));
-  })
+  devAssets = Object.keys(chunks).reduce((collector, name) => {
+    const chunk = chunks[name];
+    const assets = chunk.filter(chunk => chunk.endsWith('.js'));
+    if (assets.length === 0) return collector;
+    collector[name.split('.').shift()] = assets;
+    return collector;
+  }, {})
 
-  devAssets = chunks;
   return devAssets;
 }
 
-module.exports = function getStaticInjections(res, getContext) {
-  debugger;
+module.exports = function getStaticInjections(res, entrypoint) {
   const assets = (res.locals.webpackStats) ? assetsByDevserver(res.locals.webpackStats) : assetsByManifest();
 
-  const js = assets[pathitize(getContext.entrypoint)] || [];
-  const css = [];
-//   js = ['/static/js/' +pathitize(getContext.entrypoint) + '.js'];
-  // var css = []
+  const js = assets[pathitize(entrypoint)] || [];
+
+  const css = []; // this will have to be implemented at some point
   res.locals.js_injections = js.map(js => {
     return `\n<script src="${js}"></script>`;
   });
