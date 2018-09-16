@@ -14,13 +14,16 @@ describe('Static Injections', function() {
     });
   });
 
+
   // the "output" should be the same
   // regardlesss of the input
   function assertions(res) {
     
     staticInjections(res, '/beep/boop.js');
     assert.deepEqual(res.locals.js_injections, ['\n<script src="/beep/boop.js"></script>'])
+    assert.deepEqual(res.locals.css_injections, ['\n<link rel="stylesheet" href="/beep/boop.css"></link>'])
 
+    res.locals = {};
     staticInjections(res, 'meow/bark.js');
     assert.deepEqual(res.locals.js_injections, ['\n<script src="meow/bark.js"></script>'])
 
@@ -47,6 +50,7 @@ describe('Static Injections', function() {
               // this object is put on locals by the webpack middleware
               assetsByChunkName: {
                 "beep-boop.js": ["/beep/boop.js", '/beep/boop.js.map'],
+                "beep-boop.css": ["/beep/boop.css", '/beep/boop.css.map'],
                 "meow-bark.js": ["meow/bark.js", "meow/bark.js.map"]
               }
             }

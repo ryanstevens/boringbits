@@ -23,15 +23,7 @@ module.exports = {
   // This means they will be the "root" imports that are included in JS bundle.
   // The first two entry points enable "hot" CSS and auto-refreshes for JS.
   entry: {
-    main: [
-      "webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000",
-      paths.appIndexJs
-    ],
-    
-    boop: [
-      "webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000",
-      paths.appIndexJs
-    ]
+    // this will be created by the webpack hook
   },
   output: {
     // Add /* filename */ comments to generated require()s in the output.
@@ -182,14 +174,7 @@ module.exports = {
     // Watcher doesn't work well if you mistype casing in a path so we use
     // a plugin that prints an error when you attempt to do this.
     // See https://github.com/facebookincubator/create-react-app/issues/240
-    new CaseSensitivePathsPlugin(),
-    
-    // new MiniCssExtractPlugin({
-    //   // Options similar to the same options in webpackOptions.output
-    //   // both options are optional
-    //   filename: "[name].css",
-    //   chunkFilename: "[id].css"
-    // })
+    new CaseSensitivePathsPlugin()
   ],
   
   optimization: {

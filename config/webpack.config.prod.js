@@ -5,6 +5,10 @@ const webpack = require('webpack');
 const ManifestPlugin = require('webpack-manifest-plugin');
 const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
 const paths = require('./webpack-paths');
+const autoprefixer = require('autoprefixer');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+
+
 
 // Webpack uses `publicPath` to determine where the app is being served from.
 // It requires a trailing slash, or the file assets will get an incorrect path.
@@ -38,16 +42,7 @@ module.exports = {
   // You can exclude the *.map files from the build during deployment.
   devtool: shouldUseSourceMap ? 'source-map' : false,
   // In production, we only want to load the polyfills and the app code.
-  entry: {
-    main: [
-      paths.appIndexJs
-    ],
-    
-    boop: [
-      paths.appIndexJs
-    ]
-    
-  },
+  entry: { },
   output: {
     // The build folder.
     path: paths.appBuild,
@@ -120,8 +115,41 @@ module.exports = {
             loader: require.resolve('babel-loader'),
             options: {
               
-              compact: true,
+           //   compact: true, // minification is overrated
             },
+          },
+          {
+            test: /\.css$/,
+            use: [
+              require.resolve('style-loader'),
+              MiniCssExtractPlugin.loader,
+              {
+                loader: require.resolve('css-loader'),
+                options: {
+                  importLoaders: 1,
+                },
+              },
+              {
+                loader: require.resolve('postcss-loader'),
+                options: {
+                  // Necessary for external CSS imports to work
+                  // https://github.com/facebookincubator/create-react-app/issues/2677
+                  ident: 'postcss',
+                  plugins: () => [
+                    require('postcss-flexbugs-fixes'),
+                    autoprefixer({
+                      browsers: [
+                        '>1%',
+                        'last 4 versions',
+                        'Firefox ESR',
+                        'not ie < 9', // React doesn't support IE8 anyway
+                      ],
+                      flexbox: 'no-2009',
+                    }),
+                  ],
+                },
+              },
+            ],
           },
           {
             loader: require.resolve('file-loader'),
@@ -140,11 +168,20 @@ module.exports = {
       },
     ],
   },
+  // optimization: {
+  //   splitChunks: {
+  //     cacheGroups: {
+  //       styles: {
+  //         name: 'styles',
+  //         test: /\.css$/,
+  //         chunks: 'all',
+  //         enforce: true
+  //       }
+  //     }
+  //   }
+  // },
   plugins: [
-    // Note: this won't work without ExtractTextPlugin.extract(..) in `loaders`.
-    // new ExtractTextPlugin({
-    //   filename: cssFilename,
-    // }),
+    
     // Generate a manifest file which contains a mapping of all asset filenames
     // to their corresponding output file so that tools can pick it up without
     // having to parse `index.html`.
@@ -158,6 +195,13 @@ module.exports = {
     // https://github.com/jmblog/how-to-optimize-momentjs-with-webpack
     // You can remove this if you don't use Moment.js:
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+    
+    new MiniCssExtractPlugin({
+      // Options similar to the same options in webpackOptions.output
+      // both options are optional
+      filename: "static/css/[name].[chunkhash:8].css",
+      chunkFilename: "[id].css"
+    })
   ],
   // Some libraries import Node modules but don't use them in the browser.
   // Tell Webpack to provide empty mocks for them so importing them works.

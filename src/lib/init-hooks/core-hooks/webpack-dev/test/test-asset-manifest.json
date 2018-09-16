@@ -4,5 +4,9 @@
   "client-entrypoints-about.js": "/static/js/client-entrypoints-about.9c7104f2.js",
   "client-entrypoints-about.js.map": "/static/js/client-entrypoints-about.9c7104f2.js.map",
   "beep-boop.js": "/beep/boop.js",
-  "meow-bark.js": "meow/bark.js"
+  "beep-boop.js.map": "/beep/boop.js.map",
+  "beep-boop.css": "/beep/boop.css",
+  "beep-boop.css.map": "/beep/boop.css.map",
+  "meow-bark.js": "meow/bark.js",
+  "meow-bark.js.map": "meow/bark.js.map"
 }

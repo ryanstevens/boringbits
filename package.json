@@ -57,6 +57,7 @@
     "healthy": "^1.0.2",
     "mini-css-extract-plugin": "^0.4.2",
     "nodemon": "^1.18.4",
+    "postcss-flexbugs-fixes": "^4.1.0",
     "postcss-loader": "^3.0.0",
     "react-dev-utils": "^5.0.2",
     "react-hot-loader": "^4.3.6",
