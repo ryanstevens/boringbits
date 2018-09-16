@@ -14,8 +14,7 @@ process.on('unhandledRejection', err => {
 const chalk = require('chalk');
 const fs = require('fs-extra');
 const webpack = require('webpack');
-const paths = require('../config/webpack-paths');
-const paths2 = require('../src/node_modules/paths');
+const paths = require('../dist/node_modules/paths')
 const formatWebpackMessages = require('react-dev-utils/formatWebpackMessages');
 const FileSizeReporter = require('react-dev-utils/FileSizeReporter');
 const printBuildError = require('react-dev-utils/printBuildError');
@@ -32,11 +31,11 @@ const WARN_AFTER_CHUNK_GZIP_SIZE = 1024 * 1024;
 
 // First, read the current file sizes in build directory.
 // This lets us display how much they changed later.
-measureFileSizesBeforeBuild(paths.appBuild)
+measureFileSizesBeforeBuild(paths.app_build)
   .then(previousFileSizes => {
     // Remove all content but keep the directory so that
     // if you're in it, you don't end up in Trash
-    fs.emptyDirSync(paths.appBuild);
+    fs.emptyDirSync(paths.app_build);
     // Start the webpack build
     return build(previousFileSizes);
   })
@@ -63,7 +62,7 @@ measureFileSizesBeforeBuild(paths.appBuild)
       printFileSizesAfterBuild(
         stats,
         previousFileSizes,
-        paths.appBuild,
+        paths.app_build,
         WARN_AFTER_BUNDLE_GZIP_SIZE,
         WARN_AFTER_CHUNK_GZIP_SIZE
       );
