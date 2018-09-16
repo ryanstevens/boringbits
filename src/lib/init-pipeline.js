@@ -34,12 +34,12 @@ class InitPipeline extends EventEmitter  {
     this.emit('added.hook', name, hook);
   }
 
-  add_router(route) {
+  add_router(router) {
 
-    const routePath = route.path || '';
+    const routePath = router.path || '';
     const app = this.app;
 
-    route.endpoints.forEach((endpoint = {path: '', methods: {}}) => {
+    router.endpoints.forEach((endpoint = {path: '', methods: {}}) => {
         
       // don't blow up if there are no methods
       const methods = endpoint.methods || {};
@@ -66,17 +66,7 @@ class InitPipeline extends EventEmitter  {
       boring: this
     }, options);
 
-    const middleware = await this.perform('init-middleware', injections, async () => {
-      return await initMiddleware(injections);
-    })
-
-    injections.middleware = middleware;
-
-    await this.perform('add-middleware', injections, async() => {
-      Object.keys(injections.middleware).forEach(name => this.add_middleware(name, injections.middleware[name]));
-      return injections;
-    })
-  
+    
     const hooks = await this.perform('init-hooks', injections, async () => {
       return await initHooks(injections);
     })
@@ -85,6 +75,17 @@ class InitPipeline extends EventEmitter  {
 
     await this.perform('add-hooks', injections, async() => {
       Object.keys(injections.hooks).forEach(name => this.add_hook(name, injections.hooks[name]));
+      return injections;
+    })
+
+    const middleware = await this.perform('init-middleware', injections, async () => {
+      return await initMiddleware(injections);
+    })
+
+    injections.middleware = middleware;
+
+    await this.perform('add-middleware', injections, async() => {
+      Object.keys(injections.middleware).forEach(name => this.add_middleware(name, injections.middleware[name]));
       return injections;
     })
   

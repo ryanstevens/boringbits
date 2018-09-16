@@ -13,18 +13,11 @@
     "prepublishOnly": "npm run build"
   },
   "bin": {
-    "boring-build-node": "./bin/build.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/ryanstevens/boring.git"
+    "boring-build-node": "./bin/build-node.js",
+    "boring-build-client": "./bin/build-client.js"
   },
   "author": "Ryan Stevens",
   "license": "UNLICENSED",
-  "bugs": {
-    "url": "https://github.com/ryanstevens/boring/issues"
-  },
-  "homepage": "https://github.com/ryanstevens/boring#readme",
   "devDependencies": {
     "eslint": "^5.5.0",
     "eslint-config-airbnb": "^17.1.0",
