@@ -44,7 +44,7 @@ module.exports = function createWebpackStack(BoringInjections) {
           Object.keys(endpoint.methods).forEach(method => {
             const methodObj = endpoint.methods[method];
             if (methodObj.entrypoint) {
-              const entrypoints = [methodObj.entrypoint];
+              const entrypoints = ['@babel/polyfill', methodObj.entrypoint];
               if (config.get('use_webpack_dev_server', false)) {
                 entrypoints.unshift("webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000");
               }

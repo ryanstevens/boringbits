@@ -1,12 +1,6 @@
 const config = require('boring-config');
-const express = require('express');
-const initRouters = require('../init-routers');
-const initMiddleware = require('../init-middleware');
-const initHooks = require('../init-hooks');
 const logger = require('boring-logger');
-const EventEmitter = require('eventemitter2');
 const paths = require('paths');
-const Understudy = require('boring-understudy');
 const util = require('util');
 const InitPipeline = require('../init-pipeline');
 
@@ -21,7 +15,7 @@ class BoringServer extends InitPipeline {
   }
 
   async start(options) {
-    
+
     const injections = await this.build(Object.assign({}, {
       webpack_config: require(paths.boring_webpack_dev_config)
     }, options));
@@ -35,6 +29,7 @@ class BoringServer extends InitPipeline {
   
       return injections;
     })
+   
   }
 }
 

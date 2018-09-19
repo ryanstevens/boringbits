@@ -6,6 +6,7 @@ import endpoint_transformer from './transform-annotation'
 import * as decorators from '../decorators'
 import injecture from 'injecture'
 import Understudy from 'boring-understudy'
+import { createCipher } from 'crypto';
 
 
 module.exports = async function initRoutes(BoringInjections) {
@@ -46,7 +47,7 @@ module.exports = async function initRoutes(BoringInjections) {
   });
 
   
-  const moduleData = await requireInject([paths.boring_routers, paths.server_routers], boring)
+  let moduleData =await requireInject([paths.boring_routers, paths.server_routers], boring)
 
   const route_descriptors = endpoint_meta.concat(Object.keys(moduleData).map(name => {
   
@@ -108,6 +109,9 @@ function wrapHandler(boring, route, endpoint, methods, method) {
     boring.perform('http::'+method.toLowerCase(), ctx, async function() {
       handler.call(this, ctx.req, ctx.res, ctx.next);
       return ctx;
+    }).catch(e => {
+      logger.error(e, 'There was a critical error thrown in the handler stack, rethrowing to express');
+      throw e;
     });
 
   };

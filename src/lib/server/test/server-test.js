@@ -33,7 +33,7 @@ describe('Boring Server', function() {
       bootOptions.mutateMe = 'ryan'
     });
 
-    const final_config = await server.start(config => Object.assign({}, config))
+    const final_config = await server.start();
 
     assert.ok(final_config.boring.app, 'should have access to express');
     assert.ok(final_config.mutateMe, 'ryan', 'before hook did not run');

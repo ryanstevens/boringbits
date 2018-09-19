@@ -138,7 +138,6 @@ describe('Init Endpoints', function() {
     }
 
     init({boring}).then(result => {
-
       assert.equal(result.length, 1);
       assert.equal(result[0].endpoints.length, 2, 'There should be two endpoints');
       assert.equal(result[0].endpoints[0].path, '/beep');

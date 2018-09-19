@@ -5,7 +5,8 @@
         "node": "10.9.0"
       }
     }, 
-    "react"]
+    "react"],
+    ["@babel/preset-react"]
   ],
   "plugins": [
     ["@babel/plugin-proposal-decorators", { "legacy": true }]
