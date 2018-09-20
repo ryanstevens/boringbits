@@ -77,20 +77,42 @@ function addToProps(proto, val){
   return newMetadata;
 }
 
+
 export function middleware(middleware) {
   if (typeof middleware === 'string') middleware = [middleware];
-  return function(target, field, descriptor) {
+
+  //convert to array
+  return function decorator(target, field, descriptor) {
+
+    // const oldValue = descriptor.value
+    
+    // // fow now this wrapper does nothing
+    // descriptor.value = function proxiedFn(...args) {
+    //   oldValue.apply(this, args);
+    // }
+
     let endpoint = {}
     endpoint[field] = {
-      func : descriptor.value,
+      methods : {
+        get: {
+          handler: descriptor.value
+        }
+      },
       middleware
     }
-    addToProps(target, {
+    const class_metadata = addToProps(target, {
       endpoints: endpoint
+    });
+    localEmitter.emit('decorator.router.get', {
+      target,
+      middleware,
+      field,
+      descriptor,
+      class_metadata
     });
     return descriptor;
   }
-}
+}   
 
 
 export function get(path) {

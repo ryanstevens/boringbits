@@ -68,7 +68,7 @@ module.exports = function getStaticInjections(res, entrypoint) {
   const css_files = assets.css[asset_key] || [];
 
   res.locals.js_injections = js_files.map(js => {
-    return `\n<script src="${js}"></script>`;
+    return `\n<script async="true" src="${js}"></script>`;
   });
 
   res.locals.css_injections = css_files.map(css => {

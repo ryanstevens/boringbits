@@ -189,7 +189,7 @@ module.exports = {
         minChunks: 1
     },
     noEmitOnErrors: false, // NoEmitOnErrorsPlugin
-    concatenateModules: true //ModuleConcatenationPlugin
+    concatenateModules: false //ModuleConcatenationPlugin
   },
 
   // Some libraries import Node modules but don't use them in the browser.
