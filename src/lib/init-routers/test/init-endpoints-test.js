@@ -142,13 +142,22 @@ describe('Init Endpoints', function() {
       assert.equal(result[0].endpoints.length, 2, 'There should be two endpoints');
       assert.equal(result[0].endpoints[0].path, '/beep');
       result[0].endpoints[0].methods.get.handler();
-      assert.equal(calls[0], 'meat', 'serveFoo was not executed');
 
-      assert.equal(result[0].endpoints[1].path, '/guz');
-      result[0].endpoints[1].methods.get.handler();
-      assert.equal(calls[1], 'meep');
-    
-      done();
+      assert.notEqual(calls[0], 'meat', 'serveFoo is not executed sync due to some promises in the middle of the chain');
+
+      setImmediate(() => {
+
+        assert.equal(calls[0], 'meat', 'serveFoo was not executed');
+
+        assert.equal(result[0].endpoints[1].path, '/guz');
+        result[0].endpoints[1].methods.get.handler();
+        
+        setImmediate(() => {
+          assert.equal(calls[1], 'meep');
+        
+          done();
+        });
+      });
     })
 
   });

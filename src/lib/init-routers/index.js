@@ -1,12 +1,10 @@
-
 import paths from 'paths';
 import requireInject from 'require-inject-all';
 import logger from 'boring-logger'
 import endpoint_transformer from './transform-annotation'
 import * as decorators from '../decorators'
 import injecture from 'injecture'
-import Understudy from 'boring-understudy'
-import { createCipher } from 'crypto';
+const compose = require('compose-middleware').compose
 
 
 module.exports = async function initRoutes(BoringInjections) {
@@ -78,12 +76,46 @@ module.exports = async function initRoutes(BoringInjections) {
   return route_descriptors;
 }
 
+function noop(req, res, next) {
+  next();
+}
+
+function getMiddlewareFunc(boring, middleware) {
+  if (typeof middleware === 'string') {
+    return boring.middleware[middleware] || noop;
+  }
+  
+  if (typeof middleware === 'function') {
+    return middleware;
+  }
+}
 
 // this is extracted from the code
 // below to not enclose all the objects 
 // within initRoutes.  These handlers 
 // will be wrapped and always in the heap
 function wrapHandler(boring, route, endpoint, methods, method) {
+
+  // first, normalize the middleware
+  let middlewareStack = endpoint.middleware || [];
+  if (typeof endpoint.middleware === 'function') {
+    middlewareStack = [middlewareStack];
+  }
+
+  const runStack = compose(middlewareStack.map(middleware => {
+    
+    let func = getMiddlewareFunc(boring, middleware);
+    if (func) return func;
+
+    if (middleware && middleware.args) {
+      func = getMiddlewareFunc(boring, middleware.func);
+      return function curryWrapper(req, res, next) {
+        func(req, res, next, middleware.args);
+      };
+    }
+
+  }));
+
   
   // normalize data structure to match
   // decorator API
@@ -106,13 +138,33 @@ function wrapHandler(boring, route, endpoint, methods, method) {
     };
     ctx[method] = methods[method];
 
-    boring.perform('http::'+method.toLowerCase(), ctx, async function() {
-      handler.call(this, ctx.req, ctx.res, ctx.next);
-      return ctx;
-    }).catch(e => {
+    // first execute the middleware
+    boring.perform(`http::${method.toLowerCase()}::middleware`, ctx, () => {
+
+      return new Promise(function(resolve, reject) {
+        runStack(ctx.req, ctx.res, function(err) {
+          if (err) return reject(err);
+          resolve(ctx);
+        });
+        
+      });
+    })
+    .then(() => {
+      // then execte handler
+      boring.perform('http::'+method.toLowerCase(), ctx, async function() {
+        handler.call(this, ctx.req, ctx.res, ctx.next);
+        return ctx;
+      }).catch(e => {
+        logger.error(e, 'There was a critical error thrown in the handler stack, rethrowing to express');
+        throw e;
+      });
+
+    })
+    .catch(e => {
       logger.error(e, 'There was a critical error thrown in the handler stack, rethrowing to express');
       throw e;
-    });
+    })
+
 
   };
 
