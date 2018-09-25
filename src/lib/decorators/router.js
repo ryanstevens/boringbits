@@ -81,15 +81,7 @@ function addToProps(proto, val){
 export function middleware(middleware) {
   if (typeof middleware === 'string') middleware = [middleware];
 
-  //convert to array
   return function decorator(target, field, descriptor) {
-
-    // const oldValue = descriptor.value
-    
-    // // fow now this wrapper does nothing
-    // descriptor.value = function proxiedFn(...args) {
-    //   oldValue.apply(this, args);
-    // }
 
     let endpoint = {}
     endpoint[field] = {
@@ -118,13 +110,6 @@ export function middleware(middleware) {
 export function get(path) {
   //convert to array
   return function decorator(target, field, descriptor) {
-
-    // const oldValue = descriptor.value
-    
-    // // fow now this wrapper does nothing
-    // descriptor.value = function proxiedFn(...args) {
-    //   oldValue.apply(this, args);
-    // }
 
     let endpoint = {}
     endpoint[field] = {
@@ -221,12 +206,6 @@ export function endpoint(path = '') {
   return function (target) {
     const endpoint_meta_data = { path }
     const class_metadata = addToProps(target.prototype, endpoint_meta_data);
-
-    // fow now this wrapper does nothing
-    // function proxiedEndpoint() {
-    //   return new target();
-    // }
-    // proxiedEndpoint.prototype = target.prototype;
 
     injecture.create('decorator.router.endpoint', target);
     localEmitter.emit('decorator.router.endpoint', {
