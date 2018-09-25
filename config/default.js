@@ -1,12 +1,11 @@
 
 module.exports = {
-  server: {
+  app: {
     port: 4000
   },
-  app: {
-  },
   logger: {
-    name: 'app',
+    name: 'boring-app',
     level: 'debug'
-  }
+  },
+  use_webpack_dev_server: false
 }

@@ -45,7 +45,7 @@ module.exports = function createWebpackStack(BoringInjections) {
             const methodObj = endpoint.methods[method];
             if (methodObj.entrypoint) {
               const entrypoints = ['@babel/polyfill', methodObj.entrypoint];
-              if (config.get('use_webpack_dev_server', false)) {
+              if (config.get('boring.use_webpack_dev_server')) {
                 entrypoints.unshift("webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000");
               }
 
@@ -56,7 +56,7 @@ module.exports = function createWebpackStack(BoringInjections) {
         return collector
       }, {});
 
-      if (config.get('use_webpack_dev_server', false)) {
+      if (config.get('boring.use_webpack_dev_server')) {
         
         const webpack = require('webpack')
         const compiler = webpack(webpack_config)
