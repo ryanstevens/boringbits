@@ -9,8 +9,10 @@ describe('Boring entrypoint', function() {
     const boring = require('../boring');
 
     assert.ok(boring);
-    assert.ok(boring.start);
-    assert.ok(boring.config);
+    assert.ok(boring.Server);
+    const server = new boring.Server();
+    assert.ok(server.start);
+    assert.ok(server.config);
   });
 
 });
