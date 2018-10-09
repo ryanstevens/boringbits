@@ -1,0 +1,20 @@
+version: '3'
+
+services:
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
+    networks:
+      - redis
+  dynamodb:
+    image: instructure/dynamo-local-admin
+    ports:
+      - "8000:8000"
+    #  - "8001:8001" #don't need to expose this because there is a proxy under the hood that splits out web traffic 
+  
+networks:
+  redis:
+    driver: bridge
+  mongo:
+    driver: bridge

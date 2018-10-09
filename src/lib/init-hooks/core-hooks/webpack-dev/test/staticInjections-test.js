@@ -25,7 +25,7 @@ describe('Static Injections', function() {
 
     res.locals = {};
     staticInjections(res, 'meow/bark.js');
-    assert.deepEqual(res.locals.js_injections, ['\n<script async="true" src="meow/bark.js"></script>'])
+    assert.deepEqual(res.locals.js_injections, ['\n<script async="true" src="/meow/bark.js"></script>'])
 
   }
 

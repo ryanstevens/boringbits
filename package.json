@@ -13,7 +13,9 @@
   },
   "bin": {
     "boring-build-node": "./bin/build-node.js",
-    "boring-build-client": "./bin/build-client.js"
+    "boring-build-client": "./bin/build-client.js",
+    "boring-up": "./bin/docker-compose-up.js",
+    "boring-down": "./bin/docker-compose-down.js"
   },
   "author": "Ryan Stevens",
   "license": "UNLICENSED",

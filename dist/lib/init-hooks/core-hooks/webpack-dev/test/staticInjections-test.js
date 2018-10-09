@@ -23,7 +23,7 @@ describe('Static Injections', function () {
     assert.deepEqual(res.locals.css_injections, ['\n<link rel="stylesheet" href="/beep/boop.css"></link>']);
     res.locals = {};
     staticInjections(res, 'meow/bark.js');
-    assert.deepEqual(res.locals.js_injections, ['\n<script async="true" src="meow/bark.js"></script>']);
+    assert.deepEqual(res.locals.js_injections, ['\n<script async="true" src="/meow/bark.js"></script>']);
   }
 
   it('Will read a manifest file and return the proper entrypoint', function (done) {

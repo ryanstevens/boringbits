@@ -13,7 +13,6 @@ function assetsByManifest() {
   const js = Object.keys(manifest).reduce((collector, name) => {
     let assets = [].concat(manifest[name]).filter(asset => asset.endsWith('.js'));
     if (assets.length === 0) return collector;
-
     collector[name.split('.').shift()] = assets;
     return collector;
   }, {});
@@ -21,7 +20,6 @@ function assetsByManifest() {
   const css = Object.keys(manifest).reduce((collector, name) => {
     let assets = [].concat(manifest[name]).filter(asset => asset.endsWith('.css'));
     if (assets.length === 0) return collector;
-
     collector[name.split('.').shift()] = assets;
     return collector;
   }, {});
@@ -67,12 +65,14 @@ module.exports = function getStaticInjections(res, entrypoint) {
   const js_files = assets.js[asset_key] || [];
   const css_files = assets.css[asset_key] || [];
 
-  res.locals.js_injections = js_files.map(js => {
-    return `\n<script async="true" src="${js}"></script>`;
+  res.locals.js_injections = js_files.map(asset => {
+    if (asset[0] !== '/') asset = '/' + asset;
+    return `\n<script async="true" src="${asset}"></script>`;
   });
 
-  res.locals.css_injections = css_files.map(css => {
-    return `\n<link rel="stylesheet" href="${css}"></link>`;
+  res.locals.css_injections = css_files.map(asset => {
+    if (asset[0] !== '/') asset = '/' + asset;
+    return `\n<link rel="stylesheet" href="${asset}"></link>`;
   });
 
 }

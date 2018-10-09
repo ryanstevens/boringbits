@@ -62,11 +62,13 @@ module.exports = function getStaticInjections(res, entrypoint) {
   const asset_key = pathitize(entrypoint);
   const js_files = assets.js[asset_key] || [];
   const css_files = assets.css[asset_key] || [];
-  res.locals.js_injections = js_files.map(js => {
-    return `\n<script async="true" src="${js}"></script>`;
+  res.locals.js_injections = js_files.map(asset => {
+    if (asset[0] !== '/') asset = '/' + asset;
+    return `\n<script async="true" src="${asset}"></script>`;
   });
-  res.locals.css_injections = css_files.map(css => {
-    return `\n<link rel="stylesheet" href="${css}"></link>`;
+  res.locals.css_injections = css_files.map(asset => {
+    if (asset[0] !== '/') asset = '/' + asset;
+    return `\n<link rel="stylesheet" href="${asset}"></link>`;
   });
 };
 //# sourceMappingURL=staticInjectionMiddleware.js.map
