@@ -12,7 +12,7 @@ async function build() {
   try {
     fs.statSync(path.normalize(__dirname+babelPath));
   } catch(e) {    
-    babelPath =  '/../node_modules/.bin/babel';
+    babelPath =  '/../../node_modules/.bin/babel';
     fs.statSync(path.normalize(__dirname+babelPath));
   }
   
