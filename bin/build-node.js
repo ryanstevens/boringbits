@@ -8,7 +8,7 @@ const fs = require('fs');
 async function build() {
 
   fs_extra.emptyDirSync(paths.app_dist);
-  let babelPath = '/../.bin/babel';
+  let babelPath =  '/../node_modules/.bin/babel';
   try {
     fs.statSync(path.normalize(__dirname+babelPath));
   } catch(e) {    
