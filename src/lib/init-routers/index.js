@@ -2,7 +2,7 @@ import paths from 'paths';
 import requireInject from 'require-inject-all';
 import logger from 'boring-logger'
 import endpoint_transformer from './transform-annotation'
-import * as decorators from '../decorators'
+//import * as decorators from '../decorators'
 import injecture from 'injecture'
 const compose = require('compose-middleware').compose
 
@@ -13,7 +13,7 @@ module.exports = async function initRoutes(BoringInjections) {
     boring
   } = BoringInjections;
 
-  boring.decorators = decorators;
+  const decorators = boring.decorators;
   
   const endpoint_meta = [];
 

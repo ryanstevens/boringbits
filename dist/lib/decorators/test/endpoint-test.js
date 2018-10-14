@@ -118,5 +118,13 @@ describe('Endpoint decorator', function () {
     clazz.beep();
     done();
   });
+  it('can add custom path based decorators', function (done) {
+    const {
+      addMiddlewareDecorator
+    } = endpoint_decortators;
+    addMiddlewareDecorator('newDecorator', function (fn) {});
+    assert.ok(endpoint_decortators.middleware.newDecorator);
+    done();
+  });
 });
 //# sourceMappingURL=endpoint-test.js.map

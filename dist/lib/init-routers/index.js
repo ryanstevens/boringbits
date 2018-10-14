@@ -8,21 +8,18 @@ var _boringLogger = _interopRequireDefault(require("boring-logger"));
 
 var _transformAnnotation = _interopRequireDefault(require("./transform-annotation"));
 
-var decorators = _interopRequireWildcard(require("../decorators"));
-
 var _injecture = _interopRequireDefault(require("injecture"));
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+//import * as decorators from '../decorators'
 const compose = require('compose-middleware').compose;
 
 module.exports = async function initRoutes(BoringInjections) {
   const {
     boring
   } = BoringInjections;
-  boring.decorators = decorators;
+  const decorators = boring.decorators;
   const endpoint_meta = [];
   /**
    * !IMPORTANT!

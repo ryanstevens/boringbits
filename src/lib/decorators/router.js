@@ -5,6 +5,11 @@ import EventEmitter from 'eventemitter2'
 const extenrnalEmitters = [];
 const localEmitter = new EventEmitter({wildcard: true});
 
+const toExport = {
+  middleware: {}
+};
+
+
 /**
  * We will use this DI container
  * to track all the classes instantiated
@@ -65,7 +70,7 @@ function getShadowMetaData(proto) {
 
 }
 
-export function getMetaDataByClass(Klass) {
+toExport.getMetaDataByClass = function getMetaDataByClass(Klass) {
   return getShadowMetaData(Klass.prototype);
 }
 
@@ -78,7 +83,7 @@ function addToProps(proto, val){
 }
 
 
-export function middleware(middleware) {
+toExport.middleware = function middleware(middleware) {
   if (typeof middleware === 'string') middleware = [middleware];
 
   return function decorator(target, field, descriptor) {
@@ -107,7 +112,7 @@ export function middleware(middleware) {
 }   
 
 
-export function get(path) {
+toExport.get = function get(path) {
   //convert to array
   return function decorator(target, field, descriptor) {
 
@@ -134,7 +139,7 @@ export function get(path) {
   }
 }   
 
-export function post(path) {
+toExport.post = function post(path) {
   //convert to array
   return function decorator(target, field, descriptor) {
     let endpoint = {}
@@ -164,7 +169,7 @@ export function post(path) {
  * 
  * @param {absolute path from root} entrypoint
  */
-export function entrypoint(js_file_path) {
+toExport.entrypoint = function entrypoint(js_file_path) {
   return function decorator(target, field, descriptor) {
     let endpoint = {}
     endpoint[field] = {
@@ -202,7 +207,7 @@ injecture.register('decorator.router.endpoint',
 );
 
 
-export function endpoint(path = '') {
+toExport.endpoint = function endpoint(path = '') {
   return function (target) {
     const endpoint_meta_data = { path }
     const class_metadata = addToProps(target.prototype, endpoint_meta_data);
@@ -217,6 +222,13 @@ export function endpoint(path = '') {
   }
 }
 
-export function subscribeDecorators(emitter) {
+toExport.subscribeDecorators = function subscribeDecorators(emitter) {
   extenrnalEmitters.push(emitter);
 }
+
+toExport.addMiddlewareDecorator = function addMiddlewareDecorator(name, func) {
+  toExport.middleware[name] = func;
+}
+
+
+module.exports = toExport;

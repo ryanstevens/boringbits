@@ -18,6 +18,8 @@ const paths = require('paths');
 
 const Understudy = require('boring-understudy');
 
+const decorators = require('./decorators');
+
 class InitPipeline extends EventEmitter {
   constructor() {
     super({
@@ -30,6 +32,7 @@ class InitPipeline extends EventEmitter {
     this.middleware = {};
     this.hooks = {};
     this.app = express();
+    this.decorators = decorators;
     this.app.oldUse = this.app.use;
     const perform = this.perform.bind(this);
 

@@ -7,6 +7,8 @@ const initHooks = require('./init-hooks');
 const EventEmitter = require('eventemitter2');
 const paths = require('paths');
 const Understudy = require('boring-understudy');
+const decorators = require('./decorators')
+
 
 class InitPipeline extends EventEmitter  {
 
@@ -20,6 +22,7 @@ class InitPipeline extends EventEmitter  {
     this.middleware = {};
     this.hooks = {};
     this.app = express();
+    this.decorators = decorators;
 
     this.app.oldUse = this.app.use;
     const perform = this.perform.bind(this);
@@ -102,7 +105,6 @@ class InitPipeline extends EventEmitter  {
     let injections = Object.assign({}, {
       boring: this
     }, options);
-
     
     const hooks = await this.perform('init-hooks', injections, async () => {
       return await initHooks(injections);

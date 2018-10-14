@@ -1,16 +1,5 @@
 "use strict";
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.getMetaDataByClass = getMetaDataByClass;
-exports.middleware = middleware;
-exports.get = get;
-exports.post = post;
-exports.entrypoint = entrypoint;
-exports.endpoint = endpoint;
-exports.subscribeDecorators = subscribeDecorators;
-
 var _deepmerge = _interopRequireDefault(require("deepmerge"));
 
 var _eventemitter = _interopRequireDefault(require("eventemitter2"));
@@ -21,6 +10,9 @@ const extenrnalEmitters = [];
 const localEmitter = new _eventemitter.default({
   wildcard: true
 });
+const toExport = {
+  middleware: {}
+};
 /**
  * We will use this DI container
  * to track all the classes instantiated
@@ -80,9 +72,9 @@ function getShadowMetaData(proto) {
   return newProto;
 }
 
-function getMetaDataByClass(Klass) {
+toExport.getMetaDataByClass = function getMetaDataByClass(Klass) {
   return getShadowMetaData(Klass.prototype);
-} // deep merge... what could go wrong
+}; // deep merge... what could go wrong
 
 
 function addToProps(proto, val) {
@@ -92,7 +84,7 @@ function addToProps(proto, val) {
   return newMetadata;
 }
 
-function middleware(middleware) {
+toExport.middleware = function middleware(middleware) {
   if (typeof middleware === 'string') middleware = [middleware];
   return function decorator(target, field, descriptor) {
     let endpoint = {};
@@ -116,9 +108,9 @@ function middleware(middleware) {
     });
     return descriptor;
   };
-}
+};
 
-function get(path) {
+toExport.get = function get(path) {
   //convert to array
   return function decorator(target, field, descriptor) {
     let endpoint = {};
@@ -142,9 +134,9 @@ function get(path) {
     });
     return descriptor;
   };
-}
+};
 
-function post(path) {
+toExport.post = function post(path) {
   //convert to array
   return function decorator(target, field, descriptor) {
     let endpoint = {};
@@ -168,14 +160,14 @@ function post(path) {
     });
     return descriptor;
   };
-}
+};
 /**
  * 
  * @param {absolute path from root} entrypoint
  */
 
 
-function entrypoint(js_file_path) {
+toExport.entrypoint = function entrypoint(js_file_path) {
   return function decorator(target, field, descriptor) {
     let endpoint = {};
     endpoint[field] = {
@@ -198,7 +190,7 @@ function entrypoint(js_file_path) {
     });
     return descriptor;
   };
-}
+};
 
 injecture.register('decorator.router.endpoint', // since we are only using the container
 // to collect all the instances we give it a
@@ -209,7 +201,7 @@ function endpointFactor(Klass) {
   map_instances: true
 });
 
-function endpoint(path = '') {
+toExport.endpoint = function endpoint(path = '') {
   return function (target) {
     const endpoint_meta_data = {
       path
@@ -223,9 +215,15 @@ function endpoint(path = '') {
     });
     return target;
   };
-}
+};
 
-function subscribeDecorators(emitter) {
+toExport.subscribeDecorators = function subscribeDecorators(emitter) {
   extenrnalEmitters.push(emitter);
-}
+};
+
+toExport.addMiddlewareDecorator = function addMiddlewareDecorator(name, func) {
+  toExport.middleware[name] = func;
+};
+
+module.exports = toExport;
 //# sourceMappingURL=router.js.map

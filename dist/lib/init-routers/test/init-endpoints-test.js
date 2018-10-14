@@ -79,6 +79,7 @@ describe('Init Endpoints', function () {
         super({});
         Understudy.call(this);
         this.app = {};
+        this.decorators = decorators;
       }
 
     }
@@ -108,6 +109,7 @@ describe('Init Endpoints', function () {
         });
         Understudy.call(this);
         this.app = {};
+        this.decorators = decorators;
       }
 
     }
@@ -161,6 +163,7 @@ describe('Init Endpoints', function () {
         });
         Understudy.call(this);
         this.app = {};
+        this.decorators = decorators;
       }
 
     }
