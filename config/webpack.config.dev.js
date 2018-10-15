@@ -114,8 +114,8 @@ module.exports = {
               // directory for faster rebuilds.
               cacheDirectory: true,
 
-              babelrc: false,
-              configFile: false,
+              // babelrc: false,
+              // configFile: false,
 
               // "presets": [
               //   ["@babel/env", {
