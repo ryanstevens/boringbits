@@ -1,6 +1,12 @@
+
+import config from 'boring-config'
+if (config.get('boring.babel_project') === true) {
+  require('@babel/register');
+}
+
+
 import Server from './lib/server'
 import Injecture from 'injecture'
-import config from 'boring-config'
 import logger from 'boring-logger'
 
 module.exports = {
