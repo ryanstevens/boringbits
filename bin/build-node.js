@@ -16,8 +16,9 @@ async function build() {
     fs.statSync(path.normalize(__dirname+babelPath));
   }
   
-
-  child_process.spawn(path.normalize(__dirname+babelPath), ['src', '-d', paths.app_dist, '--source-maps', '--copy-files'],
+  child_process.spawn(path.normalize(__dirname+babelPath), ['--no-babelrc', 'src', '-d', paths.app_dist, '--source-maps', '--copy-files', 
+    `--presets=${paths.boring_dir}dist/build/wrapped-babel-env,@babel/preset-react`, 
+    `--plugins=@babel/plugin-proposal-object-rest-spread,${paths.boring_dir}dist/build/wrapped-babel-plugin-proposal-decorators`],
     {
       stdio: [process.stdin, process.stdout, process.stderr]
     }
