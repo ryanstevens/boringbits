@@ -7,6 +7,8 @@ const webpack = require('webpack');
 const paths = require('../src/node_modules/paths')
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
+const ProgressBarPlugin = require('progress-bar-webpack-plugin');
+
 
 // Webpack uses `publicPath` to determine where the app is being served from.
 // In development, we always serve from the root. This makes config easier.
@@ -180,7 +182,9 @@ module.exports = {
     // Watcher doesn't work well if you mistype casing in a path so we use
     // a plugin that prints an error when you attempt to do this.
     // See https://github.com/facebookincubator/create-react-app/issues/240
-    new CaseSensitivePathsPlugin()
+    new CaseSensitivePathsPlugin(),
+    new ProgressBarPlugin()
+
   ],
   
   optimization: {

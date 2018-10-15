@@ -8,6 +8,8 @@ const paths = require('../dist/node_modules/paths')
 const autoprefixer = require('autoprefixer');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const fs = require('fs');
+const ProgressBarPlugin = require('progress-bar-webpack-plugin');
+
 
 
 // Webpack uses `publicPath` to determine where the app is being served from.
@@ -191,7 +193,9 @@ module.exports = {
       // both options are optional
       filename: "static/css/[name].[chunkhash:8].css",
       chunkFilename: "[id].css"
-    })
+    }),
+    new ProgressBarPlugin()
+
   ],
   // Some libraries import Node modules but don't use them in the browser.
   // Tell Webpack to provide empty mocks for them so importing them works.
