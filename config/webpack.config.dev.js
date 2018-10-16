@@ -120,7 +120,8 @@ module.exports = {
               "presets": [
                 ["@babel/env", {
                   "targets": {
-                    "ie" : "11"
+                    "ie" : "11",
+                   // "node": "10.9.0",
                   }
                 }],
                 ["@babel/preset-react"]

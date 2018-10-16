@@ -106,7 +106,27 @@ module.exports = {
             include: paths.app_src,
             loader: require.resolve('babel-loader'),
             options: {
-              
+                // This is a feature of `babel-loader` for webpack (not Babel itself).
+              // It enables caching results in ./node_modules/.cache/babel-loader/
+              // directory for faster rebuilds.
+              cacheDirectory: true,
+
+              babelrc: false,
+              configFile: false,
+
+              "presets": [
+                ["@babel/env", {
+                  "targets": {
+                    "ie" : "11",
+                   // "node": "10.9.0",
+                  }
+                }],
+                ["@babel/preset-react"]
+              ],
+              "plugins": [
+                ["@babel/plugin-proposal-object-rest-spread"],
+                ["@babel/plugin-proposal-decorators", { "legacy": true }]
+              ]
             },
           },
           {
