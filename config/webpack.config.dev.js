@@ -114,42 +114,21 @@ module.exports = {
               // directory for faster rebuilds.
               cacheDirectory: true,
 
-              // babelrc: false,
-              // configFile: false,
+              babelrc: false,
+              configFile: false,
 
-              // "presets": [
-              //   ["@babel/env", {
-              //     "targets": {
-              //       "node": "10.9.0",
-              //       "ie" : "11"
-              //     }
-              //   }],
-              //   ["@babel/preset-react"]
-              // ],
-              // "plugins": [
-              //   ["@babel/plugin-proposal-object-rest-spread"],
-              //   ["@babel/plugin-proposal-decorators", { "legacy": true }]
-              // ]
-
-              
-              // presets: [
-              //   [require.resolve("@babel/preset-env"), {
-              //     "targets": {
-              //       "node": "10.9.0",
-              //       "ie" : "11"
-              //     }
-              //   }],
-              //   require.resolve("@babel/preset-react")
-
-              // ],
-              
-              // // @remove-on-eject-end
-              // plugins: [
-                
-              //   [require.resolve("@babel/plugin-proposal-object-rest-spread")],
-              //   [require.resolve("@babel/plugin-proposal-decorators"), { "legacy": true }]
-                
-              // ]
+              "presets": [
+                ["@babel/env", {
+                  "targets": {
+                    "ie" : "11"
+                  }
+                }],
+                ["@babel/preset-react"]
+              ],
+              "plugins": [
+                ["@babel/plugin-proposal-object-rest-spread"],
+                ["@babel/plugin-proposal-decorators", { "legacy": true }]
+              ]
             },
           },
           // "postcss" loader applies autoprefixer to our CSS.
