@@ -1,5 +1,9 @@
 "use strict";
 
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
 const config = require('boring-config');
 
 const express = require('express');
@@ -48,7 +52,9 @@ class InitPipeline extends EventEmitter {
 
       };
       this.app.oldUse(deferMiddleware(new Promise(function (resolve, reject) {
-        perform('app.use', ctx, async function () {
+        perform('app.use', ctx,
+        /*#__PURE__*/
+        _asyncToGenerator(function* () {
           // This in a way acts a dependency  
           // system where a hook can only 
           // effectively call app.use AFTER or 
@@ -59,7 +65,7 @@ class InitPipeline extends EventEmitter {
           // future we can avoid that 
           resolve(ctx.middleware);
           return ctx;
-        }).catch(reject);
+        })).catch(reject);
       })));
     };
   }
@@ -99,35 +105,51 @@ class InitPipeline extends EventEmitter {
     });
   }
 
-  async build(options) {
-    let injections = Object.assign({}, {
-      boring: this
-    }, options);
-    const hooks = await this.perform('init-hooks', injections, async () => {
-      return await initHooks(injections);
-    });
-    injections.hooks = hooks;
-    await this.perform('add-hooks', injections, async () => {
-      Object.keys(injections.hooks).forEach(name => this.add_hook(name, injections.hooks[name]));
+  build(options) {
+    var _this = this;
+
+    return _asyncToGenerator(function* () {
+      let injections = Object.assign({}, {
+        boring: _this
+      }, options);
+      const hooks = yield _this.perform('init-hooks', injections,
+      /*#__PURE__*/
+      _asyncToGenerator(function* () {
+        return yield initHooks(injections);
+      }));
+      injections.hooks = hooks;
+      yield _this.perform('add-hooks', injections,
+      /*#__PURE__*/
+      _asyncToGenerator(function* () {
+        Object.keys(injections.hooks).forEach(name => _this.add_hook(name, injections.hooks[name]));
+        return injections;
+      }));
+      const middleware = yield _this.perform('init-middleware', injections,
+      /*#__PURE__*/
+      _asyncToGenerator(function* () {
+        return yield initMiddleware(injections);
+      }));
+      injections.middleware = middleware;
+      yield _this.perform('add-middleware', injections,
+      /*#__PURE__*/
+      _asyncToGenerator(function* () {
+        Object.keys(injections.middleware).forEach(name => _this.add_middleware(name, injections.middleware[name]));
+        return injections;
+      }));
+      const routers = yield _this.perform('init-routers', injections,
+      /*#__PURE__*/
+      _asyncToGenerator(function* () {
+        return yield initRouters(injections);
+      }));
+      injections.routers = routers;
+      yield _this.perform('add-routers', injections,
+      /*#__PURE__*/
+      _asyncToGenerator(function* () {
+        injections.routers.forEach(route => _this.add_router(route));
+        return injections;
+      }));
       return injections;
-    });
-    const middleware = await this.perform('init-middleware', injections, async () => {
-      return await initMiddleware(injections);
-    });
-    injections.middleware = middleware;
-    await this.perform('add-middleware', injections, async () => {
-      Object.keys(injections.middleware).forEach(name => this.add_middleware(name, injections.middleware[name]));
-      return injections;
-    });
-    const routers = await this.perform('init-routers', injections, async () => {
-      return await initRouters(injections);
-    });
-    injections.routers = routers;
-    await this.perform('add-routers', injections, async () => {
-      injections.routers.forEach(route => this.add_router(route));
-      return injections;
-    });
-    return injections;
+    })();
   }
 
 }
