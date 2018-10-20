@@ -20,7 +20,7 @@ class BoringServer extends InitPipeline {
       webpack_config: require(paths.boring_webpack_dev_config)
     }, options));
 
-    const port = config.get('boring.app.port');
+    const port = process.env.PORT || config.get('boring.app.port');
     injections.port = port;
     
     return await this.perform('listen', injections, async() => {
