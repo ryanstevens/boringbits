@@ -38,7 +38,7 @@ class BoringServer extends InitPipeline {
       const injections = yield _this.build(Object.assign({}, {
         webpack_config: require(paths.boring_webpack_dev_config)
       }, options));
-      const port = config.get('boring.app.port');
+      const port = process.env.PORT || config.get('boring.app.port');
       injections.port = port;
       return yield _this.perform('listen', injections,
       /*#__PURE__*/
