@@ -68,8 +68,9 @@ measureFileSizesBeforeBuild(paths.app_build)
         WARN_AFTER_BUNDLE_GZIP_SIZE,
         WARN_AFTER_CHUNK_GZIP_SIZE
       );
-      console.log();
 
+      process.exit();
+      
     },
     err => {
       console.log(chalk.red('Failed to compile.\n'));
