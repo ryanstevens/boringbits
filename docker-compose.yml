@@ -10,11 +10,16 @@ services:
   dynamodb:
     image: instructure/dynamo-local-admin
     ports:
-      - "8000:8000"
-    #  - "8001:8001" #don't need to expose this because there is a proxy under the hood that splits out web traffic 
-  
+      - "8000:8000"  
+  haproxy:
+    image: haproxy:1.5
+    volumes: 
+      - ./config/haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
+      - ./config/haproxy/new2me.combined.pem:/etc/ssl/private/new2me.combined.pem
+    ports:
+      - "443:443"
+      - "80:80"
+
 networks:
   redis:
-    driver: bridge
-  mongo:
     driver: bridge
