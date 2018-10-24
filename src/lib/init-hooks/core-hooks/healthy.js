@@ -33,13 +33,31 @@ module.exports = function(BoringInjections) {
     }
   });
 
+  const requestData = {
+    cnt: 0
+  }
+  const requestHealth = new HealthModel(requestData, {
+    checkInterval: 5000,
+    asyncCheck: function(cb) {
+      Object.keys(requestData).forEach(key => {
+        requestHealth.set(key, requestData[key]);
+      })
+      cb();
+    }
+  });
+
   healthCheck.addChildCheck('memory', memoryHealth);
+  healthCheck.addChildCheck('requests', requestHealth);
 
   boring.before('add-hooks', function() {
 
     boring.before('app.use', function(ctx) {
       if (ctx.name === 'boring-session') {
-        boring.app.use(healthCheck.createMiddleware());
+        const healthyMiddleware = healthCheck.createMiddleware();
+        boring.app.use(function (req, res, next) {
+          requestData.cnt++;
+          healthyMiddleware(req, res, next);
+        });
       }
       return Promise.resolve();
     });
