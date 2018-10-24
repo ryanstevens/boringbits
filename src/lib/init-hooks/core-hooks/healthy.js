@@ -1,5 +1,6 @@
 const healthy = require('healthy');
 const os = require('os');
+const moment = require('moment');
 
 module.exports = function(BoringInjections) {
   
@@ -11,8 +12,15 @@ module.exports = function(BoringInjections) {
 
   const healthCheck = new HealthCheck({}, {
     started: new Date(),
-    hostname: os.hostname()
+    hostname: os.hostname(),
+    pid: process.pid
   });
+
+  healthCheck.model.serialize = function() {
+    const healthObj = this.getHealthObject();
+    healthObj.uptime = moment(healthObj.started).fromNow();
+    return this.options.serializer(healthObj);
+  }
 
   function getHeap() {
     const mem = process.memoryUsage();
@@ -34,17 +42,11 @@ module.exports = function(BoringInjections) {
   });
 
   const requestData = {
-    cnt: 0
-  }
-  const requestHealth = new HealthModel(requestData, {
-    checkInterval: 5000,
-    asyncCheck: function(cb) {
-      Object.keys(requestData).forEach(key => {
-        requestHealth.set(key, requestData[key]);
-      })
-      cb();
+    total: {
+      cnt: 0
     }
-  });
+  }
+  const requestHealth = new HealthModel(requestData);
 
   healthCheck.addChildCheck('memory', memoryHealth);
   healthCheck.addChildCheck('requests', requestHealth);
@@ -55,7 +57,7 @@ module.exports = function(BoringInjections) {
       if (ctx.name === 'boring-session') {
         const healthyMiddleware = healthCheck.createMiddleware();
         boring.app.use(function (req, res, next) {
-          requestData.cnt++;
+          requestData.total.cnt++;
           healthyMiddleware(req, res, next);
         });
       }
