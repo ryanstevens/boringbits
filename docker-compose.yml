@@ -10,12 +10,12 @@ services:
   dynamodb:
     image: instructure/dynamo-local-admin
     ports:
-      - "8000:8000"  
+      - "8000:8000"
   haproxy:
     image: haproxy:1.5
-    volumes: 
+    volumes:
       - ./config/haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
-      - ./config/haproxy/new2me.combined.pem:/etc/ssl/private/new2me.combined.pem
+      - ./config/haproxy/selfsigned.combined.pem:/etc/ssl/private/selfsigned.combined.pem
     ports:
       - "443:443"
       - "80:80"
