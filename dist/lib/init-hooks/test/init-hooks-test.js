@@ -23,7 +23,8 @@ describe('Init Hooks', function () {
         paths,
         config,
         app: {
-          use: function (middleware) {}
+          use: function (middleware) {},
+          set: function () {}
         }
       }
     };

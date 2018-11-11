@@ -10,7 +10,7 @@ describe('Init Hooks', function() {
   it('will require all the hook files in directory', function(done) {
 
     this.timeout(5000);
-    
+
     const init = require('../index');
     const injectionMoch = {
       boring: {
@@ -19,7 +19,8 @@ describe('Init Hooks', function() {
         app: {
           use: function(middleware) {
 
-          }
+          },
+          set: function() {}
         }
       }
     }

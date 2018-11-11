@@ -20,7 +20,8 @@ describe('Boring Server', function () {
           listen: (port, fn) => fn(),
           use: function () {},
           get: function () {},
-          post: function () {}
+          post: function () {},
+          set: function () {}
         };
       }
     });
