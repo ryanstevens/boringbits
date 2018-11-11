@@ -6,14 +6,15 @@ describe('Boring Server', function() {
 
   this.timeout(20000);
   let Server;
-  beforeEach(() => {  
+  beforeEach(() => {
     const init = proxyquire('../../init-pipeline', {
       express: function appToReturn() {
-          return { 
+          return {
             listen: ((port, fn) => fn()),
             use: function() {},
             get: function() {},
-            post: function() {}
+            post: function() {},
+            set: function() {}
           }
         }
       }
