@@ -7,16 +7,17 @@ module.exports = {
   use_webpack_dev_server: false,
   foo: {
     bar: 'overriden',
-    baz: 'meep'
+    baz: 'meep',
   },
   boring: {
     paths: {
-      base_app_path: 'src'
+      base_app_path: 'src',
+      boring_app_path: 'src',
     },
     hooks: {
       healthy: {
         interval: 0,
-      }
-    }
-  }
-}
+      },
+    },
+  },
+};

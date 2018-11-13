@@ -10,10 +10,10 @@ describe('Endpoint decorator', function() {
   beforeEach(() => {
     endpoint_decortators = require('../router');
   })
-  
+
 
   it('will push a prop into the class prototype', done => {
-    const { endpoint, get, middleware, post, entrypoint, getMetaDataByClass} = endpoint_decortators;
+    const { endpoint, get, getMetaDataByClass} = endpoint_decortators;
 
     @endpoint('/foo')
     class Meow {
@@ -23,7 +23,7 @@ describe('Endpoint decorator', function() {
 
       }
 
-      @get('/boop') 
+      @get('/boop')
       meow() {
 
       }
@@ -39,7 +39,7 @@ describe('Endpoint decorator', function() {
     done();
   });
 
-  
+
   it('will combine annotations into the metadata', done => {
     const { endpoint, get, middleware, post, entrypoint, getMetaDataByClass} = endpoint_decortators;
 
@@ -63,7 +63,7 @@ describe('Endpoint decorator', function() {
     assert.equal(classMetaData.endpoints.screetch.middleware[0], 'meep');
     assert.equal(classMetaData.endpoints.screetch.path, '/beep');
     assert.equal(classMetaData.endpoints.screetch.methods.get.handler, Meow.prototype.screetch);
-    assert.equal(classMetaData.endpoints.screetch.methods.get.entrypoint, 'foo_client.js')
+    assert.deepEqual(classMetaData.endpoints.screetch.methods.get.entrypoint, ['foo_client.js'])
     assert.equal(classMetaData.endpoints.stopper.methods.post.handler, Meow.prototype.stopper);
     done();
   });
@@ -74,7 +74,7 @@ describe('Endpoint decorator', function() {
 
     const emitter1 = new Emitter({wildcard: true});
     const emitterCollecter1 = []
-    
+
     emitter1.on('decorator.router.*', function(...args) {
       emitterCollecter1.push({
         eventName: this.event,
@@ -88,10 +88,10 @@ describe('Endpoint decorator', function() {
 
     }
 
-    
+
     @endpoint('/bar')
     class Class2 {
-      
+
     }
 
     assert.equal(emitterCollecter1.length, 2, 'There should be two classes that were created');
@@ -122,17 +122,5 @@ describe('Endpoint decorator', function() {
     done();
   });
 
-  it('can add custom path based decorators', function(done) {
 
-    const { addMiddlewareDecorator } = endpoint_decortators;
-
-    addMiddlewareDecorator('newDecorator', function(fn) {
-
-    });
-
-    assert.ok(endpoint_decortators.middleware.newDecorator);
-
-    done();
-  });
-  
 });

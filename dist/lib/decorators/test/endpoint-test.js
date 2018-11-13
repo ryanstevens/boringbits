@@ -21,9 +21,6 @@ describe('Endpoint decorator', function () {
     const {
       endpoint,
       get,
-      middleware,
-      post,
-      entrypoint,
       getMetaDataByClass
     } = endpoint_decortators;
     let Meow = (_dec = endpoint('/foo'), _dec2 = get('/beep'), _dec3 = get('/boop'), _dec(_class = (_class2 = class Meow {
@@ -61,7 +58,7 @@ describe('Endpoint decorator', function () {
     assert.equal(classMetaData.endpoints.screetch.middleware[0], 'meep');
     assert.equal(classMetaData.endpoints.screetch.path, '/beep');
     assert.equal(classMetaData.endpoints.screetch.methods.get.handler, Meow.prototype.screetch);
-    assert.equal(classMetaData.endpoints.screetch.methods.get.entrypoint, 'foo_client.js');
+    assert.deepEqual(classMetaData.endpoints.screetch.methods.get.entrypoint, ['foo_client.js']);
     assert.equal(classMetaData.endpoints.stopper.methods.post.handler, Meow.prototype.stopper);
     done();
   });
@@ -116,14 +113,6 @@ describe('Endpoint decorator', function () {
     }, (_applyDecoratedDescriptor(_class8.prototype, "beep", [_dec12], Object.getOwnPropertyDescriptor(_class8.prototype, "beep"), _class8.prototype)), _class8)) || _class7);
     const clazz = new Clazz();
     clazz.beep();
-    done();
-  });
-  it('can add custom path based decorators', function (done) {
-    const {
-      addMiddlewareDecorator
-    } = endpoint_decortators;
-    addMiddlewareDecorator('newDecorator', function (fn) {});
-    assert.ok(endpoint_decortators.middleware.newDecorator);
     done();
   });
 });

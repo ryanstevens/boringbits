@@ -40,7 +40,6 @@ describe('Boring Server', function() {
     assert.ok(final_config.mutateMe, 'ryan', 'before hook did not run');
     assert.ok(final_config.webpack_config, 'There should be a webpack object');
 
-    console.log("####")
   });
 
 });

@@ -101,7 +101,7 @@ toExport.middleware = function middleware(middleware) {
     const classMetadata = addToProps(target, {
       endpoints: endpoint
     });
-    localEmitter.emit('decorator.router.get', {
+    localEmitter.emit('decorator.router.middleware', {
       target,
       middleware,
       field,
@@ -164,31 +164,8 @@ toExport.post = function post(path) {
   };
 };
 
-toExport.entrypoint = function entrypoint(jsPath) {
-  return function decorator(target, field, descriptor) {
-    const endpoint = {};
-    endpoint[field] = {
-      methods: {
-        get: {
-          entrypoint: jsPath,
-          handler: descriptor.value
-        }
-      }
-    };
-    const classMetadata = addToProps(target, {
-      endpoints: endpoint
-    });
-    localEmitter.emit('decorator.router.entrypoint', {
-      target,
-      entrypoint,
-      field,
-      descriptor,
-      classMetadata
-    });
-    return descriptor;
-  };
-};
-
+const entrypointDecorator = createEndpointDecorator('entrypoint', 'get');
+toExport.entrypoint = entrypointDecorator;
 injecture.register('decorator.router.endpoint', // since we are only using the container
 // to collect all the instances we give it a
 // dummy factory
@@ -218,9 +195,33 @@ toExport.subscribeDecorators = function subscribeDecorators(emitter) {
   extenrnalEmitters.push(emitter);
 };
 
-toExport.addMiddlewareDecorator = function addMiddlewareDecorator(name, func) {
-  toExport.middleware[name] = func;
-};
+function createEndpointDecorator(decoratorName, method) {
+  return function newDecorator(...args) {
+    return function decorator(target, field, descriptor) {
+      const endpoint = {};
+      endpoint[field] = {
+        methods: {}
+      };
+      endpoint[field].methods[method] = {
+        handler: descriptor.value
+      };
+      endpoint[field].methods[method][decoratorName] = args;
+      const classMetadata = addToProps(target, {
+        endpoints: endpoint
+      });
+      const objToEmit = {
+        target,
+        field,
+        descriptor,
+        classMetadata
+      };
+      objToEmit[decoratorName] = args;
+      localEmitter.emit('decorator.router.' + decoratorName, objToEmit);
+      return descriptor;
+    };
+  };
+}
 
+toExport.createEndpointDecorator = createEndpointDecorator;
 module.exports = toExport;
 //# sourceMappingURL=router.js.map

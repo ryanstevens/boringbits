@@ -31,10 +31,10 @@ module.exports = function createWebpackStack(BoringInjections) {
   const webpackDevPromise = new Promise((resolve, reject) => {
     /**
      * We cannot build the webpack middleware because
-     * there is no information on the entrypoints on each endpoint.  
-     * 
+     * there is no information on the entrypoints on each endpoint.
+     *
      * Let's wait until AFTER the routes are init'd, but before they are added
-     * to boring.  Then we will collect all the entry points to 
+     * to boring.  Then we will collect all the entry points to
      * finalize the webpack config
      */
     boring.before('add-routers', function ({
@@ -48,13 +48,13 @@ module.exports = function createWebpackStack(BoringInjections) {
             const methodObj = endpoint.methods[method];
 
             if (methodObj.entrypoint) {
-              const entrypoints = ['@babel/polyfill', methodObj.entrypoint];
+              const entrypoints = ['@babel/polyfill'].concat(methodObj.entrypoint);
 
               if (config.get('boring.use_webpack_dev_server')) {
                 entrypoints.unshift("webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000");
               }
 
-              collector[pathitize(methodObj.entrypoint)] = entrypoints;
+              collector[pathitize(methodObj.entrypoint.join('_'))] = entrypoints;
             }
           });
         });

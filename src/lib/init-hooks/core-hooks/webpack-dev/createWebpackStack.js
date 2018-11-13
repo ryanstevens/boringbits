@@ -29,10 +29,10 @@ module.exports = function createWebpackStack(BoringInjections) {
 
     /**
      * We cannot build the webpack middleware because
-     * there is no information on the entrypoints on each endpoint.  
-     * 
+     * there is no information on the entrypoints on each endpoint.
+     *
      * Let's wait until AFTER the routes are init'd, but before they are added
-     * to boring.  Then we will collect all the entry points to 
+     * to boring.  Then we will collect all the entry points to
      * finalize the webpack config
      */
     boring.before('add-routers', function({routers}) {
@@ -44,33 +44,34 @@ module.exports = function createWebpackStack(BoringInjections) {
           Object.keys(endpoint.methods).forEach(method => {
             const methodObj = endpoint.methods[method];
             if (methodObj.entrypoint) {
-              const entrypoints = ['@babel/polyfill', methodObj.entrypoint];
+              const entrypoints = ['@babel/polyfill'].concat(methodObj.entrypoint);
               if (config.get('boring.use_webpack_dev_server')) {
                 entrypoints.unshift("webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000");
               }
 
-              collector[pathitize(methodObj.entrypoint)] = entrypoints;
+              collector[pathitize(methodObj.entrypoint.join('_'))] = entrypoints;
             }
           })
         })
         return collector
       }, {});
 
+
       if (config.get('boring.use_webpack_dev_server')) {
-        
+
         const webpack = require('webpack')
         const compiler = webpack(webpack_config)
 
         const webpackDevMiddleware = require('webpack-dev-middleware')(compiler, {
-          serverSideRender: true, 
-          publicPath: '/' 
+          serverSideRender: true,
+          publicPath: '/'
         });
-    
+
         const HMRMiddleware = require('webpack-hot-middleware')(compiler);
 
         resolve(compose([
           webpackDevMiddleware,
-          HMRMiddleware, 
+          HMRMiddleware,
           function(req, res, next) {
             next();
           }
@@ -80,7 +81,7 @@ module.exports = function createWebpackStack(BoringInjections) {
     });
 
   });
-  
+
   return deferMiddleware(webpackDevPromise);
 
 }

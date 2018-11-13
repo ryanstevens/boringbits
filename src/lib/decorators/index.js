@@ -1,5 +1,5 @@
 
-import * as router from './router'
+import * as router from './router';
 
 function subscribeDecorators(emitter) {
   router.subscribeDecorators(emitter);
@@ -7,5 +7,5 @@ function subscribeDecorators(emitter) {
 
 module.exports = {
   router,
-  subscribeDecorators: subscribeDecorators
-}
+  subscribeDecorators,
+};
