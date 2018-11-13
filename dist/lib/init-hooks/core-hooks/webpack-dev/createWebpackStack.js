@@ -8,6 +8,10 @@ const logger = require('boring-logger');
 
 const pathitize = require('./pathitize');
 
+const webpackDevMiddleware = require('webpack-dev-middleware');
+
+const webpackHotMiddleware = require('webpack-hot-middleware');
+
 function passthrough(req, res, next) {
   next();
 }
@@ -26,6 +30,7 @@ function deferMiddleware(middlewarePromise) {
 module.exports = function createWebpackStack(BoringInjections) {
   const {
     boring,
+    // eslint-disable-next-line camelcase
     webpack_config
   } = BoringInjections;
   const webpackDevPromise = new Promise((resolve, reject) => {
@@ -51,7 +56,7 @@ module.exports = function createWebpackStack(BoringInjections) {
               const entrypoints = ['@babel/polyfill'].concat(methodObj.entrypoint);
 
               if (config.get('boring.use_webpack_dev_server')) {
-                entrypoints.unshift("webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000");
+                entrypoints.unshift('webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000');
               }
 
               collector[pathitize(methodObj.entrypoint)] = entrypoints;
@@ -65,17 +70,10 @@ module.exports = function createWebpackStack(BoringInjections) {
         const webpack = require('webpack');
 
         const compiler = webpack(webpack_config);
-
-        const webpackDevMiddleware = require('webpack-dev-middleware')(compiler, {
+        resolve(compose([webpackDevMiddleware(compiler, {
           serverSideRender: true,
           publicPath: '/'
-        });
-
-        const HMRMiddleware = require('webpack-hot-middleware')(compiler);
-
-        resolve(compose([webpackDevMiddleware, HMRMiddleware, function (req, res, next) {
-          next();
-        }]));
+        }), webpackHotMiddleware(compiler)]));
       } else resolve(passthrough);
     });
   });

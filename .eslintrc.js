@@ -10,7 +10,8 @@ module.exports = {
     "import/no-extraneous-dependencies": false,
     "arrow-parens": 0,
     "require-jsdoc": 0,
-    "prefer-spread": 0
+    "prefer-spread": 0,
+    "max-len": 1,
   },
   "extends": "google"
 };

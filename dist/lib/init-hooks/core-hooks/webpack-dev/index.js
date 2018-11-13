@@ -1,18 +1,16 @@
 "use strict";
 
-const compose = require('compose-middleware').compose;
-
 const staticInjectionMiddleware = require('./staticInjectionMiddleware');
 
 const createWebpackStack = require('./createWebpackStack');
 
-module.exports = function (BoringInjections) {
+module.exports = function webpackHook(BoringInjections) {
   const {
     boring
   } = BoringInjections;
-  boring.before('init-routers', function () {
+  boring.before('init-routers', function beforeInitRouters() {
     boring.app.use(createWebpackStack(BoringInjections)); // let everything else keep booting up, we will
-    // queue until webpackStack resolves 
+    // queue until webpackStack resolves
 
     return Promise.resolve();
   });
