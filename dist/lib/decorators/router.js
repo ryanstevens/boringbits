@@ -6,6 +6,8 @@ var _eventemitter = _interopRequireDefault(require("eventemitter2"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+const injecture = require('injecture');
+
 const extenrnalEmitters = [];
 const localEmitter = new _eventemitter.default({
   wildcard: true
@@ -19,44 +21,43 @@ const toExport = {
  * via a @endpoint decorator
  */
 
-const injecture = require('injecture');
-
-localEmitter.on('decorator.router.*', function (...args) {
+localEmitter.on('decorator.router.*', function routerEvents(...args) {
+  // eslint-disable-next-line no-invalid-this
   const eventName = this.event;
-  const name_with_args = [eventName].concat(args); // TODO: future enhancement, ensure ALL events
+  const nameWithArgs = [eventName].concat(args); // TODO: future enhancement, ensure ALL events
   // always emit for each external emitter.
   // This way emitters will ALWAYS get every endpoint
   // reguardless of when it was subscribed
 
   extenrnalEmitters.forEach(emitter => {
-    emitter.emit.apply(emitter, name_with_args);
+    emitter.emit.apply(emitter, nameWithArgs);
   });
 });
-/***
- * This "data structure" is to 
+/**
+ * This "data structure" is to
  * hold a map of all the class prototypes
- * so we can store a shawod copy of the 
+ * so we can store a shawod copy of the
  * decorated functionns meta data.
- * 
- * It is an array because the only way to do 
- * lookups on the decorated classes is to 
+ *
+ * It is an array because the only way to do
+ * lookups on the decorated classes is to
  * compare prototypes, which cannot be converted
  * to a string so nothing will ever be ordered.
- * 
- * This okay because although decorators are 
- * evaulated at runtime, there should NOT 
- * be that many in the code base where this 
- * becauses non-performant as the vast majoirty 
- * of use cases do not create decorated 
- * classes on the fly.  
+ *
+ * This okay because although decorators are
+ * evaulated at runtime, there should NOT
+ * be that many in the code base where this
+ * becauses non-performant as the vast majoirty
+ * of use cases do not create decorated
+ * classes on the fly.
  */
 
 const class_prototypes = [];
 /**
- * by desing, if there is no classs registered 
- * then it will make a new metadata obj and push it 
+ * by desing, if there is no classs registered
+ * then it will make a new metadata obj and push it
  * in the class_prototypes array
- * @param {*} proto 
+ * @param {*} proto
  */
 
 function getShadowMetaData(proto) {
@@ -162,7 +163,7 @@ toExport.post = function post(path) {
   };
 };
 /**
- * 
+ *
  * @param {absolute path from root} entrypoint
  */
 

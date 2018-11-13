@@ -8,7 +8,8 @@ const moment = require('moment');
 
 module.exports = function (BoringInjections) {
   const {
-    boring
+    boring,
+    config
   } = BoringInjections;
   const {
     HealthCheck,
@@ -35,7 +36,7 @@ module.exports = function (BoringInjections) {
   }
 
   const memoryHealth = new HealthModel(getHeap(), {
-    checkInterval: 15000,
+    checkInterval: boring.config.get('boring.hooks.healthy.interval', 15000),
     asyncCheck: function (cb) {
       const heap = getHeap();
       Object.keys(heap).forEach(key => {

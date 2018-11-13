@@ -6,5 +6,9 @@ module.exports = {
         "jsx": true
     }
   },
-  "extends": "airbnb-base"
+  "rules" : {
+    "import/no-extraneous-dependencies": false,
+    "arrow-parens": 0,
+  },
+  "extends": "google"
 };

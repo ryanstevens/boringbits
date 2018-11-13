@@ -8,7 +8,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 module.exports = class HTML extends _react.default.Component {
   render() {
-    const reduxHtml = 'window.__PRELOADED_STATE__=' + JSON.stringify(this.props.redux_state).replace(/</g, '\\u003c');
+    const reduxHtml = `window.__PRELOADED_STATE__=${JSON.stringify(this.props.redux_state).replace(/</g, '\\u003c')}`;
     const app_vars = `
       window.app_vars = {
         server_load_time: ${new Date().getTime()},
@@ -40,11 +40,9 @@ module.exports = class HTML extends _react.default.Component {
     }), _react.default.createElement("meta", {
       name: "viewport",
       content: "width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"
-    }), scripts.map(scriptUrl => {
-      return _react.default.createElement("script", {
-        src: scriptUrl
-      });
-    })), _react.default.createElement("body", {
+    }), scripts.map(scriptUrl => _react.default.createElement("script", {
+      src: scriptUrl
+    }))), _react.default.createElement("body", {
       style: {
         height: '100%',
         padding: '0px',
