@@ -54,7 +54,7 @@ module.exports = function createWebpackStack(BoringInjections) {
                 entrypoints.unshift("webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000");
               }
 
-              collector[pathitize(methodObj.entrypoint.join('_'))] = entrypoints;
+              collector[pathitize(methodObj.entrypoint)] = entrypoints;
             }
           });
         });
