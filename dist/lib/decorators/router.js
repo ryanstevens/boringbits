@@ -52,24 +52,25 @@ localEmitter.on('decorator.router.*', function routerEvents(...args) {
  * classes on the fly.
  */
 
-const class_prototypes = [];
+const classPrototypes = []; // eslint-disable-next-line valid-jsdoc
+
 /**
  * by desing, if there is no classs registered
  * then it will make a new metadata obj and push it
- * in the class_prototypes array
+ * in the classPrototypes array
  * @param {*} proto
  */
 
 function getShadowMetaData(proto) {
-  for (let i = 0; i < class_prototypes.length; i++) {
-    if (class_prototypes[i].proto === proto) return class_prototypes[i];
+  for (let i = 0; i < classPrototypes.length; i++) {
+    if (classPrototypes[i].proto === proto) return classPrototypes[i];
   }
 
   const newProto = {
     proto,
     metadata: {}
   };
-  class_prototypes.push(newProto);
+  classPrototypes.push(newProto);
   return newProto;
 }
 
@@ -88,7 +89,7 @@ function addToProps(proto, val) {
 toExport.middleware = function middleware(middleware) {
   if (typeof middleware === 'string') middleware = [middleware];
   return function decorator(target, field, descriptor) {
-    let endpoint = {};
+    const endpoint = {};
     endpoint[field] = {
       methods: {
         get: {
@@ -97,7 +98,7 @@ toExport.middleware = function middleware(middleware) {
       },
       middleware
     };
-    const class_metadata = addToProps(target, {
+    const classMetadata = addToProps(target, {
       endpoints: endpoint
     });
     localEmitter.emit('decorator.router.get', {
@@ -105,16 +106,16 @@ toExport.middleware = function middleware(middleware) {
       middleware,
       field,
       descriptor,
-      class_metadata
+      classMetadata
     });
     return descriptor;
   };
 };
 
 toExport.get = function get(path) {
-  //convert to array
+  // convert to array
   return function decorator(target, field, descriptor) {
-    let endpoint = {};
+    const endpoint = {};
     endpoint[field] = {
       methods: {
         get: {
@@ -123,7 +124,7 @@ toExport.get = function get(path) {
       },
       path
     };
-    const class_metadata = addToProps(target, {
+    const classMetadata = addToProps(target, {
       endpoints: endpoint
     });
     localEmitter.emit('decorator.router.get', {
@@ -131,16 +132,16 @@ toExport.get = function get(path) {
       path,
       field,
       descriptor,
-      class_metadata
+      classMetadata
     });
     return descriptor;
   };
 };
 
 toExport.post = function post(path) {
-  //convert to array
+  // convert to array
   return function decorator(target, field, descriptor) {
-    let endpoint = {};
+    const endpoint = {};
     endpoint[field] = {
       methods: {
         post: {
@@ -149,7 +150,7 @@ toExport.post = function post(path) {
       },
       path
     };
-    const class_metadata = addToProps(target, {
+    const classMetadata = addToProps(target, {
       endpoints: endpoint
     });
     localEmitter.emit('decorator.router.post', {
@@ -157,29 +158,24 @@ toExport.post = function post(path) {
       path,
       field,
       descriptor,
-      class_metadata
+      classMetadata
     });
     return descriptor;
   };
 };
-/**
- *
- * @param {absolute path from root} entrypoint
- */
 
-
-toExport.entrypoint = function entrypoint(js_file_path) {
+toExport.entrypoint = function entrypoint(jsPath) {
   return function decorator(target, field, descriptor) {
-    let endpoint = {};
+    const endpoint = {};
     endpoint[field] = {
       methods: {
         get: {
-          entrypoint: js_file_path,
+          entrypoint: jsPath,
           handler: descriptor.value
         }
       }
     };
-    const class_metadata = addToProps(target, {
+    const classMetadata = addToProps(target, {
       endpoints: endpoint
     });
     localEmitter.emit('decorator.router.entrypoint', {
@@ -187,7 +183,7 @@ toExport.entrypoint = function entrypoint(js_file_path) {
       entrypoint,
       field,
       descriptor,
-      class_metadata
+      classMetadata
     });
     return descriptor;
   };
@@ -204,15 +200,15 @@ function endpointFactor(Klass) {
 
 toExport.endpoint = function endpoint(path = '') {
   return function (target) {
-    const endpoint_meta_data = {
+    const endpointMetaData = {
       path
     };
-    const class_metadata = addToProps(target.prototype, endpoint_meta_data);
+    const classMetadata = addToProps(target.prototype, endpointMetaData);
     injecture.create('decorator.router.endpoint', target);
     localEmitter.emit('decorator.router.endpoint', {
       target,
       path,
-      class_metadata
+      classMetadata
     });
     return target;
   };

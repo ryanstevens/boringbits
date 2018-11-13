@@ -5,7 +5,7 @@ import EventEmitter from 'eventemitter2';
 const injecture = require('injecture');
 
 const extenrnalEmitters = [];
-const localEmitter = new EventEmitter({ wildcard: true });
+const localEmitter = new EventEmitter({wildcard: true});
 
 const toExport = {
   middleware: {},
@@ -28,7 +28,7 @@ localEmitter.on('decorator.router.*', function routerEvents(...args) {
   // This way emitters will ALWAYS get every endpoint
   // reguardless of when it was subscribed
   extenrnalEmitters.forEach(emitter => {
-    emitter.emit.apply(emitter, nameWithArgs)
+    emitter.emit.apply(emitter, nameWithArgs);
   });
 });
 
@@ -50,35 +50,35 @@ localEmitter.on('decorator.router.*', function routerEvents(...args) {
  * of use cases do not create decorated
  * classes on the fly.
  */
-const class_prototypes = [];
+const classPrototypes = [];
 
+// eslint-disable-next-line valid-jsdoc
 /**
  * by desing, if there is no classs registered
  * then it will make a new metadata obj and push it
- * in the class_prototypes array
+ * in the classPrototypes array
  * @param {*} proto
  */
 function getShadowMetaData(proto) {
-  for (let i=0; i<class_prototypes.length; i++) {
-    if (class_prototypes[i].proto === proto) return class_prototypes[i]
+  for (let i=0; i<classPrototypes.length; i++) {
+    if (classPrototypes[i].proto === proto) return classPrototypes[i];
   }
 
   const newProto = {
     proto,
-    metadata: {}
+    metadata: {},
   };
-  class_prototypes.push(newProto);
+  classPrototypes.push(newProto);
   return newProto;
-
 }
 
 toExport.getMetaDataByClass = function getMetaDataByClass(Klass) {
   return getShadowMetaData(Klass.prototype);
-}
+};
 
 // deep merge... what could go wrong
-function addToProps(proto, val){
-  const oldmetadata = getShadowMetaData(proto).metadata
+function addToProps(proto, val) {
+  const oldmetadata = getShadowMetaData(proto).metadata;
   const newMetadata = merge(oldmetadata, val);
   getShadowMetaData(proto).metadata = newMetadata;
   return newMetadata;
@@ -89,148 +89,142 @@ toExport.middleware = function middleware(middleware) {
   if (typeof middleware === 'string') middleware = [middleware];
 
   return function decorator(target, field, descriptor) {
-
-    let endpoint = {}
+    const endpoint = {};
     endpoint[field] = {
-      methods : {
+      methods: {
         get: {
-          handler: descriptor.value
-        }
+          handler: descriptor.value,
+        },
       },
-      middleware
-    }
-    const class_metadata = addToProps(target, {
-      endpoints: endpoint
+      middleware,
+    };
+    const classMetadata = addToProps(target, {
+      endpoints: endpoint,
     });
     localEmitter.emit('decorator.router.get', {
       target,
       middleware,
       field,
       descriptor,
-      class_metadata
+      classMetadata,
     });
     return descriptor;
-  }
-}
+  };
+};
 
 
 toExport.get = function get(path) {
-  //convert to array
+  // convert to array
   return function decorator(target, field, descriptor) {
-
-    let endpoint = {}
+    const endpoint = {};
     endpoint[field] = {
-      methods : {
+      methods: {
         get: {
-          handler: descriptor.value
-        }
+          handler: descriptor.value,
+        },
       },
-      path
-    }
-    const class_metadata = addToProps(target, {
-      endpoints: endpoint
+      path,
+    };
+    const classMetadata = addToProps(target, {
+      endpoints: endpoint,
     });
     localEmitter.emit('decorator.router.get', {
       target,
       path,
       field,
       descriptor,
-      class_metadata
+      classMetadata,
     });
     return descriptor;
-  }
-}
+  };
+};
 
 toExport.post = function post(path) {
-  //convert to array
+  // convert to array
   return function decorator(target, field, descriptor) {
-    let endpoint = {}
+    const endpoint = {};
     endpoint[field] = {
-      methods : {
+      methods: {
         post: {
-          handler: descriptor.value
-        }
+          handler: descriptor.value,
+        },
       },
-      path
-    }
-    const class_metadata = addToProps(target, {
-      endpoints: endpoint
+      path,
+    };
+    const classMetadata = addToProps(target, {
+      endpoints: endpoint,
     });
     localEmitter.emit('decorator.router.post', {
       target,
       path,
       field,
       descriptor,
-      class_metadata
+      classMetadata,
     });
     return descriptor;
-  }
-}
+  };
+};
 
-/**
- *
- * @param {absolute path from root} entrypoint
- */
-toExport.entrypoint = function entrypoint(js_file_path) {
+toExport.entrypoint = function entrypoint(jsPath) {
   return function decorator(target, field, descriptor) {
-    let endpoint = {}
+    const endpoint = {};
     endpoint[field] = {
-      methods : {
+      methods: {
         get: {
-          entrypoint: js_file_path,
-          handler: descriptor.value
-        }
-      }
-    }
-    const class_metadata = addToProps(target, {
-      endpoints: endpoint
+          entrypoint: jsPath,
+          handler: descriptor.value,
+        },
+      },
+    };
+    const classMetadata = addToProps(target, {
+      endpoints: endpoint,
     });
     localEmitter.emit('decorator.router.entrypoint', {
       target,
       entrypoint,
       field,
       descriptor,
-      class_metadata
+      classMetadata,
     });
     return descriptor;
-  }
-}
+  };
+};
 
 
 injecture.register('decorator.router.endpoint',
-  // since we are only using the container
-  // to collect all the instances we give it a
-  // dummy factory
-  function endpointFactor(Klass) {
-    return Klass
-  }, {
-    map_instances: true
-  }
+    // since we are only using the container
+    // to collect all the instances we give it a
+    // dummy factory
+    function endpointFactor(Klass) {
+      return Klass;
+    }, {
+      map_instances: true,
+    }
 );
 
 
 toExport.endpoint = function endpoint(path = '') {
-  return function (target) {
-    const endpoint_meta_data = { path }
-    const class_metadata = addToProps(target.prototype, endpoint_meta_data);
+  return function(target) {
+    const endpointMetaData = {path};
+    const classMetadata = addToProps(target.prototype, endpointMetaData);
 
     injecture.create('decorator.router.endpoint', target);
     localEmitter.emit('decorator.router.endpoint', {
       target,
       path,
-      class_metadata
+      classMetadata,
     });
     return target;
-  }
-}
+  };
+};
 
 toExport.subscribeDecorators = function subscribeDecorators(emitter) {
   extenrnalEmitters.push(emitter);
-}
+};
 
 toExport.addMiddlewareDecorator = function addMiddlewareDecorator(name, func) {
   toExport.middleware[name] = func;
-}
+};
 
 
 module.exports = toExport;
