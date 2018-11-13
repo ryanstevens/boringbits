@@ -12,6 +12,11 @@ module.exports = {
   boring: {
     paths: {
       base_app_path: 'src'
+    },
+    hooks: {
+      healthy: {
+        interval: 0,
+      }
     }
   }
 }
