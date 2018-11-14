@@ -12,8 +12,7 @@ module.exports = {
     "require-jsdoc": 0,
     "prefer-spread": 0,
     "max-len": 1,
-    "padded-blocks": 0,
-    "comma-dangle": 0
+    "padded-blocks": 0
   },
   "extends": "google"
 };
