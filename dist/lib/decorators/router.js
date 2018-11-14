@@ -192,15 +192,22 @@ toExport.subscribeDecorators = function subscribeDecorators(emitter) {
   extenrnalEmitters.push(emitter);
 };
 
-function createEndpointDecorator(decoratorName, method) {
+function createEndpointDecorator(decoratorName, method, descriptorWrapper) {
+  if (!descriptorWrapper) {
+    descriptorWrapper = function defaultDescriptorWrapper(descriptor) {
+      return descriptor;
+    };
+  }
+
   toExport[decoratorName] = function newDecorator(...args) {
     return function decorateHandler(target, field, descriptor) {
+      const decoratedDescriptor = descriptorWrapper(descriptor);
       const endpoint = {};
       endpoint[field] = {
         methods: {}
       };
       endpoint[field].methods[method] = {
-        handler: descriptor.value
+        handler: decoratedDescriptor.value
       };
       endpoint[field].methods[method][decoratorName] = args;
       const classMetadata = addToProps(target, {
@@ -209,12 +216,12 @@ function createEndpointDecorator(decoratorName, method) {
       const objToEmit = {
         target,
         field,
-        descriptor,
+        decoratedDescriptor,
         classMetadata
       };
       objToEmit[decoratorName] = args;
       localEmitter.emit('decorator.router.' + decoratorName, objToEmit);
-      return descriptor;
+      return decoratedDescriptor;
     };
   };
 }
