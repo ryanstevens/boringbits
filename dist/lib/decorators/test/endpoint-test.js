@@ -10,6 +10,8 @@ const Emitter = require('eventemitter2');
 
 const injecture = require('injecture');
 
+const Understudy = require('boring-understudy');
+
 describe('Endpoint decorator', function () {
   let endpoint_decortators;
   beforeEach(() => {

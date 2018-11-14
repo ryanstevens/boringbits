@@ -8,7 +8,7 @@ function assetsByManifest() {
   if (manifestAssets) return manifestAssets;
   const manifestPath = paths.asset_manifest;
   const manifest = require(manifestPath);
-  logger.info(manifest, `Manifest loaded from path ${  manifestPath}`);
+  logger.info(manifest, `Manifest loaded from path ${manifestPath}`);
 
   const js = Object.keys(manifest).reduce((collector, name) => {
     const assets = [].concat(manifest[name]).filter(asset => asset.endsWith('.js'));

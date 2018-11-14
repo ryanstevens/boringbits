@@ -7,9 +7,7 @@ const injecture = require('injecture');
 const extenrnalEmitters = [];
 const localEmitter = new EventEmitter({wildcard: true});
 
-const toExport = {
-  middleware: {},
-};
+const toExport = {};
 
 
 /**
@@ -165,8 +163,7 @@ toExport.post = function post(path) {
   };
 };
 
-const entrypointDecorator = createEndpointDecorator('entrypoint', 'get');
-toExport.entrypoint = entrypointDecorator;
+createEndpointDecorator('entrypoint', 'get');
 
 injecture.register('decorator.router.endpoint',
     // since we are only using the container
@@ -200,8 +197,8 @@ toExport.subscribeDecorators = function subscribeDecorators(emitter) {
 };
 
 function createEndpointDecorator(decoratorName, method) {
-  return function newDecorator(...args) {
-    return function decorator(target, field, descriptor) {
+  toExport[decoratorName] = function newDecorator(...args) {
+    return function runDecorator(target, field, descriptor) {
       const endpoint = {};
       endpoint[field] = {
         methods: {},

@@ -34,31 +34,28 @@ class InitPipeline extends EventEmitter  {
         name = middleware.name; // just use the name of the function
       }
 
-
       let ctx = {
         middleware,
         name
       }
 
-      // this.app.oldUse(middleware);
-
       this.app.oldUse(deferMiddleware(new Promise(function(resolve, reject) {
 
         perform('app.use', ctx, async function() {
-          // This in a way acts a dependency  
-          // system where a hook can only 
-          // effectively call app.use AFTER or 
-          // before a dependency.  
+          // This in a way acts a dependency
+          // system where a hook can only
+          // effectively call app.use AFTER or
+          // before a dependency.
           //
-          // In theory this has the danger of 
-          // creating a cycle.  Maybe in the 
-          // future we can avoid that 
+          // In theory this has the danger of
+          // creating a cycle.  Maybe in the
+          // future we can avoid that
           resolve(ctx.middleware);
           return ctx;
         }).catch(reject);
 
       })))
-     
+
      }
   }
 
@@ -80,7 +77,7 @@ class InitPipeline extends EventEmitter  {
     const app = this.app;
 
     router.endpoints.forEach((endpoint = {path: '', methods: {}}) => {
-        
+
       // don't blow up if there are no methods
       const methods = endpoint.methods || {};
       Object.keys(methods).forEach(method => {
@@ -88,13 +85,13 @@ class InitPipeline extends EventEmitter  {
         let handler = endpoint.methods[method];
         // this IF checks to see
         // if handler is an object rather
-        // than a function 
+        // than a function
         if (handler.handler) handler = handler.handler
-    
+
         app[method](path, handler);
-        logger.info(`Installed {${method.toUpperCase()}} for path ${path}`); 
+        logger.info(`Installed {${method.toUpperCase()}} for path ${path}`);
       });
-      
+
       this.emit('added.endpoint', endpoint);
     })
 
@@ -105,7 +102,7 @@ class InitPipeline extends EventEmitter  {
     let injections = Object.assign({}, {
       boring: this
     }, options);
-    
+
     const hooks = await this.perform('init-hooks', injections, async () => {
       return await initHooks(injections);
     })
@@ -127,7 +124,7 @@ class InitPipeline extends EventEmitter  {
       Object.keys(injections.middleware).forEach(name => this.add_middleware(name, injections.middleware[name]));
       return injections;
     })
-  
+
     const routers = await this.perform('init-routers', injections, async () => {
       return await initRouters(injections);
     })

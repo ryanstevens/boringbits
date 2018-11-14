@@ -2,6 +2,8 @@ const assert = require('assert');
 const logger = require('boring-logger');
 const Emitter = require('eventemitter2');
 const injecture = require('injecture');
+const Understudy = require('boring-understudy');
+
 
 describe('Endpoint decorator', function() {
 

@@ -48,21 +48,20 @@ class InitPipeline extends EventEmitter {
 
       let ctx = {
         middleware,
-        name // this.app.oldUse(middleware);
-
+        name
       };
       this.app.oldUse(deferMiddleware(new Promise(function (resolve, reject) {
         perform('app.use', ctx,
         /*#__PURE__*/
         _asyncToGenerator(function* () {
-          // This in a way acts a dependency  
-          // system where a hook can only 
-          // effectively call app.use AFTER or 
-          // before a dependency.  
+          // This in a way acts a dependency
+          // system where a hook can only
+          // effectively call app.use AFTER or
+          // before a dependency.
           //
-          // In theory this has the danger of 
-          // creating a cycle.  Maybe in the 
-          // future we can avoid that 
+          // In theory this has the danger of
+          // creating a cycle.  Maybe in the
+          // future we can avoid that
           resolve(ctx.middleware);
           return ctx;
         })).catch(reject);
@@ -95,7 +94,7 @@ class InitPipeline extends EventEmitter {
         let path = routePath + endpoint.path;
         let handler = endpoint.methods[method]; // this IF checks to see
         // if handler is an object rather
-        // than a function 
+        // than a function
 
         if (handler.handler) handler = handler.handler;
         app[method](path, handler);

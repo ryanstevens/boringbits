@@ -12,9 +12,7 @@ const extenrnalEmitters = [];
 const localEmitter = new _eventemitter.default({
   wildcard: true
 });
-const toExport = {
-  middleware: {}
-};
+const toExport = {};
 /**
  * We will use this DI container
  * to track all the classes instantiated
@@ -164,8 +162,7 @@ toExport.post = function post(path) {
   };
 };
 
-const entrypointDecorator = createEndpointDecorator('entrypoint', 'get');
-toExport.entrypoint = entrypointDecorator;
+createEndpointDecorator('entrypoint', 'get');
 injecture.register('decorator.router.endpoint', // since we are only using the container
 // to collect all the instances we give it a
 // dummy factory
@@ -196,8 +193,8 @@ toExport.subscribeDecorators = function subscribeDecorators(emitter) {
 };
 
 function createEndpointDecorator(decoratorName, method) {
-  return function newDecorator(...args) {
-    return function decorator(target, field, descriptor) {
+  toExport[decoratorName] = function newDecorator(...args) {
+    return function runDecorator(target, field, descriptor) {
       const endpoint = {};
       endpoint[field] = {
         methods: {}
