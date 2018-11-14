@@ -197,8 +197,9 @@ toExport.subscribeDecorators = function subscribeDecorators(emitter) {
 };
 
 function createEndpointDecorator(decoratorName, method) {
+
   toExport[decoratorName] = function newDecorator(...args) {
-    return function runDecorator(target, field, descriptor) {
+    return function decorateHandler(target, field, descriptor) {
       const endpoint = {};
       endpoint[field] = {
         methods: {},

@@ -1,5 +1,7 @@
 const assert = require('assert');
 const decorators = require('../../../../decorators');
+const Understudy = require('boring-understudy');
+
 
 describe('React Tests', function reactTests() {
 
@@ -15,17 +17,23 @@ describe('React Tests', function reactTests() {
         decorators,
       },
     };
+
+    Understudy.call(injection.boring);
+
     reactHook(injection);
 
     const {
       endpoint,
-      reactEntry
+      reactEntry,
+      entrypoint,
+      get
      } = injection.boring.decorators.router;
 
     @endpoint('/foo')
     class Foo {
 
       @reactEntry('1')
+      @get('/be')
       beep() {
 
       }
@@ -34,6 +42,7 @@ describe('React Tests', function reactTests() {
     const metaData = decorators.router.getMetaDataByClass(Foo).metadata;
 
     assert.equal(metaData.endpoints.beep.methods.get.entrypoint[0].split('/boring').pop(),  '/src/client/pages/1/entrypoint.js');
+    assert.equal(metaData.endpoints.beep.methods.get.reactEntry[0].reactRoot,  '1');
     assert.ok(injection.boring.react, 'should have pushed an object onto boring');
     done();
   });

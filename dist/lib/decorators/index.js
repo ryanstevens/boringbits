@@ -9,7 +9,7 @@ function subscribeDecorators(emitter) {
 }
 
 module.exports = {
-  router,
+  router: router.default,
   subscribeDecorators
 };
 //# sourceMappingURL=index.js.map
