@@ -31,7 +31,7 @@ module.exports = function reactHook(BoringInjections) {
       entrypoint: config.get('boring.react.entrypoint', '/entrypoint.js')
     }, options);
     const reactDecorator = reactEntry(reactHandlerPaths);
-    const entrypointDecorator = entrypoint(paths.app_dir + reactHandlerPaths.clientRoot + '/' + reactHandlerPaths.reactRoot + reactHandlerPaths.entrypoint);
+    const entrypointDecorator = entrypoint(__dirname + '/clientEntry.js', paths.app_dir + reactHandlerPaths.clientRoot + '/' + reactHandlerPaths.reactRoot + reactHandlerPaths.entrypoint);
     return function createDecorator(target, field, descriptor) {
       return entrypointDecorator(target, field, reactDecorator(target, field, descriptor));
     };

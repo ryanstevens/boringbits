@@ -15,20 +15,35 @@ module.exports = function renderRedux(options = { layout: { clientConfig: {}, he
   const req = res.req;
 
   const context = {};
-  const appInitPath = paths.app_dir
+
+  const App = require(paths.app_dir
     + res.reactPaths.clientRoot
     + '/'
     + res.reactPaths.reactRoot
-    + config.get('boring.react.reduxComponents', '/AppInit.js')
+    + config.get('boring.react.mainApp', '/App.js')).default
 
-  const getAppComponents = require(path.normalize(appInitPath)).default;
-  const  { Container, getStyleSheets, store }  = getAppComponents({Router: (props) => {
+  const rootReducer = require(paths.app_dir
+    + res.reactPaths.clientRoot
+    + '/'
+    + res.reactPaths.reactRoot
+    + config.get('boring.react.reducers', '/reducers')).default;
+
+  function Router(props) {
     return (
       <StaticRouter location={req.url} context={context} props={props}>
         {props.children}
       </StaticRouter>
     )
-  }});
+  }
+
+  const dependencies = {
+    App,
+    Router,
+    rootReducer
+  }
+
+  const getAppComponents = require('./AppInit').default;
+  const  { Container, getStyleSheets, store }  = getAppComponents(dependencies);
 
   res.send('<!DOCTYPE html>' + ReactDOMServer.renderToStaticMarkup(
     <Layout

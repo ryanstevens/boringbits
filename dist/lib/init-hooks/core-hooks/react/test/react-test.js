@@ -34,7 +34,7 @@ describe('React Tests', function reactTests() {
 
     }, (_applyDecoratedDescriptor(_class2.prototype, "beep", [_dec2, _dec3], Object.getOwnPropertyDescriptor(_class2.prototype, "beep"), _class2.prototype)), _class2)) || _class);
     const metaData = decorators.router.getMetaDataByClass(Foo).metadata;
-    assert.equal(metaData.endpoints.beep.methods.get.entrypoint[0].split('/boring').pop(), '/src/client/pages/1/entrypoint.js');
+    assert.equal(metaData.endpoints.beep.methods.get.entrypoint[1].split('/boring').pop(), '/src/client/pages/1/entrypoint.js');
     assert.equal(metaData.endpoints.beep.methods.get.reactEntry[0].reactRoot, '1');
     assert.ok(injection.boring.react, 'should have pushed an object onto boring');
     done();

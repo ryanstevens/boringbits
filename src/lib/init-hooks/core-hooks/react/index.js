@@ -28,11 +28,14 @@ module.exports = function reactHook(BoringInjections) {
 
 
     const reactDecorator = reactEntry(reactHandlerPaths);
-    const entrypointDecorator = entrypoint(paths.app_dir
-      + reactHandlerPaths.clientRoot
-      + '/'
-      + reactHandlerPaths.reactRoot
-      + reactHandlerPaths.entrypoint);
+    const entrypointDecorator = entrypoint(
+        __dirname + '/clientEntry.js',
+        paths.app_dir
+        + reactHandlerPaths.clientRoot
+        + '/'
+        + reactHandlerPaths.reactRoot
+        + reactHandlerPaths.entrypoint
+    );
 
     return function createDecorator(target, field, descriptor) {
 
