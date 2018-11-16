@@ -12,7 +12,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 const getAppComponents = require('./AppInit').default;
 
-function render(App, rootReducer) {
+function renderRedux(App, rootReducer) {
   function Router(props) {
     const history = (0, _createBrowserHistory.default)();
     return _react.default.createElement(_reactRouterRedux.ConnectedRouter, {
@@ -33,6 +33,6 @@ function render(App, rootReducer) {
 }
 
 window.__boring = {
-  render
+  renderRedux
 };
 //# sourceMappingURL=clientEntry.js.map

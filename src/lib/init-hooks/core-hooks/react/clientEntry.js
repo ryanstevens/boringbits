@@ -10,7 +10,7 @@ import createBrowserHistory from 'history/createBrowserHistory';
 const getAppComponents = require('./AppInit').default;
 
 
-function render(App, rootReducer) {
+function renderRedux(App, rootReducer) {
 
   function Router(props) {
     const history = createBrowserHistory();
@@ -38,5 +38,5 @@ function render(App, rootReducer) {
 
 
 window.__boring = {
-  render,
+  renderRedux,
 };
