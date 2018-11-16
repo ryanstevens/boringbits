@@ -35,8 +35,9 @@ class BoringServer extends InitPipeline {
     var _this = this;
 
     return _asyncToGenerator(function* () {
+      const webpack_config_path = config.get('boring.isDevelopment', true) ? paths.boring_webpack_dev_config : paths.boring_webpack_prod_config;
       const injections = yield _this.build(Object.assign({}, {
-        webpack_config: require(paths.boring_webpack_dev_config)
+        webpack_config: require(webpack_config_path)
       }, options));
       const port = process.env.PORT || config.get('boring.app.port');
       injections.port = port;

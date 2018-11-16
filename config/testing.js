@@ -4,7 +4,8 @@
 // either in development or production
 
 module.exports = {
-  use_webpack_dev_server: false,
+  isDevelopment: true,
+  useWebpackDevServer: false,
   foo: {
     bar: 'overriden',
     baz: 'meep',
@@ -21,3 +22,4 @@ module.exports = {
     },
   },
 };
+

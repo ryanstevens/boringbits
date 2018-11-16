@@ -27,7 +27,6 @@ module.exports = function createWebpackStack(BoringInjections) {
     webpack_config,
   } = BoringInjections;
 
-
   const webpackDevPromise = new Promise((resolve, reject) => {
     /**
      * We cannot build the webpack middleware because
@@ -38,6 +37,7 @@ module.exports = function createWebpackStack(BoringInjections) {
      * finalize the webpack config
      */
     boring.before('add-routers', function({routers}) {
+
       webpack_config.entry = routers.reduce((collector, router) => {
         if (!router.endpoints) return;
         router.endpoints.forEach(endpoint => {
@@ -46,7 +46,7 @@ module.exports = function createWebpackStack(BoringInjections) {
             const methodObj = endpoint.methods[method];
             if (methodObj.entrypoint) {
               const entrypoints = ['@babel/polyfill'].concat(methodObj.entrypoint);
-              if (config.get('boring.use_webpack_dev_server')) {
+              if (config.get('boring.useWebpackDevServer')) {
                 entrypoints.unshift('webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000');
               }
 
@@ -59,7 +59,7 @@ module.exports = function createWebpackStack(BoringInjections) {
       }, {});
 
 
-      if (config.get('boring.use_webpack_dev_server')) {
+      if (config.get('boring.useWebpackDevServer')) {
         const webpack = require('webpack');
         const compiler = webpack(webpack_config);
 

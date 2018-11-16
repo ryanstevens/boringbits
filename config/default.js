@@ -3,6 +3,8 @@ module.exports = {
   app: {
     port: 4000,
   },
+  isDevelopment: false,
+  useWebpackDevServer: false,
   logger: {
     name: 'boring-app',
     level: 'debug',
@@ -15,6 +17,5 @@ module.exports = {
     node_target: '10.9.0',
     register_app: false,
   },
-  use_webpack_dev_server: false,
 };
 
