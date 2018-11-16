@@ -4,7 +4,7 @@ const autoprefixer = require('autoprefixer');
 const path = require('path');
 const fs = require('fs');
 const webpack = require('webpack');
-const paths = require('../src/node_modules/paths')
+const paths = require('../dist/node_modules/paths')
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
 const ProgressBarPlugin = require('progress-bar-webpack-plugin');
@@ -40,7 +40,7 @@ module.exports = {
     chunkFilename: 'static/js/[name].chunk.js',
     // This is the URL that app is served from. We use "/" in development.
     publicPath: publicPath,
-    
+
     hotUpdateChunkFilename: '.hot/[id].[hash].hot-update.js',
     hotUpdateMainFilename: '.hot/[hash].hot-update.json',
 
@@ -69,7 +69,7 @@ module.exports = {
     // for React Native Web.
     extensions: ['.web.js', '.mjs', '.js', '.json', '.web.jsx', '.jsx'],
     alias: {
-      
+
       // Support React Native Web
       // https://www.smashingmagazine.com/2016/08/a-glimpse-into-the-future-with-react-native-for-web/
       'react-native': 'react-native-web',
@@ -108,7 +108,7 @@ module.exports = {
             include: paths.app_src,
             loader: require.resolve('babel-loader'),
             options: {
-              
+
               // This is a feature of `babel-loader` for webpack (not Babel itself).
               // It enables caching results in ./node_modules/.cache/babel-loader/
               // directory for faster rebuilds.
@@ -192,7 +192,7 @@ module.exports = {
     ],
   },
   plugins: [
-    
+
     new webpack.HotModuleReplacementPlugin({
       multiStep: true
     }),
@@ -203,10 +203,10 @@ module.exports = {
     new ProgressBarPlugin()
 
   ],
-  
+
   optimization: {
     namedModules: true, // NamedModulesPlugin()
-    splitChunks: { 
+    splitChunks: {
         minChunks: 1
     },
     noEmitOnErrors: false, // NoEmitOnErrorsPlugin
