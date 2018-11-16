@@ -10,7 +10,7 @@ const proj_dir = path.normalize(config.get('boring.paths.proj_dir', process.cwd(
 const base_app_path_key = 'boring.paths.base_app_path'
 
 const base_app_path = path.normalize(config.get(base_app_path_key, 'dist'))
-const boring_dir = path.normalize(__dirname + '/../')
+const boring_dir = path.normalize(__dirname + '/../../')
 const boring_app_path = path.normalize(config.get('boring.paths.boring_app_path', 'dist'))
 
 
@@ -50,8 +50,8 @@ module.exports = {
   boring_middleware: getBoringPath('boring.paths.boring_middleware', `/${boring_app_path}/lib/init-middleware/core-middleware`),
   boring_hooks: getBoringPath('boring.paths.boring_hooks', `/${boring_app_path}/lib/init-hooks/core-hooks`),
 
-  boring_webpack_dev_config: getBoringPath('boring.paths.boring_webpack_dev_config', '/config/webpack.config.dev.js'),
-  boring_webpack_prod_config: getBoringPath('boring.paths.boring_webpack_prod_config', '/config/webpack.config.prod.js'),
+  boring_webpack_dev_config: getBoringPath('boring.paths.boring_webpack_dev_config', '/config/runtime/webpack.config.dev.js'),
+  boring_webpack_prod_config: getBoringPath('boring.paths.boring_webpack_prod_config', '/config/runtime/webpack.config.prod.js'),
 
   asset_manifest: getProjPath('boring.paths.asset_manifest', '/build/asset-manifest.json')
 }

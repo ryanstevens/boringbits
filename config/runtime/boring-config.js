@@ -5,7 +5,7 @@ require('./env');
 
 const path = require('path');
 
-const ourConfigDir = path.join(__dirname, '/../config')
+const ourConfigDir = path.join(__dirname, '/../../config')
 const baseConfig = config.util.loadFileConfigs(ourConfigDir)
 
 config.util.setModuleDefaults('boring', baseConfig)
