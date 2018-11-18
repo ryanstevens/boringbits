@@ -2,7 +2,6 @@ const logger = require('boring-logger');
 
 module.exports = function(app, perform) {
   const oldUse = app.use.bind(app);
-  console.log
   return function wrappedUse(name, middleware) {
 
     if (typeof name === 'function') {
@@ -12,7 +11,7 @@ module.exports = function(app, perform) {
 
     let ctx = {
       middleware,
-      name
+      name,
     }
 
     oldUse(deferMiddleware(name, new Promise(function(resolve, reject) {

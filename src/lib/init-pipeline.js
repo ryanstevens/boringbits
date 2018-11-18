@@ -111,18 +111,4 @@ class InitPipeline extends EventEmitter  {
   }
 }
 
-function deferMiddleware(middlewarePromise) {
-
-  let queuing = true;
-  return function proxyMiddleware(req, res, next) {
-    if (queuing) logger.info('App use has not finished loading middleware, queuing ' + req.url);
-    middlewarePromise.then(deferedMiddleware => {
-      queuing = false;
-      deferedMiddleware(req, res, next);
-    }).catch((e) => {
-      throw e;
-    })
-  }
-}
-
 module.exports = InitPipeline;
