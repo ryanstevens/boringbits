@@ -1,17 +1,6 @@
 const assert = require('assert');
-const proxyquire = require('proxyquire');
-const logger = require('boring-logger');
-const paths = require('paths')
+const paths = require('paths');
 
-describe('Webpack-dev', function() {
-
-
-  it('', function(done) {
-
-      done();
-  });
-
-});
 
 describe('Pathitize', function() {
 
@@ -23,5 +12,13 @@ describe('Pathitize', function() {
     assert.equal(pathitize('foo/bar.js'), 'foo-bar');
 
     assert.equal(pathitize(paths.app_dir + '/beep/boop'), 'beep-boop', 'should have removed the app_dir prefix from path before cleaning');
+  });
+
+  it('should deal with arrays', function() {
+    const entryPoints= ['/c/Users/steve_tufzcnz/Documents/projects/boring/dist/lib/init-hooks/core-hooks/react/clientEntry.js',
+      '/src/client/pages/demo/entrypoint.js', ];
+
+    const pathitize = require('../pathitize');
+    assert.equal(pathitize(entryPoints), 'entry_demo');
   });
 });
