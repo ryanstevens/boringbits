@@ -57,10 +57,13 @@ module.exports = function (BoringInjections) {
     boring.before('app.use', function (ctx) {
       if (ctx.name === 'boring-session') {
         const healthyMiddleware = healthCheck.createMiddleware();
-        boring.app.use(function (req, res, next) {
+
+        function healthyMiddlewareCntWrapper(req, res, next) {
           requestData.total.cnt++;
           healthyMiddleware(req, res, next);
-        });
+        }
+
+        boring.app.use('healthy', healthyMiddlewareCntWrapper);
       }
 
       return Promise.resolve();

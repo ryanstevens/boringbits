@@ -8,7 +8,7 @@ const EventEmitter = require('eventemitter2');
 const paths = require('paths');
 const Understudy = require('boring-understudy');
 const decorators = require('./decorators')
-
+const appUseOverride = require('./server/appUseOverride');
 
 class InitPipeline extends EventEmitter  {
 
@@ -27,36 +27,7 @@ class InitPipeline extends EventEmitter  {
     this.app.oldUse = this.app.use;
     const perform = this.perform.bind(this);
 
-    this.app.use = (name, middleware) => {
-
-      if (typeof name === 'function') {
-        middleware = name;
-        name = middleware.name; // just use the name of the function
-      }
-
-      let ctx = {
-        middleware,
-        name
-      }
-
-      this.app.oldUse(deferMiddleware(new Promise(function(resolve, reject) {
-
-        perform('app.use', ctx, async function() {
-          // This in a way acts a dependency
-          // system where a hook can only
-          // effectively call app.use AFTER or
-          // before a dependency.
-          //
-          // In theory this has the danger of
-          // creating a cycle.  Maybe in the
-          // future we can avoid that
-          resolve(ctx.middleware);
-          return ctx;
-        }).catch(reject);
-
-      })))
-
-     }
+    this.app.use = appUseOverride(this.app, perform);
   }
 
   add_middleware(name, middleware) {
