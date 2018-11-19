@@ -41,7 +41,7 @@ module.exports = function (app, perform) {
 function deferMiddleware(name, middlewarePromise) {
   let queuing = true;
   return function proxyMiddleware(req, res, next) {
-    if (queuing) logger.info(`App use has not finished loading middleware ${name}, queuing ${req.url}`);
+    if (queuing) logger.info(`App use has not finished loading middleware {${name}}, queuing ${req.url}`);
     middlewarePromise.then(deferedMiddleware => {
       queuing = false;
       deferedMiddleware(req, res, next);
