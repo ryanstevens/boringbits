@@ -66,13 +66,10 @@ class InitPipeline extends EventEmitter {
       // don't blow up if there are no methods
       const methods = endpoint.methods || {};
       Object.keys(methods).forEach(method => {
-        let path = routePath + endpoint.path;
-        let handler = endpoint.methods[method]; // this IF checks to see
-        // if handler is an object rather
-        // than a function
-
-        if (handler.handler) handler = handler.handler;
-        app[method](path, handler);
+        let methodsObj = endpoint.methods[method];
+        let path = methodsObj.path;
+        if (!path) return;else path = routePath + path;
+        app[method](path, methodsObj.handler);
         logger.info(`Installed {${method.toUpperCase()}} for path ${path}`);
       });
       this.emit('added.endpoint', endpoint);

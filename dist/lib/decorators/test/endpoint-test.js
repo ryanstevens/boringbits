@@ -31,9 +31,9 @@ describe('Endpoint decorator', function () {
     }, (_applyDecoratedDescriptor(_class2.prototype, "bark", [_dec2], Object.getOwnPropertyDescriptor(_class2.prototype, "bark"), _class2.prototype), _applyDecoratedDescriptor(_class2.prototype, "meow", [_dec3], Object.getOwnPropertyDescriptor(_class2.prototype, "meow"), _class2.prototype)), _class2)) || _class);
     const classMetaData = getMetaDataByClass(Meow).metadata;
     assert.equal(classMetaData.path, '/foo');
-    assert.equal(classMetaData.endpoints.bark.path, '/beep');
+    assert.equal(classMetaData.endpoints.bark.methods.get.path, '/beep');
     assert.equal(classMetaData.endpoints.bark.methods.get.handler, Meow.prototype.bark);
-    assert.equal(classMetaData.endpoints.meow.path, '/boop');
+    assert.equal(classMetaData.endpoints.meow.methods.get.path, '/boop');
     assert.equal(classMetaData.endpoints.meow.methods.get.handler, Meow.prototype.meow);
     done();
   });
@@ -56,7 +56,7 @@ describe('Endpoint decorator', function () {
     }, (_applyDecoratedDescriptor(_class4.prototype, "screetch", [_dec5, _dec6, _dec7], Object.getOwnPropertyDescriptor(_class4.prototype, "screetch"), _class4.prototype), _applyDecoratedDescriptor(_class4.prototype, "stopper", [_dec8], Object.getOwnPropertyDescriptor(_class4.prototype, "stopper"), _class4.prototype)), _class4)) || _class3);
     const classMetaData = getMetaDataByClass(Meow).metadata;
     assert.equal(classMetaData.endpoints.screetch.middleware[0], 'meep');
-    assert.equal(classMetaData.endpoints.screetch.path, '/beep');
+    assert.equal(classMetaData.endpoints.screetch.methods.get.path, '/beep');
     assert.equal(classMetaData.endpoints.screetch.methods.get.handler, Meow.prototype.screetch);
     assert.deepEqual(classMetaData.endpoints.screetch.methods.get.entrypoint, ['foo_client.js']);
     assert.equal(classMetaData.endpoints.stopper.methods.post.handler, Meow.prototype.stopper);

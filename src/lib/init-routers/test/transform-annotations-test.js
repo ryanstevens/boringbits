@@ -14,7 +14,7 @@ describe('Transform Annotations', function() {
     } = decorators;
 
 
-    // this is to simply fire the 
+    // this is to simply fire the
     // event decorator.router.endpoint
     @endpoint('/meow')
     class Stuff {
@@ -32,44 +32,46 @@ describe('Transform Annotations', function() {
 
       @post('/guz')
       jeep() {
-        
+
       }
     }
+
 
     const endpoint_meta = transformer(getMetaDataByClass(Stuff).metadata);
     //    console.log(JSON.stringify(endpoint_meta, null, 2))
     assert.deepEqual(
-      endpoint_meta, 
+      endpoint_meta,
       {
         "path": "/meow",
         "endpoints": [
           {
-            "path": "/beep",
             "methods": {
               "get": {
+                "path": "/beep",
                 "handler": Stuff.prototype.serveFoo
               },
               "post" : {
+                "path": "/beep",
                 "handler": Stuff.prototype.serveFoo
               }
             }
           },
           {
-            "path": "/guz",
             "methods": {
               "get": {
+                "path": "/guz",
                 "handler": Stuff.prototype.meep
               }
             }
           },
           // WHATEVS, for now this wasn't the goal as
-          // this should be combined with the GET:/guz.  
-          // TODO: fix later.  This can be left as is 
+          // this should be combined with the GET:/guz.
+          // TODO: fix later.  This can be left as is
           // because connect_express will treat this all the same
-          { 
-            "path": "/guz",
+          {
             "methods": {
               "post" : {
+                "path": "/guz",
                 "handler": Stuff.prototype.jeep
               }
             }

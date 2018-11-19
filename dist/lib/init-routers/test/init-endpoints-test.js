@@ -54,9 +54,7 @@ describe('Init Endpoints', function () {
   it('will install endpoint verbs from JSON', function (done) {
     const init = mockRequireAll({
       "pageA": {
-        path: '/meow',
         endpoints: [{
-          path: '/foo',
           methods: {
             get: noop
           }
@@ -64,7 +62,6 @@ describe('Init Endpoints', function () {
       },
       "pageB": {
         endpoints: [{
-          path: '/beep',
           methods: {
             post: noop,
             head: noop
@@ -119,7 +116,7 @@ describe('Init Endpoints', function () {
       endpoint,
       get
     } = decorators.router;
-    const calls = []; // this is to simply fire the 
+    const calls = []; // this is to simply fire the
     // event decorator.router.endpoint
 
     let Stuff = (_dec = endpoint('/meow'), _dec2 = get('/beep'), _dec3 = get('/guz'), _dec(_class = (_class2 = class Stuff {
@@ -137,12 +134,12 @@ describe('Init Endpoints', function () {
     }).then(result => {
       assert.equal(result.length, 1);
       assert.equal(result[0].endpoints.length, 2, 'There should be two endpoints');
-      assert.equal(result[0].endpoints[0].path, '/beep');
+      assert.equal(result[0].endpoints[0].methods.get.path, '/beep');
       result[0].endpoints[0].methods.get.handler();
       assert.notEqual(calls[0], 'meat', 'serveFoo is not executed sync due to some promises in the middle of the chain');
       setImmediate(() => {
         assert.equal(calls[0], 'meat', 'serveFoo was not executed');
-        assert.equal(result[0].endpoints[1].path, '/guz');
+        assert.equal(result[0].endpoints[1].methods.get.path, '/guz');
         result[0].endpoints[1].methods.get.handler();
         setImmediate(() => {
           assert.equal(calls[1], 'meep');
@@ -193,7 +190,7 @@ describe('Init Endpoints', function () {
 
       setTimeout(function () {
         assert.equal(calls.length, 0);
-      }, 50); //last check, this one should be set 
+      }, 50); //last check, this one should be set
 
       setTimeout(function () {
         assert.equal(calls[0], 'matt');

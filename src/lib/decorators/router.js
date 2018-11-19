@@ -110,7 +110,6 @@ toExport.middleware = function middleware(middleware) {
   };
 };
 
-
 toExport.get = function get(path) {
   // convert to array
   return function decorator(target, field, descriptor) {
@@ -118,10 +117,10 @@ toExport.get = function get(path) {
     endpoint[field] = {
       methods: {
         get: {
+          path,
           handler: descriptor.value,
         },
       },
-      path,
     };
     const classMetadata = addToProps(target, {
       endpoints: endpoint,
@@ -144,10 +143,10 @@ toExport.post = function post(path) {
     endpoint[field] = {
       methods: {
         post: {
+          path,
           handler: descriptor.value,
         },
       },
-      path,
     };
     const classMetadata = addToProps(target, {
       endpoints: endpoint,
@@ -212,10 +211,20 @@ function createEndpointDecorator(decoratorName, method, descriptorWrapper) {
       endpoint[field] = {
         methods: {},
       };
-      endpoint[field].methods[method] = {
-        handler: decoratedDescriptor.value,
-      };
-      endpoint[field].methods[method][decoratorName] = args;
+
+      ['get', 'post'].forEach(method => {
+
+        endpoint[field].methods[method] = {
+          handler: decoratedDescriptor.value,
+        };
+        endpoint[field].methods[method][decoratorName] = args;
+
+      });
+
+      // endpoint[field].methods[method] = {
+      //   handler: decoratedDescriptor.value,
+      // };
+      // endpoint[field].methods[method][decoratorName] = args;
 
       const classMetadata = addToProps(target, {
         endpoints: endpoint,

@@ -15,7 +15,7 @@ function findByName(arr, name) {
 }
 
 function wipeInjectoreStore() {
-  
+
   const jectureStore = require('injecture/injecture-store');
   const jecture_keys = Object.keys(jectureStore);
   jecture_keys.forEach(key => {
@@ -45,16 +45,14 @@ describe('Init Endpoints', function() {
   afterEach(function() {
     wipeInjectoreStore();
   })
- 
+
 
   it('will install endpoint verbs from JSON', function(done) {
 
     const init = mockRequireAll({
       "pageA": {
-        path: '/meow',
         endpoints: [
           {
-            path: '/foo',
             methods: {
               get: noop
             }
@@ -64,7 +62,6 @@ describe('Init Endpoints', function() {
       "pageB": {
         endpoints: [
           {
-            path: '/beep',
             methods: {
               post: noop,
               head: noop
@@ -74,7 +71,7 @@ describe('Init Endpoints', function() {
       },
       "pageC": undefined
     })
-    
+
     class Boring extends Emitter {
       constructor() {
         super({});
@@ -95,17 +92,18 @@ describe('Init Endpoints', function() {
 
       assert.equal(Object.keys(pageA.endpoints[0].methods).length, 1);
       assert.equal(Object.keys(pageB.endpoints[0].methods).length, 2);
-      
+
       assert.equal(pageC.endpoints.length, 0);
-      
+
       done();
+
     })
   });
 
   it('will install endpoint verbs from annotation', done => {
 
     const init = mockRequireAll({});
-    
+
     class Boring extends Emitter {
       constructor() {
         super({wildcard: true});
@@ -116,15 +114,15 @@ describe('Init Endpoints', function() {
     }
 
     const boring = new Boring();
-    
-    const { 
+
+    const {
       endpoint,
       get
     }= decorators.router;
 
     const calls = [];
 
-    // this is to simply fire the 
+    // this is to simply fire the
     // event decorator.router.endpoint
     @endpoint('/meow')
     class Stuff {
@@ -143,7 +141,7 @@ describe('Init Endpoints', function() {
     init({boring}).then(result => {
       assert.equal(result.length, 1);
       assert.equal(result[0].endpoints.length, 2, 'There should be two endpoints');
-      assert.equal(result[0].endpoints[0].path, '/beep');
+      assert.equal(result[0].endpoints[0].methods.get.path, '/beep');
       result[0].endpoints[0].methods.get.handler();
 
       assert.notEqual(calls[0], 'meat', 'serveFoo is not executed sync due to some promises in the middle of the chain');
@@ -152,12 +150,12 @@ describe('Init Endpoints', function() {
 
         assert.equal(calls[0], 'meat', 'serveFoo was not executed');
 
-        assert.equal(result[0].endpoints[1].path, '/guz');
+        assert.equal(result[0].endpoints[1].methods.get.path, '/guz');
         result[0].endpoints[1].methods.get.handler();
-        
+
         setImmediate(() => {
           assert.equal(calls[1], 'meep');
-        
+
           done();
         });
       });
@@ -169,7 +167,7 @@ describe('Init Endpoints', function() {
   it('should allow a hook to pause the handler', done => {
 
     const init = mockRequireAll({});
-    
+
     class Boring extends Emitter {
       constructor() {
         super({wildcard: true});
@@ -181,8 +179,8 @@ describe('Init Endpoints', function() {
     }
 
     const boring = new Boring();
-    
-    const { 
+
+    const {
       endpoint,
       get
     }= decorators.router;
@@ -215,7 +213,7 @@ describe('Init Endpoints', function() {
         assert.equal(calls.length, 0);
       }, 50);
 
-      //last check, this one should be set 
+      //last check, this one should be set
       setTimeout(function() {
         assert.equal(calls[0], 'matt');
         done();
