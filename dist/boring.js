@@ -18,7 +18,7 @@ if (config.get('boring.babel.register_app') === true) {
 
 module.exports = {
   Server: _server.default,
-  Injecture: _injecture.default,
+  injecture: _injecture.default,
   config,
   logger
 };

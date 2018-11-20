@@ -8,11 +8,11 @@ if (config.get('boring.babel.register_app') === true) {
 }
 
 import Server from './lib/server';
-import Injecture from 'injecture';
+import injecture from 'injecture';
 
 module.exports = {
   Server,
-  Injecture,
+  injecture,
   config,
   logger,
 };
