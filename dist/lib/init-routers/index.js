@@ -51,7 +51,6 @@ function () {
     const instances = _injecture.default.allInstances('decorator.router.endpoint');
 
     instances.forEach(Klass => {
-      console.log("###############", Klass);
       const metadata = decorators.router.getMetaDataByClass(Klass).metadata;
       endpoint_meta.push((0, _transformAnnotation.default)(metadata));
     });

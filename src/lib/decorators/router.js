@@ -1,6 +1,7 @@
 
 import merge from 'deepmerge';
 import EventEmitter from 'eventemitter2';
+import logger from 'boring-logger';
 
 const injecture = require('injecture');
 
@@ -168,11 +169,10 @@ injecture.register('decorator.router.endpoint',
     // since we are only using the container
     // to collect all the instances we give it a
     // dummy factory
-    function endpointFactor(Klass) {
+    function endpointFactory(Klass) {
       return Klass;
-    }, {
-      map_instances: true,
-    }
+    },
+    { map_instances: true }
 );
 
 
@@ -181,6 +181,7 @@ toExport.endpoint = function endpoint(path = '') {
     const endpointMetaData = {path};
     const classMetadata = addToProps(target.prototype, endpointMetaData);
 
+    logger.info('Creating endpoint via decorator', target.prototype);
     injecture.create('decorator.router.endpoint', target);
     localEmitter.emit('decorator.router.endpoint', {
       target,

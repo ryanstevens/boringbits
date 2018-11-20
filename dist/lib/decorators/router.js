@@ -4,6 +4,8 @@ var _deepmerge = _interopRequireDefault(require("deepmerge"));
 
 var _eventemitter = _interopRequireDefault(require("eventemitter2"));
 
+var _boringLogger = _interopRequireDefault(require("boring-logger"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 const injecture = require('injecture');
@@ -166,7 +168,7 @@ createEndpointDecorator('entrypoint', 'get');
 injecture.register('decorator.router.endpoint', // since we are only using the container
 // to collect all the instances we give it a
 // dummy factory
-function endpointFactor(Klass) {
+function endpointFactory(Klass) {
   return Klass;
 }, {
   map_instances: true
@@ -178,6 +180,9 @@ toExport.endpoint = function endpoint(path = '') {
       path
     };
     const classMetadata = addToProps(target.prototype, endpointMetaData);
+
+    _boringLogger.default.info('Creating endpoint via decorator', target.prototype);
+
     injecture.create('decorator.router.endpoint', target);
     localEmitter.emit('decorator.router.endpoint', {
       target,
