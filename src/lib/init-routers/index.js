@@ -39,6 +39,7 @@ module.exports = async function initRoutes(BoringInjections) {
   const instances = injecture.allInstances('decorator.router.endpoint');
 
   instances.forEach((Klass) => {
+  console.log("###############", Klass);
     const metadata = decorators.router.getMetaDataByClass(Klass).metadata;
     endpoint_meta.push(endpoint_transformer(metadata));
   });

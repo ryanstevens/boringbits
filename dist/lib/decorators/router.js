@@ -206,16 +206,12 @@ function createEndpointDecorator(decoratorName, method, descriptorWrapper) {
       endpoint[field] = {
         methods: {}
       };
-      ['get', 'post'].forEach(method => {
+      ['get', 'post', 'put', 'delete', 'head'].forEach(method => {
         endpoint[field].methods[method] = {
           handler: decoratedDescriptor.value
         };
         endpoint[field].methods[method][decoratorName] = args;
-      }); // endpoint[field].methods[method] = {
-      //   handler: decoratedDescriptor.value,
-      // };
-      // endpoint[field].methods[method][decoratorName] = args;
-
+      });
       const classMetadata = addToProps(target, {
         endpoints: endpoint
       });
