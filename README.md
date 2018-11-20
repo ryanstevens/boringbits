@@ -59,7 +59,7 @@ const boring = new Server();
 
 boring.start()
   .then(finalConfig => {
-    console.log('Webpack config used' finalConfig);
+    console.log('Webpack config used', finalConfig);
   })
 
 ```
