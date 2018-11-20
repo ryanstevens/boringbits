@@ -152,7 +152,7 @@ function wrapHandler(boring, route, endpoint, methods, method) {
       boring.perform(`http::${method.toLowerCase()}`, ctx,
       /*#__PURE__*/
       _asyncToGenerator(function* () {
-        handler.call(this, ctx.req, ctx.res, ctx.next);
+        if (ctx.redirect) ctx.res.redirect(302, ctx.redirect);else handler.call(this, ctx.req, ctx.res, ctx.next);
         return ctx;
       })).catch(e => {
         _boringLogger.default.error(e, 'There was a critical error thrown in the handler stack, rethrowing to express');
