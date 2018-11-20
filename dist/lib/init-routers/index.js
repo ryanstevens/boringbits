@@ -109,7 +109,7 @@ function wrapHandler(boring, route, endpoint, methods, method) {
     middlewareStack = [middlewareStack];
   }
 
-  const runStack = compose(middlewareStack.map(middleware => {
+  const normalizedMiddleware = middlewareStack.map(middleware => {
     let func = getMiddlewareFunc(boring, middleware);
     if (func) return func;
 
@@ -119,7 +119,7 @@ function wrapHandler(boring, route, endpoint, methods, method) {
         func(req, res, next, middleware.args);
       };
     }
-  })); // normalize data structure to match
+  }); // normalize data structure to match
   // decorator API
 
   if (typeof methods[method] === 'function') {
@@ -138,12 +138,13 @@ function wrapHandler(boring, route, endpoint, methods, method) {
       next,
       route,
       endpoint,
-      method
+      method,
+      middleware: normalizedMiddleware
     };
     ctx[method] = methods[method]; // first execute the middleware
 
     boring.perform(`http::${method.toLowerCase()}::middleware`, ctx, () => new Promise(function (resolve, reject) {
-      runStack(ctx.req, ctx.res, function (err) {
+      compose(ctx.middleware)(ctx.req, ctx.res, function (err) {
         if (err) return reject(err);
         resolve(ctx);
       });
@@ -152,17 +153,13 @@ function wrapHandler(boring, route, endpoint, methods, method) {
       boring.perform(`http::${method.toLowerCase()}`, ctx,
       /*#__PURE__*/
       _asyncToGenerator(function* () {
-        if (ctx.redirect) ctx.res.redirect(302, ctx.redirect);else handler.call(this, ctx.req, ctx.res, ctx.next);
+        handler.call(this, ctx.req, ctx.res, ctx.next);
         return ctx;
       })).catch(e => {
-        _boringLogger.default.error(e, 'There was a critical error thrown in the handler stack, rethrowing to express');
-
-        throw e;
+        _boringLogger.default.info(e, `There was rejection from a http::${method} interceptor`);
       });
     }).catch(e => {
-      _boringLogger.default.error(e, 'There was a critical error thrown in the handler stack, rethrowing to express');
-
-      throw e;
+      _boringLogger.default.info(e, `There was rejection from a http::${method}::middleware interceptor`);
     });
   };
 }
