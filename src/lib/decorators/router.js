@@ -172,7 +172,7 @@ injecture.register('decorator.router.endpoint',
     function endpointFactory(Klass) {
       return Klass;
     },
-    { map_instances: true }
+    { mapInstances: true }
 );
 
 

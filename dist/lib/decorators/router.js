@@ -171,7 +171,7 @@ injecture.register('decorator.router.endpoint', // since we are only using the c
 function endpointFactory(Klass) {
   return Klass;
 }, {
-  map_instances: true
+  mapInstances: true
 });
 
 toExport.endpoint = function endpoint(path = '') {
