@@ -4,11 +4,13 @@ const initRouters = require('./init-routers');
 const logger = require('boring-logger');
 const initMiddleware = require('./init-middleware');
 const initHooks = require('./init-hooks');
+const initModules = require('./init-modules');
 const EventEmitter = require('eventemitter2');
 const paths = require('paths');
 const Understudy = require('boring-understudy');
 const decorators = require('./decorators')
 const appUseOverride = require('./server/appUseOverride');
+const injecture = require('injecture');
 
 class InitPipeline extends EventEmitter  {
 
@@ -69,8 +71,16 @@ class InitPipeline extends EventEmitter  {
   async build(options) {
 
     let injections = Object.assign({}, {
-      boring: this
+      boring: this,
+      logger,
+      config,
+      injecture
     }, options);
+
+
+    const modules = await this.perform('init-modules', injections, async() => {
+      return await initModules(injections);
+    })
 
     const hooks = await this.perform('init-hooks', injections, async () => {
       return await initHooks(injections);
