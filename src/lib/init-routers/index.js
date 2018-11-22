@@ -119,6 +119,7 @@ function wrapHandler(boring, route, endpoint, methods, method) {
 
   const handler = methods[method].handler;
   methods[method].handler = function wrappedHandler(req, res, next) {
+    const url = (req) ? req.originalUrl : '';
     const ctx = {
       req,
       res,
@@ -129,6 +130,7 @@ function wrapHandler(boring, route, endpoint, methods, method) {
       middleware: normalizedMiddleware
     };
     ctx[method] = methods[method];
+
 
     // first execute the middleware
     boring.perform(`http::${method.toLowerCase()}::middleware`, ctx, () => new Promise(function(resolve, reject) {
@@ -145,11 +147,11 @@ function wrapHandler(boring, route, endpoint, methods, method) {
         handler.call(this, ctx.req, ctx.res, ctx.next);
         return ctx;
       }).catch((e) => {
-        logger.info(e, `There was rejection from a http::${method} interceptor`);
+        logger.debug(e, `There was rejection from a {{http::${method}}} interceptor for `+url);
       });
     })
     .catch((e) => {
-      logger.info(e, `There was rejection from a http::${method}::middleware interceptor`);
+      logger.debug(e, `There was rejection from a {{http::${method}::middleware}} interceptor for `+url);
     });
 
   };
