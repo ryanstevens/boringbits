@@ -1,7 +1,7 @@
 const assert = require('assert');
 const injectureDeps = require('../core-modules/injecture-reducers');
 
-describe.only('Injecture strategy reducers', function() {
+describe('Injecture strategy reducers', function() {
 
   it('will reduce an interface to one key by config', async () => {
 
