@@ -57,18 +57,38 @@ function assetsByDevserver(webpackStats) {
 
 module.exports = function getStaticInjections(res, entrypoint) {
   const assets = (res.locals.webpackStats) ? assetsByDevserver(res.locals.webpackStats) : assetsByManifest();
-  const asset_key = pathitize(entrypoint);
+  const assetKey = pathitize(entrypoint);
 
-  const js_files = assets.js[asset_key] || [];
-  const css_files = assets.css[asset_key] || [];
+  const jsFiles = assets.js[assetKey] || [];
+  const cssFiles = assets.css[assetKey] || [];
 
-  res.locals.js_injections = js_files.map((asset) => {
+  if (!res.locals.pageInjections) {
+    res.locals.pageInjections = {
+      bodyEndScripts: [],
+      headLinks: [],
+      headScripts: [],
+    };
+  } else if (!res.locals.pageInjections.bodyEndScripts) {
+    res.locals.pageInjections.bodyEndScripts = [];
+  } else if (!res.locals.pageInjections.headLinks) {
+    res.locals.pageInjections.headLinks = [];
+  } else if (!res.locals.pageInjections.headScripts) {
+    res.locals.pageInjections.headScripts = [];
+  }
+
+  res.locals.pageInjections.bodyEndScripts = res.locals.pageInjections.bodyEndScripts.concat(jsFiles.map((asset) => {
     if (asset[0] !== '/') asset = `/${asset}`;
-    return `\n<script async="true" src="${asset}"></script>`;
-  });
+    return {
+      async: true,
+      src: asset,
+    };
+  }))
 
-  res.locals.css_injections = css_files.map((asset) => {
+  res.locals.pageInjections.headLinks = res.locals.pageInjections.headLinks.concat(cssFiles.map((asset) => {
     if (asset[0] !== '/') asset = `/${asset}`;
-    return `\n<link rel="stylesheet" href="${asset}"></link>`;
-  });
+    return {
+      rel: 'stylesheet',
+      href: asset,
+    };
+  }));
 };

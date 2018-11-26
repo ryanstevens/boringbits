@@ -18,14 +18,14 @@ describe('Static Injections', function() {
   // the "output" should be the same
   // regardlesss of the input
   function assertions(res) {
-    
+
     staticInjections(res, '/beep/boop.js');
-    assert.deepEqual(res.locals.js_injections, ['\n<script async="true" src="/beep/boop.js"></script>'])
-    assert.deepEqual(res.locals.css_injections, ['\n<link rel="stylesheet" href="/beep/boop.css"></link>'])
+    assert.deepEqual(res.locals.pageInjections.bodyEndScripts, [{async: true, src: '/beep/boop.js'}]);
+    assert.deepEqual(res.locals.pageInjections.headLinks, [{rel: 'stylesheet', href: '/beep/boop.css'}]);
 
     res.locals = {};
     staticInjections(res, 'meow/bark.js');
-    assert.deepEqual(res.locals.js_injections, ['\n<script async="true" src="/meow/bark.js"></script>'])
+    assert.deepEqual(res.locals.pageInjections.bodyEndScripts, [{async: true, src: '/meow/bark.js'}]);
 
   }
 
@@ -40,7 +40,7 @@ describe('Static Injections', function() {
     done();
   });
 
-  
+
   it('Will read webpack object on locals', function(done) {
     const res = {
       locals : {

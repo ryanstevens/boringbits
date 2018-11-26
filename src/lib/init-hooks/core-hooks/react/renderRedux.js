@@ -9,7 +9,7 @@ const config = require('boring-config');
 const Layout = require('./Layout');
 
 
-module.exports = function renderRedux(options = { layout: { clientConfig: {}, headScripts: []}}) {
+module.exports = function renderRedux(options = { layout: { clientConfig: {}, pageInjections: {}}}) {
 
   const res = this;
   const req = res.req;
@@ -50,7 +50,7 @@ module.exports = function renderRedux(options = { layout: { clientConfig: {}, he
       getStyleSheets={getStyleSheets}
       locals={res.locals}
       client_config={options.layout.clientConfig}
-      headScripts={options.layout.headScripts}
+      pageInjections={options.layout.pageInjections}
       redux_state={store.getState()}>
       <Container />
     </Layout>

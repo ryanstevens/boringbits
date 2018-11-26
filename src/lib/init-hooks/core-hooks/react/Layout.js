@@ -15,7 +15,18 @@ module.exports = class HTML extends React.Component {
       }
     `;
 
-    const scripts = this.props.headScripts || [];
+    const pageInjections = Object.assign({
+      headLinks: [],
+      headScripts: [],
+      bodyEndScripts: []
+    }, this.props.pageInjections);
+
+    pageInjections.headLinks = pageInjections.headLinks.concat(this.props.locals.pageInjections.headLinks || []);
+    pageInjections.headScripts = pageInjections.headScripts.concat(this.props.locals.pageInjections.headScripts || []);
+    pageInjections.bodyEndScripts = pageInjections.bodyEndScripts.concat(this.props.locals.pageInjections.bodyEndScripts || []);
+
+
+    const scripts = this.props.resource_injections || [];
     const app = ReactDOMServer.renderToString(this.props.children);
 
     return (
@@ -28,7 +39,11 @@ module.exports = class HTML extends React.Component {
           <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"></meta>
 
           {
-            scripts.map((scriptUrl) => <script src={scriptUrl} />)
+            pageInjections.headScripts.map((scriptObj) => <script {...scriptObj} />)
+          }
+
+          {
+            pageInjections.headLinks.map((linkObj) => <link {...linkObj} />)
           }
         </head>
         <body style={{ height: '100%', padding: '0px', margin: '0px' }}>
@@ -37,8 +52,10 @@ module.exports = class HTML extends React.Component {
           <div style={{ width: '100%', height: '100%' }} id="root" dangerouslySetInnerHTML={{ __html: app }}>
 
           </div>
-          <span style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: this.props.locals.js_injections }}>
-          </span>
+
+          {
+            pageInjections.bodyEndScripts.map((scriptObj) => <script {...scriptObj} />)
+          }
           <script dangerouslySetInnerHTML={{ __html: reduxHtml }}></script>
         </body>
       </html>
