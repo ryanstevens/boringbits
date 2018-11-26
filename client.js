@@ -5,13 +5,11 @@
  * So please write vanilla old school JS
  */
 
-var react = require('react');
-var redux = require('redux');
-var injecture = require('./dist/node_modules/injecture');
+ var toExport = {};
 
-module.exports = {
-  renderRedux: window.__boring.renderRedux,
-  react: react,
-  redux: redux,
-  injecture: injecture
-};
+ try {
+   toExport = window.__boring;
+ }
+ catch(e) {};
+
+module.exports = window.__boring;

@@ -1,13 +1,11 @@
-
-
 import ReactDOM from 'react-dom';
-import React from 'react'
-
-
+import React from 'react';
+import * as Redux from 'redux';
+import * as ReactRedux from 'react-redux';
+import injecture from 'injecture';
 import { ConnectedRouter } from 'react-router-redux';
 import createBrowserHistory from 'history/createBrowserHistory';
-
-const getAppComponents = require('./AppInit').default;
+import getAppComponents from './AppInit';
 
 
 function renderRedux(App, rootReducer) {
@@ -36,7 +34,11 @@ function renderRedux(App, rootReducer) {
 }
 
 
-
 window.__boring = {
   renderRedux,
+  React,
+  ReactDOM,
+  Redux,
+  injecture,
+  ReactRedux
 };
