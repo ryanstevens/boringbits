@@ -12,4 +12,4 @@
  }
  catch(e) {};
 
-module.exports = window.__boring;
+module.exports = toExport;
