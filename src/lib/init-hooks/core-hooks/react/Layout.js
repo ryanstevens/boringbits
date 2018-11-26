@@ -47,7 +47,6 @@ module.exports = class HTML extends React.Component {
           }
         </head>
         <body style={{ height: '100%', padding: '0px', margin: '0px' }}>
-          <span style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: this.props.locals.css_injections }}></span>
           <style dangerouslySetInnerHTML={{ __html: this.props.getStyleSheets() }} id="jss-server-side"></style>
           <div style={{ width: '100%', height: '100%' }} id="root" dangerouslySetInnerHTML={{ __html: app }}>
 
