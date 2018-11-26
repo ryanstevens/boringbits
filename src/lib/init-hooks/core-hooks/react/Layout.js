@@ -25,8 +25,6 @@ module.exports = class HTML extends React.Component {
     pageInjections.headScripts = pageInjections.headScripts.concat(this.props.locals.pageInjections.headScripts || []);
     pageInjections.bodyEndScripts = pageInjections.bodyEndScripts.concat(this.props.locals.pageInjections.bodyEndScripts || []);
 
-
-    const scripts = this.props.resource_injections || [];
     const app = ReactDOMServer.renderToString(this.props.children);
 
     return (
