@@ -4,6 +4,7 @@ const logger = require('boring-logger');
 const Emitter = require('eventemitter2');
 const decorators = require('../../decorators')
 const Understudy = require('boring-understudy')
+const injecture = require('injecture');
 
 const noop = function() {}
 
@@ -15,8 +16,8 @@ function findByName(arr, name) {
 }
 
 function wipeInjectoreStore() {
-
-  const jectureStore = require('injecture/injecture-store');
+debugger;
+  const jectureStore = injecture.getInstanceByInterface('instanceStore');// require('injecture/injecture-store');
   const jecture_keys = Object.keys(jectureStore);
   jecture_keys.forEach(key => {
     const stored = jectureStore[key]

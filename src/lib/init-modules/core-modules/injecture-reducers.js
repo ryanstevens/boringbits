@@ -10,7 +10,7 @@ module.exports = function(BoringInjections) {
   const projStrategies = config.get('strategies', {});
 
   function createStrategyReducer(key, strategy) {
-    injecture.addReducer(key, function(keys) {
+    injecture.addInterfaceReducer(key, function(keys) {
       return keys.filter(keyObj => (keyObj.key === strategy));
     });
   }
