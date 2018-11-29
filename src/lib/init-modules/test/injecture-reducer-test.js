@@ -1,5 +1,5 @@
 const assert = require('assert');
-const injectureDeps = require('../core-modules/injecture-reducers');
+const injectureDeps = require('../managed_modules/injecture-reducers');
 
 describe('Injecture strategy reducers', function() {
 

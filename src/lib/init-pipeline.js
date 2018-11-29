@@ -11,7 +11,6 @@ const Understudy = require('boring-understudy');
 const decorators = require('./decorators')
 const appUseOverride = require('./server/appUseOverride');
 const injecture = require('injecture');
-const glob = require('glob');
 
 class InitPipeline extends EventEmitter  {
 
@@ -80,7 +79,6 @@ class InitPipeline extends EventEmitter  {
 
 
     const modules = await this.perform('init-modules', injections, async() => {
-     
       return await initModules(injections);
     })
 

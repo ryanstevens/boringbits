@@ -21,9 +21,13 @@ function getProjPath(key, defaultVal) {
 function getAppDirPath(key, defaultVal) {
   return path.normalize(getProjPath(base_app_path_key, base_app_path) + '/'+ config.get(key , defaultVal));
 }
-
+  
 function getBoringPath(key, defaultVal) {
   return path.normalize(boring_dir + '/' + config.get(key, defaultVal));
+}
+
+function getBoringAppPath(key, defaultVal) {
+  return path.normalize(boring_dir + '/' + boring_app_path  + config.get(key, defaultVal));
 }
 
 
@@ -41,16 +45,15 @@ module.exports = {
   app_node_modules: getProjPath('boring.paths.node_modules', 'node_modules'),
   app_package_json: getProjPath('boring.paths.package_json', 'package.json'),
   app_dir: getProjPath(base_app_path_key, base_app_path),
+  boring_app_dir: getBoringAppPath('__no_key__', ''),
 
   server_routers: getAppDirPath('boring.paths.server_routers', '/server/routers'),
   server_middleware: getAppDirPath('boring.paths.server_middleware', '/server/middleware'),
   server_hooks: getAppDirPath('boring.paths.server_hooks', '/server/hooks'),
-  server_modules: getAppDirPath('boring.paths.server_modules', '/server/modules'),
 
-  boring_routers: getBoringPath('boring.paths.boring_routers', `/${boring_app_path}/lib/init-routers/core-routers`),
-  boring_middleware: getBoringPath('boring.paths.boring_middleware', `/${boring_app_path}/lib/init-middleware/core-middleware`),
-  boring_hooks: getBoringPath('boring.paths.boring_hooks', `/${boring_app_path}/lib/init-hooks/core-hooks`),
-  boring_modules: getBoringPath('boring.paths.boring_modules', `/${boring_app_path}/lib/init-modules/core-modules`),
+  boring_routers: getBoringAppPath('boring.paths.boring_routers', `/lib/init-routers/core-routers`),
+  boring_middleware: getBoringAppPath('boring.paths.boring_middleware', `/lib/init-middleware/core-middleware`),
+  boring_hooks: getBoringAppPath('boring.paths.boring_hooks', `/lib/init-hooks/core-hooks`),
 
   boring_webpack_dev_config: getBoringPath('boring.paths.boring_webpack_dev_config', '/config/runtime/webpack.config.dev.js'),
   boring_webpack_prod_config: getBoringPath('boring.paths.boring_webpack_prod_config', '/config/runtime/webpack.config.prod.js'),
