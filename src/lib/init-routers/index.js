@@ -119,7 +119,7 @@ function wrapHandler(boring, route, endpoint, methods, method) {
 
   const handler = methods[method].handler;
   methods[method].handler = function wrappedHandler(req, res, next) {
-    const url = (req) ? req.originalUrl : '';
+    const url = (req) ? req.path : '';
     const ctx = {
       req,
       res,
