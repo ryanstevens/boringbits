@@ -15,7 +15,7 @@ describe('Pathitize', function() {
   });
 
   it('should deal with arrays', function() {
-    const entryPoints= ['/c/Users/steve_tufzcnz/Documents/projects/boring/dist/lib/init-hooks/core-hooks/react/clientEntry.js',
+    const entryPoints= [process.cwd() +'/dist/lib/init-hooks/core-hooks/react/clientEntry.js',
       '/src/client/pages/demo/entrypoint.js', ];
 
     const pathitize = require('../pathitize');
