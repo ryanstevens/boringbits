@@ -3,15 +3,16 @@ import React from 'react';
 import * as Redux from 'redux';
 import * as ReactRedux from 'react-redux';
 import injecture from 'injecture';
-import { ConnectedRouter } from 'react-router-redux';
+import { ConnectedRouter } from 'connected-react-router'
 import createBrowserHistory from 'history/createBrowserHistory';
 import getAppComponents from './AppInit';
 
 
-function renderRedux(App, rootReducer) {
+function renderRedux(App, reducers) {
 
+
+  const history = createBrowserHistory();
   function Router(props) {
-    const history = createBrowserHistory();
     return (
       <ConnectedRouter history={history}>
           {props.children}
@@ -21,7 +22,7 @@ function renderRedux(App, rootReducer) {
 
   const {Container} = getAppComponents({
     App,
-    rootReducer,
+    reducers,
     history,
     Router
   });

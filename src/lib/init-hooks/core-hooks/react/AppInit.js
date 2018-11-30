@@ -1,17 +1,18 @@
 import React from 'react';
 import { SheetsRegistry } from 'react-jss/lib/jss';
 import JssProvider from 'react-jss/lib/JssProvider';
-import { createStore, applyMiddleware } from 'redux';
+import { createStore, applyMiddleware, combineReducers } from 'redux';
 import { Provider  } from "react-redux";
 import { createGenerateClassName } from '@material-ui/core/styles';
-import { routerMiddleware } from 'react-router-redux';
+import { routerMiddleware, connectRouter } from 'connected-react-router'
+
 
 export default function getAppComponents(dependencies= {}) {
 
   // Grab the state from a global variable injected into the server-generated HTML
   let preloadedState = undefined;
   const App  = dependencies.App;
-  const rootReducer = dependencies.rootReducer;
+  const reducers = dependencies.reducers;
 
   try {
     if (window && window.__PRELOADED_STATE__) {
@@ -22,13 +23,15 @@ export default function getAppComponents(dependencies= {}) {
   catch(e) {}
 
   const middleware = [];
-  if (dependencies.history)
+  if (dependencies.history) {
     middleware.push(routerMiddleware(dependencies.history));
+    reducers.router = connectRouter(dependencies.history);
+  }
 
   const Router = dependencies.Router;
 
   const store = createStore(
-    rootReducer,
+    combineReducers(reducers),
     preloadedState,
     applyMiddleware(...middleware)
   );

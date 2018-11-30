@@ -22,7 +22,7 @@ module.exports = function renderRedux(options = { layout: { clientConfig: {}, pa
     + res.reactPaths.reactRoot
     + config.get('boring.react.mainApp', '/App.js')).default
 
-  const rootReducer = require(paths.app_dir
+  const reducers = require(paths.app_dir
     + res.reactPaths.clientRoot
     + '/'
     + res.reactPaths.reactRoot
@@ -39,18 +39,23 @@ module.exports = function renderRedux(options = { layout: { clientConfig: {}, pa
   const dependencies = {
     App,
     Router,
-    rootReducer
+    reducers
   }
 
   const getAppComponents = require('./AppInit').default;
   const  { Container, getStyleSheets, store }  = getAppComponents(dependencies);
 
+  const layout = options.layout || {
+    clientConfig: {},
+    pageInjections: {}
+  };
+
   res.send('<!DOCTYPE html>' + ReactDOMServer.renderToStaticMarkup(
     <Layout
       getStyleSheets={getStyleSheets}
       locals={res.locals}
-      client_config={options.layout.clientConfig}
-      pageInjections={options.layout.pageInjections}
+      client_config={layout.clientConfig}
+      pageInjections={layout.pageInjections}
       redux_state={store.getState()}>
       <Container />
     </Layout>
