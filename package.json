@@ -4,18 +4,17 @@
   "description": "Frameworks should be boring, applications they build should be exciting",
   "main": "dist/boring.js",
   "scripts": {
-    "test": "NODE_ENV=unit-tests mocha node_modules/mocha/bin/_mocha --require @babel/register $(find ./src -name '*-test.js')",
-    "test-debug": "node --inspect-brk=9229 node_modules/mocha/bin/_mocha  --require @babel/register $(find ./src -name '*-test.js')",
+    "type-check": "tsc --noEmit",
+    "test": "NODE_ENV=unit-tests mocha node_modules/mocha/bin/_mocha --require ./src/babel_register $(find ./src -name '*-test.js')",
+    "test-dist": "NODE_ENV=unit-tests mocha node_modules/mocha/bin/_mocha $(find ./dist -name '*-test.js')",
+    "test-debug": "node --inspect-brk=9229 node_modules/mocha/bin/_mocha  --require ./src/babel_register $(find ./src -name '*-test.js')",
     "test-watch": "nodemon --watch src --exec \"npm test | npx bunyan\"",
     "test-build": "nodemon --watch src --exec \"npm test && npm run build\"",
-    "build": "rm -rf dist && babel src -d dist --source-maps",
+    "build": "rm -rf dist && babel src -d dist --extensions \".ts,.tsx,.js,.jsx\" --source-maps",
     "prepublishOnly": "npm test && npm run build"
   },
   "bin": {
-    "boring-build-node": "./bin/build-node.js",
-    "boring-build-client": "./bin/build-client.js",
-    "boring-up": "./bin/docker-compose-up.js",
-    "boring-down": "./bin/docker-compose-down.js"
+    "boring": "./bin/boring-cli"
   },
   "author": "Ryan Stevens",
   "license": "UNLICENSED",
@@ -31,15 +30,19 @@
   "dependencies": {
     "@babel/cli": "^7.0.0",
     "@babel/core": "^7.0.0",
-    "@babel/plugin-proposal-class-properties": "^7.1.0",
+    "@babel/plugin-proposal-class-properties": "^7.2.1",
     "@babel/plugin-proposal-decorators": "^7.0.0",
     "@babel/plugin-proposal-object-rest-spread": "^7.0.0",
     "@babel/polyfill": "^7.0.0",
     "@babel/preset-env": "^7.0.0",
     "@babel/preset-react": "^7.0.0",
+    "@babel/preset-typescript": "^7.1.0",
     "@babel/register": "^7.0.0",
     "@babel/runtime": "^7.1.2",
     "@material-ui/core": "^3.6.0",
+    "@types/history": "^4.7.2",
+    "@types/node": "^10.12.12",
+    "app-module-path": "^2.2.0",
     "async": "^2.6.1",
     "autoprefixer": "^9.1.5",
     "babel-loader": "^8.0.2",
@@ -79,6 +82,7 @@
     "redux": "^4.0.1",
     "serve-static": "^1.13.2",
     "style-loader": "^0.23.0",
+    "typescript": "^3.2.1",
     "understudy": "^4.1.0",
     "url-loader": "^1.1.1",
     "webpack": "^4.18.0",
@@ -86,7 +90,8 @@
     "webpack-cli": "^3.1.0",
     "webpack-dev-middleware": "^3.3.0",
     "webpack-hot-middleware": "^2.23.1",
-    "webpack-manifest-plugin": "^2.0.3"
+    "webpack-manifest-plugin": "^2.0.3",
+    "yargs": "^12.0.5"
   },
   "nodemon": {
     "ignoreRoot": [

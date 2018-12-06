@@ -66,12 +66,13 @@ module.exports = {
     // https://github.com/facebookincubator/create-react-app/issues/290
     // `web` extension prefixes have been added for better support
     // for React Native Web.
-    extensions: ['.web.js', '.mjs', '.js', '.json', '.web.jsx', '.jsx'],
+    extensions: ['.web.js', '.mjs', '.js', '.json', '.web.jsx', '.jsx', '.ts', 'tsx'],
     alias: {
 
       // Support React Native Web
       // https://www.smashingmagazine.com/2016/08/a-glimpse-into-the-future-with-react-native-for-web/
       'react-native': 'react-native-web',
+      'modules': path.resolve(process.cwd(), 'src/modules'),
     },
     plugins: [
       // Prevents users from importing files from outside of src/ (or node_modules/).
@@ -102,11 +103,12 @@ module.exports = {
           },
           // Process JS with Babel.
           {
-            test: /\.(js|jsx|mjs)$/,
+            test: /\.(js|jsx|mjs|ts|tsx)$/,
             include: paths.app_src,
             loader: require.resolve('babel-loader'),
             options: {
-                // This is a feature of `babel-loader` for webpack (not Babel itself).
+
+              // This is a feature of `babel-loader` for webpack (not Babel itself).
               // It enables caching results in ./node_modules/.cache/babel-loader/
               // directory for faster rebuilds.
               cacheDirectory: true,
@@ -121,11 +123,13 @@ module.exports = {
                    // "node": "10.9.0",
                   }
                 }],
+                ["@babel/preset-typescript"],
                 ["@babel/preset-react"]
               ],
               "plugins": [
                 ["@babel/plugin-proposal-object-rest-spread"],
-                ["@babel/plugin-proposal-decorators", { "legacy": true }]
+                ["@babel/plugin-proposal-decorators", { "legacy": true }],
+                ["@babel/plugin-proposal-class-properties"]
               ]
             },
           },
