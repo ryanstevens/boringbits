@@ -1,3 +1,4 @@
+require('app-module-path').addPath(process.cwd() + '/src');
 
 const config = require('boring-config');
 const logger = require('boring-logger');
