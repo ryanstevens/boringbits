@@ -35,7 +35,7 @@ function renderRedux(App, reducers) {
 }
 
 
-window.__boring = {
+module.exports = {
   renderRedux,
   React,
   ReactDOM,
