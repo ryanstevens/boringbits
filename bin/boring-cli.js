@@ -1,10 +1,4 @@
 #!/usr/bin/env node
-const fs_extra = require('fs-extra');
-const path = require('path')
-const paths = require('../dist/node_modules/paths')
-const child_process = require('child_process')
-const fs = require('fs');
-
 let ran = false;
 
 function makeCmd(mod) {

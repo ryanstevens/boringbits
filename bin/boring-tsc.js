@@ -6,7 +6,7 @@ const child_process = require('child_process')
 const fs = require('fs');
 
 
-async function run() {
+async function run(argv) {
 
   let tscPath =  '/../node_modules/.bin/tsc';
   try {
@@ -21,6 +21,10 @@ async function run() {
     '--p', 
     path.normalize(process.cwd())
   ];
+
+  if (argv.watch) {
+    args.push('--watch')
+  }
   console.log('tcs ', args.join(' '));
   
   return child_process.spawnSync(path.normalize(__dirname+tscPath), args,
@@ -32,7 +36,7 @@ async function run() {
 
 }
 
-module.exports = function(argv) {
+module.exports = function(args) {
   try {
     try {
       fs.statSync(process.cwd() +  '/tsconfig.json');
@@ -42,7 +46,7 @@ module.exports = function(argv) {
       console.log(`Copying ${path.resolve(__dirname, '../tsconfig.json')} -> ${path.resolve(process.cwd(), '/tsconfig.json, feel free to edit this and make it your own')}`);
       fs.copyFileSync(path.resolve(__dirname, '../tsconfig.json'), process.cwd() +  '/tsconfig.json');
     }
-    return run();
+    return run(args.argv);
   }
   catch(e) {
     console.error('There was a problem the boring command', e);

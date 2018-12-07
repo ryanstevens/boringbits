@@ -1,6 +1,6 @@
 var assert = require('assert');
 
-describe.only('Boring entrypoint', function() {
+describe('Boring entrypoint', function() {
   
   this.timeout(5000);
   
