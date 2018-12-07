@@ -1,4 +1,7 @@
 #!/usr/bin/env node
+process.env.BABEL_ENV = 'production';
+process.env.NODE_ENV = 'production';
+
 const fs_extra = require('fs-extra');
 const path = require('path')
 const paths = require('../dist/node_modules/paths')
