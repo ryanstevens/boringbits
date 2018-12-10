@@ -1,7 +1,7 @@
 import React from 'react';
 import { SheetsRegistry } from 'react-jss/lib/jss';
 import JssProvider from 'react-jss/lib/JssProvider';
-import { createStore, applyMiddleware, combineReducers } from 'redux';
+import { createStore, applyMiddleware, combineReducers, compose } from 'redux';
 import { Provider  } from "react-redux";
 import { createGenerateClassName } from '@material-ui/core/styles';
 import { routerMiddleware, connectRouter } from 'connected-react-router'
@@ -13,11 +13,14 @@ export default function getAppComponents(dependencies= {}) {
   let preloadedState = undefined;
   const App  = dependencies.App;
   const reducers = dependencies.reducers;
+  let composeEnhancers = compose;
 
   try {
     if (window && window.__PRELOADED_STATE__) {
       preloadedState = window.__PRELOADED_STATE__;
       delete window.__PRELOADED_STATE__;
+
+      composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
     }
   }
   catch(e) {}
@@ -29,11 +32,12 @@ export default function getAppComponents(dependencies= {}) {
   }
 
   const Router = dependencies.Router;
+  const enhancer =  composeEnhancers(applyMiddleware(...middleware));
 
   const store = createStore(
     combineReducers(reducers),
     preloadedState,
-    applyMiddleware(...middleware)
+    enhancer
   );
 
   // Create a new class name generator.
