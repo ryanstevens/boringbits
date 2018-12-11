@@ -1,7 +1,11 @@
-require('app-module-path').addPath(process.cwd() + '/src');
 
 const config = require('boring-config');
 const logger = require('boring-logger');
+
+const isDevelopment = config.get('boring.isDevelopment', true);
+
+require('app-module-path').addPath(process.cwd() + (isDevelopment ? '/src' : '/dist'));
+
 
 if (config.get('boring.babel.register_app') === true) {
   logger.info('babelifying codebase via @babel/register');

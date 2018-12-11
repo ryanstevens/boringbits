@@ -16,11 +16,12 @@ export default function getAppComponents(dependencies= {}) {
   let composeEnhancers = compose;
 
   try {
-    if (window && window.__PRELOADED_STATE__) {
-      preloadedState = window.__PRELOADED_STATE__;
-      delete window.__PRELOADED_STATE__;
-
+    if (window) {
       composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+      if (window.__PRELOADED_STATE__) {
+        preloadedState = window.__PRELOADED_STATE__;
+        delete window.__PRELOADED_STATE__;
+      }
     }
   }
   catch(e) {}
