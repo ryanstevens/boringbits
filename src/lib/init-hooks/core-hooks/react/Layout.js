@@ -37,11 +37,11 @@ module.exports = class HTML extends React.Component {
           <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"></meta>
 
           {
-            pageInjections.headScripts.map((scriptObj) => <script {...scriptObj} />)
+            pageInjections.headScripts.map((scriptObj) => <script key={scriptObj.src} {...scriptObj} />)
           }
 
           {
-            pageInjections.headLinks.map((linkObj) => <link {...linkObj} />)
+            pageInjections.headLinks.map((linkObj) => <link key={linkObj.src} {...linkObj} />)
           }
         </head>
         <body style={{ height: '100%', padding: '0px', margin: '0px' }}>
@@ -51,7 +51,7 @@ module.exports = class HTML extends React.Component {
           </div>
 
           {
-            pageInjections.bodyEndScripts.map((scriptObj) => <script {...scriptObj} />)
+            pageInjections.bodyEndScripts.map((scriptObj) => <script key={scriptObj.src} {...scriptObj} />)
           }
           <script dangerouslySetInnerHTML={{ __html: reduxHtml }}></script>
         </body>
