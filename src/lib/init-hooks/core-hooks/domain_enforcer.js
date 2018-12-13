@@ -1,10 +1,8 @@
 
-const URL = require('url');
-
-module.exports = function domain_enforcer(BoringInjections) {
+module.exports = function domainEnforcer(BoringInjections) {
 
   const {
-    boring
+    boring,
   } = BoringInjections;
 
   const subdomain = boring.config.get('boring.default_subdomain', 'www');
@@ -18,10 +16,11 @@ module.exports = function domain_enforcer(BoringInjections) {
         // express LOC `boring.app.set('trust proxy', true);`
         const protocol = req.protocol;
         const host = (req.hostname || '').toLowerCase();
-        const hasSubdomain = (host.indexOf(subdomain) === 0);
+        if (host === 'localhost') return res.redirect(302, 'https://www.boringlocal.com' + req.url);
+        const needsSubdomain = host.split('.').length === 2;
 
-        if (protocol === 'http' || !hasSubdomain) {
-          const target = 'https://'  + (!hasSubdomain ? subdomain + '.' : '') + host + req.url;
+        if (protocol === 'http' || needsSubdomain) {
+          const target = 'https://' + (needsSubdomain ? subdomain + '.' : '') + host + req.url;
 
           // this should probs be a 301,
           // but I don't like how agressive things
@@ -36,5 +35,5 @@ module.exports = function domain_enforcer(BoringInjections) {
     });
   }
 
-  return {name: 'domain_enforcer'}
-}
+  return {name: 'domain_enforcer'};
+};
