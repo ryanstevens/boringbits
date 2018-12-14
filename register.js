@@ -1,7 +1,7 @@
 /**
  * Will babelify a code base using
- * boring's presets.  
- * 
+ * boring's presets.
+ *
  * This is intended primarily for dev tasks 
  * such as unit tests.  You should 
  * generally not need to use this 

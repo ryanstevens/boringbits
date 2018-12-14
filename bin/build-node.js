@@ -26,7 +26,7 @@ async function build() {
     '--source-maps', 
     '--copy-files', 
     `--presets=${paths.boring_dir}dist/build/wrapped-babel-env,@babel/preset-typescript,@babel/preset-react`, 
-    `--plugins=@babel/plugin-proposal-object-rest-spread,${paths.boring_dir}dist/build/wrapped-babel-plugin-proposal-decorators,@babel/plugin-proposal-class-properties`,
+    `--plugins=@babel/plugin-proposal-object-rest-spread,${paths.boring_dir}dist/build/wrapped-babel-plugin-proposal-decorators,@babel/plugin-proposal-class-properties,@babel/plugin-syntax-dynamic-import`,
     ];
 
   console.log('babel ' +args.join(' '));

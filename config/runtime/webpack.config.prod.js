@@ -116,21 +116,21 @@ module.exports = {
               babelrc: false,
               configFile: false,
 
-              "presets": [
-                ["@babel/env", {
-                  "targets": {
-                    "ie" : "11",
-                   // "node": "10.9.0",
-                  }
+              'presets': [
+                ['@babel/env', {
+                  'targets': {
+                    'ie': '11',
+                  },
                 }],
-                ["@babel/preset-typescript"],
-                ["@babel/preset-react"]
+                ['@babel/preset-typescript'],
+                ['@babel/preset-react'],
               ],
-              "plugins": [
-                ["@babel/plugin-proposal-object-rest-spread"],
-                ["@babel/plugin-proposal-decorators", { "legacy": true }],
-                ["@babel/plugin-proposal-class-properties"]
-              ]
+              'plugins': [
+                ['@babel/plugin-proposal-object-rest-spread'],
+                ['@babel/plugin-proposal-decorators', {'legacy': true}],
+                ['@babel/plugin-proposal-class-properties'],
+                ['@babel/plugin-syntax-dynamic-import'],
+              ],
             },
           },
           {
