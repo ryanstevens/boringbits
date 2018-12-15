@@ -9,7 +9,7 @@ module.exports = function(BoringInjections) {
 
   function headers(req, res, next) {
     if (!disableDyno) {
-      res.setHeader('dyna-powered', '🦕');
+      res.setHeader('dyna-powered', new Buffer('🦕').toString('binary'));
     }
     next();
   }
