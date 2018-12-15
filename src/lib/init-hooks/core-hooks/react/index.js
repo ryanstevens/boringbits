@@ -3,6 +3,7 @@ const decorators = require('../../../decorators');
 const config = require('boring-config');
 const paths = require('paths');
 const renderRedux = require('./renderRedux');
+const dynamicComponents = require('./dynamicComponents').default;
 
 
 module.exports = function reactHook(BoringInjections) {
@@ -26,23 +27,23 @@ module.exports = function reactHook(BoringInjections) {
       entrypoint: config.get('boring.react.entrypoint', '/entrypoint.js'),
     }, options);
 
+    const [beforeEntry, afterEntry] = dynamicComponents(reactHandlerPaths, options);
 
-    const reactDecorator = reactEntry(reactHandlerPaths);
-    const entrypointDecorator = entrypoint(
-       // __dirname + '/clientEntry.js',
-        paths.app_dir
+    const entrypointPaths = [
+      beforeEntry,
+      paths.app_dir
         + reactHandlerPaths.clientRoot
         + '/'
         + reactHandlerPaths.reactRoot
-        + reactHandlerPaths.entrypoint
-    );
+        + reactHandlerPaths.entrypoint,
+      afterEntry,
+    ];
 
     return function createDecorator(target, field, descriptor) {
-
-      return entrypointDecorator(
+      return entrypoint(...entrypointPaths)(
           target,
           field,
-          reactDecorator(target, field, descriptor)
+          reactEntry(reactHandlerPaths)(target, field, descriptor)
       );
     };
   };

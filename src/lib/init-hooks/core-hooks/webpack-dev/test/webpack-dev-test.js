@@ -15,8 +15,12 @@ describe('Pathitize', function() {
   });
 
   it('should deal with arrays', function() {
-    const entryPoints= [process.cwd() +'/dist/lib/init-hooks/core-hooks/react/clientEntry.js',
-      '/src/client/pages/demo/entrypoint.js', ];
+    const entryPoints= [
+      'what/ever/which/that/foo_beforeEntry.js',
+      process.cwd() +'/dist/lib/init-hooks/core-hooks/react/clientEntry.js',
+      '/src/client/pages/demo/entrypoint.js',
+      'what/ever/which/that/foo_afterEntry.js',
+    ];
 
     const pathitize = require('../pathitize');
     assert.equal(pathitize(entryPoints), 'entry_demo');

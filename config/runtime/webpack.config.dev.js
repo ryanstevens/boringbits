@@ -74,6 +74,8 @@ module.exports = {
       // https://www.smashingmagazine.com/2016/08/a-glimpse-into-the-future-with-react-native-for-web/
       'react-native': 'react-native-web',
       'modules': path.resolve(process.cwd(), 'src/modules'),
+      'client': path.resolve(process.cwd(), 'src/client'),
+      'server': path.resolve(process.cwd(), 'src/server'),
     },
     plugins: [
       // Prevents users from importing files from outside of src/ (or node_modules/).
@@ -211,27 +213,27 @@ module.exports = {
 
   optimization: {
     namedModules: true, // NamedModulesPlugin()
-      splitChunks: {
-        chunks: 'async',
-        minSize: 30000,
-        maxSize: 0,
-        minChunks: 1,
-        maxAsyncRequests: 5,
-        maxInitialRequests: 3,
-        automaticNameDelimiter: '~',
-        name: true,
-        cacheGroups: {
-          vendors: {
-            test: /[\\/]node_modules[\\/]/,
-            priority: -10
-          },
-          default: {
-            minChunks: 2,
-            priority: -20,
-            reuseExistingChunk: true
-          }
+    splitChunks: {
+      chunks: 'async',
+      minSize: 30000,
+      maxSize: 0,
+      minChunks: 1,
+      maxAsyncRequests: 5,
+      maxInitialRequests: 3,
+      automaticNameDelimiter: '~',
+      name: true,
+      cacheGroups: {
+        vendors: {
+          test: /[\\/]node_modules[\\/]/,
+          priority: -10
+        },
+        default: {
+          minChunks: 1,
+          priority: -20,
+          reuseExistingChunk: true
         }
-      },
+      }
+    },
     noEmitOnErrors: false, // NoEmitOnErrorsPlugin
     concatenateModules: false //ModuleConcatenationPlugin
   },

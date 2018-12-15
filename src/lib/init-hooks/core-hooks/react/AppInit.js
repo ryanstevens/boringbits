@@ -5,71 +5,55 @@ import { createStore, applyMiddleware, combineReducers, compose } from 'redux';
 import { Provider  } from "react-redux";
 import { createGenerateClassName } from '@material-ui/core/styles';
 import { routerMiddleware, connectRouter } from 'connected-react-router'
+import isNode from 'detect-node';
 
-
-export default function getAppComponents(dependencies= {}) {
-
-  // Grab the state from a global variable injected into the server-generated HTML
-  let preloadedState = undefined;
-  const App  = dependencies.App;
-  const reducers = dependencies.reducers;
-  let composeEnhancers = compose;
-
+function performDOMTasks() {
   try {
-    if (window) {
-      composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+    if (!isNode) {
+      
+      var jssStyles = window.document.getElementById('jss-server-side');
+      if (jssStyles && jssStyles.parentNode) {
+        jssStyles.parentNode.removeChild(jssStyles);
+      }      
+      
       if (window.__PRELOADED_STATE__) {
         preloadedState = window.__PRELOADED_STATE__;
         delete window.__PRELOADED_STATE__;
       }
-    }
+
+      return window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+    }    
   }
   catch(e) {}
+  return compose;
+}
+ 
+export default function getAppComponents(dependencies) {
 
-  const middleware = [];
+  // Grab the state from a global variable injected into the server-generated HTML
+  var preloadedState = undefined;
+  var App  = dependencies.App;
+  var reducers = dependencies.reducers;
+  var composeEnhancers = performDOMTasks();
+
+  var middleware = [];
   if (dependencies.history) {
     middleware.push(routerMiddleware(dependencies.history));
     reducers.router = connectRouter(dependencies.history);
   }
 
-  const Router = dependencies.Router;
-  const enhancer =  composeEnhancers(applyMiddleware(...middleware));
+  var Router = dependencies.Router;
+  var enhancer =  composeEnhancers(applyMiddleware.apply(null, middleware));
 
-  const store = createStore(
+  var store = createStore(
     combineReducers(reducers),
     preloadedState,
     enhancer
   );
 
   // Create a new class name generator.
-  const generateClassName = createGenerateClassName();
-  const sheetsRegistry = new SheetsRegistry();
-
-  class Main extends React.Component {
-    // Remove the server-side injected CSS.
-    componentDidMount() {
-      if (window && window.document) {
-        const jssStyles = window.document.getElementById('jss-server-side');
-        if (jssStyles && jssStyles.parentNode) {
-          jssStyles.parentNode.removeChild(jssStyles);
-        }
-      }
-    }
-
-    render() {
-      return (
-        <Provider store={store}>
-          <Router>
-            <JssProvider registry={sheetsRegistry} generateClassName={generateClassName}>
-              <App />
-            </JssProvider>
-          </Router>
-        </Provider>
-      )
-
-    }
-  }
-
+  var generateClassName = createGenerateClassName();
+  var sheetsRegistry = new SheetsRegistry();
 
   /**
    * This meant to be called on the server
@@ -79,11 +63,19 @@ export default function getAppComponents(dependencies= {}) {
     return sheetsRegistry.toString();
   }
 
-  const Container = Main
+  function Container() {
+    return <Provider store={store}>
+      <Router>
+        <JssProvider registry={sheetsRegistry} generateClassName={generateClassName}>
+          <App />
+        </JssProvider>
+      </Router>
+    </Provider>
+  }
   return {
-    Container,
-    getStyleSheets,
-    store
+    Container: Container,
+    getStyleSheets: getStyleSheets,
+    store: store
   }
 
 }
