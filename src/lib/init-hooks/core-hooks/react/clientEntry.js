@@ -11,7 +11,7 @@ import getAppComponents from './AppInit';
 function renderRedux(App, reducers) {
 
 
-  const history = createBrowserHistory();
+  var history = createBrowserHistory();
   function Router(props) {
     return (
       <ConnectedRouter history={history}>
@@ -20,12 +20,14 @@ function renderRedux(App, reducers) {
     )
   }
 
-  const {Container} = getAppComponents({
-    App,
-    reducers,
-    history,
-    Router
+  var components = getAppComponents({
+    App: App,
+    reducers:reducers,
+    history: history,
+    Router: Router
   });
+
+  var Container = components.Container;
 
 
   ReactDOM.hydrate(
@@ -36,10 +38,10 @@ function renderRedux(App, reducers) {
 
 
 module.exports = {
-  renderRedux,
-  React,
-  ReactDOM,
-  Redux,
-  injecture,
-  ReactRedux
+  renderRedux: renderRedux,
+  React: React,
+  ReactDOM: ReactDOM,
+  Redux: Redux,
+  injecture: injecture,
+  ReactRedux: ReactRedux
 };
