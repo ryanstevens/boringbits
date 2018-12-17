@@ -42,9 +42,9 @@ describe('React Tests', function reactTests() {
     const metaData = decorators.router.getMetaDataByClass(Foo).metadata;
     
     const [beforeEntryPath, entrypointPath, afterEntryPath] = metaData.endpoints.beep.methods.get.entrypoint;
-    assert.equal(beforeEntryPath.split('/boring').pop(), '/src/lib/init-hooks/core-hooks/react/dynamicComponents/beforeEntry.js');
-    assert.equal(entrypointPath.split('/boring').pop(), '/src/client/pages/1/entrypoint.js');
-    assert.equal(afterEntryPath.split('/boring').pop(), '/src/lib/init-hooks/core-hooks/react/dynamicComponents/afterEntry.js');
+    assert.equal(beforeEntryPath.split('/boring').pop(), '/src/lib/init-hooks/core-hooks/react/dynamicComponents/dist/1_beforeEntry.js');
+    assert.equal(entrypointPath.split('/boring').pop(), '/src/client/pages/1/entrypoint');
+    assert.equal(afterEntryPath.split('/boring').pop(), '/src/lib/init-hooks/core-hooks/react/dynamicComponents/dist/1_afterEntry.js');
 
     assert.equal(metaData.endpoints.beep.methods.get.reactEntry[0].reactRoot,  '1');
     assert.ok(injection.boring.react, 'should have pushed an object onto boring');

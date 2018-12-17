@@ -11,9 +11,10 @@ module.exports = function renderRedux(options = { layout: { clientConfig: {}, pa
   const req = res.req;
 
   const context = {};
+  const { reactPaths } = res;
 
-  const App = require(res.reactPaths.mainApp).default
-  const reducers = require(res.reactPaths.reducers).default;
+  const App = require(reactPaths.mainApp).default
+  const reducers = require(reactPaths.reducers).default;
 
   function Router(props) {
     return (
