@@ -1,14 +1,14 @@
 
 import * as fs from 'fs';
 import * as babel from '@babel/core';
-
+import logger from 'boring-logger';
 
 export default function getEntryWrappers(reactHandlerPaths, options) {
 
   function makeConainerCode({path, importPath} = container) {
     const name = path.replace(/\//g, '');
     return `
-
+      
       const ${name}_container = Loadable({
         loader: () => import('${importPath}'), 
         loading: function Loading() {
@@ -47,6 +47,8 @@ export default function getEntryWrappers(reactHandlerPaths, options) {
   if (containers.legnth === 0) return [];
 
   const code = `
+    // THIS IS A GENERATED FILE, PLEASE DO NOT MODIFY
+
     import Loadable from 'react-loadable';  
     import injecture from 'injecture';
     import React from 'react';
@@ -76,7 +78,20 @@ export default function getEntryWrappers(reactHandlerPaths, options) {
   const babelResults = babel.transformSync(code, babelOptions);
 
   const prefix = __dirname + '/dist/'+reactHandlerPaths.reactRoot;
-  fs.writeFileSync(prefix+'_beforeEntry.js', babelResults.code);
+
+  const beforeEntryFilePath = prefix+'_beforeEntry.js';
+  let writeBefore = true;
+  if (fs.existsSync(beforeEntryFilePath)) {
+    if (fs.readFileSync(beforeEntryFilePath) == babelResults.code) {
+      writeBefore = false;
+      logger.debug(`The fle ${beforeEntryFilePath} has already been generated, nothing has changed`);
+    }
+  }
+
+  if (writeBefore) {
+    logger.debug(`The fle ${beforeEntryFilePath} is being generated, please do not change it's contents`);
+    fs.writeFileSync(beforeEntryFilePath, babelResults.code);
+  }
   fs.writeFileSync(prefix+'_beforeEntry.js.map', JSON.stringify(babelResults.map));
   fs.writeFileSync(prefix+'_afterEntry.js', `//afterEntry hook`);
 
