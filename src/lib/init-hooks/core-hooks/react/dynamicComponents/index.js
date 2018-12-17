@@ -5,30 +5,41 @@ import * as babel from '@babel/core';
 
 export default function getEntryWrappers(reactHandlerPaths, options) {
 
+  function makeConainerCode({path, importPath} = container) {
+    const name = path.replace(/\//g, '');
+    return `
+
+      const ${name}_container = Loadable({
+        loader: () => import('${importPath}'), 
+        loading: function Loading() {
+          return <div style={{display:'none'}} className="module-loading">loading</div>;
+        },
+      });
+
+      injecture.registerClass(class ${name}Container {
+        getContainer() {
+          return ${name}_container;
+        }
+        getPath() {
+          return '${path}'
+        }
+      }, {
+        interfaces: ['AppContainer']
+      });
+    `;
+  }
+
+  const containers = [
+    {path: '/adlib/mixer', importPath: 'client/pages/adlib/containers/AdMixer'},
+    {path: '/adlib', importPath: 'client/pages/adlib/containers/AdLib'},
+  ];
+
   const code = `
-    import Loadable from 'react-loadable';
+    import Loadable from 'react-loadable';  
     import injecture from 'injecture';
     import React from 'react';
         
-    const adMixer = Loadable({
-      loader: () => import('client/pages/adlib/containers/AdMixer'), 
-      loading: function Loading() {
-        return <div style={{display:'none'}} className="module-loading">loading</div>;
-      },
-    });
-
-    injecture.registerClass(class AdMixerContainer {
-      getContainer() {
-        return adMixer;
-      }
-      getPath() {
-        return '/adlib/mixer'
-      }
-    }, {
-      interfaces: ['AppContainer']
-    });
-
-  `;
+  ` + containers.map(makeConainerCode).join('\n');
 
   const babelOptions = {
     'babelrc': false,

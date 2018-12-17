@@ -2,12 +2,8 @@
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import { StaticRouter } from 'react-router-dom';
-
-const path = require('path');
-const paths = require('paths');
-const config = require('boring-config');
-const Layout = require('./Layout');
-
+import Layout from './Layout';
+import getAppComponents from './AppInit';
 
 module.exports = function renderRedux(options = { layout: { clientConfig: {}, pageInjections: {}}}) {
 
@@ -16,17 +12,8 @@ module.exports = function renderRedux(options = { layout: { clientConfig: {}, pa
 
   const context = {};
 
-  const App = require(paths.app_dir
-    + res.reactPaths.clientRoot
-    + '/'
-    + res.reactPaths.reactRoot
-    + config.get('boring.react.mainApp', '/App.js')).default
-
-  const reducers = require(paths.app_dir
-    + res.reactPaths.clientRoot
-    + '/'
-    + res.reactPaths.reactRoot
-    + config.get('boring.react.reducers', '/reducers')).default;
+  const App = require(res.reactPaths.mainApp).default
+  const reducers = require(res.reactPaths.reducers).default;
 
   function Router(props) {
     return (
@@ -36,14 +23,11 @@ module.exports = function renderRedux(options = { layout: { clientConfig: {}, pa
     )
   }
 
-  const dependencies = {
+  const { Container, getStyleSheets, store }  = getAppComponents({
     App,
     Router,
     reducers
-  }
-
-  const getAppComponents = require('./AppInit').default;
-  const  { Container, getStyleSheets, store }  = getAppComponents(dependencies);
+  });
 
   const layout = options.layout || {
     clientConfig: {},
