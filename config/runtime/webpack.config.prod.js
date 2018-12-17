@@ -6,11 +6,11 @@ const ManifestPlugin = require('webpack-manifest-plugin');
 const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
 const paths = require('./paths')
 const autoprefixer = require('autoprefixer');
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const fs = require('fs');
 const ProgressBarPlugin = require('progress-bar-webpack-plugin');
-
-
+const TerserPlugin = require('terser-webpack-plugin');
+const os = require('os');
 
 // Webpack uses `publicPath` to determine where the app is being served from.
 // It requires a trailing slash, or the file assets will get an incorrect path.
@@ -44,8 +44,8 @@ module.exports = {
     // Point sourcemap entries to original disk location (format as URL on Windows)
     devtoolModuleFilenameTemplate: info =>
       path
-        .relative(paths.app_src, info.absoluteResourcePath)
-        .replace(/\\/g, '/'),
+          .relative(paths.app_src, info.absoluteResourcePath)
+          .replace(/\\/g, '/'),
   },
   resolve: {
     // This allows you to set a fallback for where Webpack should look for modules.
@@ -118,16 +118,16 @@ module.exports = {
               babelrc: false,
               configFile: false,
 
-              'presets': [
+              presets: [
                 ['@babel/env', {
-                  'targets': {
-                    'ie': '11',
+                  targets: {
+                    ie: '11',
                   },
                 }],
                 ['@babel/preset-typescript'],
                 ['@babel/preset-react'],
               ],
-              'plugins': [
+              plugins: [
                 ['@babel/plugin-proposal-object-rest-spread'],
                 ['@babel/plugin-proposal-decorators', {'legacy': true}],
                 ['@babel/plugin-proposal-class-properties'],
@@ -186,6 +186,30 @@ module.exports = {
     ],
   },
   optimization: {
+    minimizer: [
+      new TerserPlugin({
+        cache: true,
+        extractComments: true,
+        exclude: /\/injecture/,
+        parallel: os.cpus().length - 1,
+        sourceMap: true,
+        terserOptions: {
+          ecma: undefined,
+          warnings: false,
+          parse: {},
+          compress: {},   
+          mangle: true,
+          module: false,
+          output: null,
+          toplevel: false,
+          nameCache: null,
+          ie8: false,
+          keep_classnames: true, // the next two are super important otherwise injecture.registerClass will break
+          keep_fnames: true,
+          safari10: false,
+        },
+      }),
+    ],
     namedModules: true, // NamedModulesPlugin()
     splitChunks: {
       chunks: 'async',
@@ -199,17 +223,17 @@ module.exports = {
       cacheGroups: {
         vendors: {
           test: /[\\/]node_modules[\\/]/,
-          priority: -10
+          priority: -10,
         },
         default: {
           minChunks: 1,
           priority: -20,
-          reuseExistingChunk: true
-        }
-      }
+          reuseExistingChunk: true,
+        },
+      },
     },
     noEmitOnErrors: false, // NoEmitOnErrorsPlugin
-    concatenateModules: false //ModuleConcatenationPlugin
+    concatenateModules: false, // ModuleConcatenationPlugin
   },
   plugins: [
 
@@ -230,10 +254,10 @@ module.exports = {
     new MiniCssExtractPlugin({
       // Options similar to the same options in webpackOptions.output
       // both options are optional
-      filename: "static/css/[name].[chunkhash:8].css",
-      chunkFilename: "[id].css"
+      filename: 'static/css/[name].[chunkhash:8].css',
+      chunkFilename: '[id].css',
     }),
-    new ProgressBarPlugin()
+    new ProgressBarPlugin(),
 
   ],
   // Some libraries import Node modules but don't use them in the browser.

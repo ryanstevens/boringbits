@@ -64,13 +64,15 @@ export default function getAppComponents(dependencies) {
   }
 
   function Container() {
-    return <Provider store={store}>
-      <Router>
-        <JssProvider registry={sheetsRegistry} generateClassName={generateClassName}>
-          <App />
-        </JssProvider>
-      </Router>
-    </Provider>
+    return (
+      <Provider store={store}>
+        <Router>
+          <JssProvider registry={sheetsRegistry} generateClassName={generateClassName}>
+            <App />
+          </JssProvider>
+        </Router>
+      </Provider>
+    );
   }
   return {
     Container: Container,

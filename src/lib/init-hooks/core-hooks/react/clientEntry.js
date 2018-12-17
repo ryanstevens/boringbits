@@ -34,6 +34,8 @@ function renderRedux(App, reducers) {
       <Container />
     , document.querySelector('#root'),
   );
+
+  return components;
 }
 
 
