@@ -4,7 +4,7 @@ const config = require('boring-config');
 const paths = require('paths');
 const renderRedux = require('./renderRedux');
 const dynamicComponents = require('./dynamicComponents').default;
-
+const fs = require('fs');
 
 module.exports = function reactHook(BoringInjections) {
   const {
@@ -36,11 +36,12 @@ module.exports = function reactHook(BoringInjections) {
 
       // this needs to live outside of the spread
       // because it is used to create baseAppPath
-      const clientRoot = options.clientRoot || config.get('boring.react.clientRoot', '/client/pages');
+      const clientRoot = options.clientRoot || config.get('boring.react.clientRoot', 'client/pages');
 
       options = {
+        app_dir: paths.app_dir + '/',
         clientRoot,
-        baseAppPath: paths.app_dir + clientRoot + '/' + options.reactRoot,
+        baseAppPath: clientRoot + '/' + options.reactRoot,
         entrypointFile: config.get('boring.react.entrypoint', 'entrypoint'),
         routeContainersDirectory: config.get('boring.react.routerContainersDirectory', 'containers'),
         // not quite sure if we are gonna require this for people.
@@ -54,12 +55,17 @@ module.exports = function reactHook(BoringInjections) {
         // meant to be required / imported.
         // These are the `defaults` for borings
         // react / redux conventions
-        entrypoint: options.baseAppPath + '/' + options.entrypointFile,
+        entrypoint: options.app_dir + options.baseAppPath + '/' + options.entrypointFile,
+        mainApp: options.app_dir + options.baseAppPath + '/'+ options.mainAppFile,
+        reducers: options.app_dir+ options.baseAppPath + '/'+ options.reducersFile,
+        // this one is a little special, we want to
+        // make sure it's relative to the app_dir
+        // but not having the app_dir in it's path
         routerContainers: options.baseAppPath + '/' + options.routeContainersDirectory,
-        mainApp: options.baseAppPath + '/'+ options.mainAppFile,
-        reducers: options.baseAppPath + '/'+ options.reducersFile,
         ...options,
       };
+
+      reactHandlerPaths.containers = getContainers(reactHandlerPaths);
 
       const [beforeEntry, afterEntry] = dynamicComponents(reactHandlerPaths, options);
 
@@ -67,7 +73,7 @@ module.exports = function reactHook(BoringInjections) {
         beforeEntry,
         reactHandlerPaths.entrypoint,
         afterEntry,
-      ];
+      ].filter(Boolean);
 
       return decorators.router.entrypoint(...entrypointPaths)(
           target,
@@ -94,3 +100,23 @@ module.exports = function reactHook(BoringInjections) {
 
   return {name: 'react'};
 };
+
+
+function getContainers(reactHandlerPaths) {
+  const containersDirPath = reactHandlerPaths.app_dir + reactHandlerPaths.routerContainers;
+  try {
+    return fs.readdirSync(containersDirPath).map(function(file) {
+      if (file.endsWith('.map')) return null;
+      const moduleName = file.split('.').shift(); // don't worry about what type of extension
+      const container = require(containersDirPath + '/' + moduleName).default;
+      return {
+        path: container.path,
+        container,
+        moduleName,
+        importPath: reactHandlerPaths.routerContainers + '/' + moduleName,
+      };
+    }).filter(Boolean);
+  } catch (e) {
+    return []
+  }
+}
