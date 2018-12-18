@@ -2,28 +2,46 @@
 import * as fs from 'fs';
 import * as babel from '@babel/core';
 import logger from 'boring-logger';
+import beforeEntryLoader from './beforeEntryLoader';
 
-export default function getEntryWrappers(reactHandlerPaths, options) {
+function makeConainerCode({path, importPath} = container) {
+  // const name = path.replace(/\//g, '');
 
-  function makeConainerCode({path, importPath} = container) {
-    const name = path.replace(/\//g, '');
+  /*
+  // TODO: I had to backpedal a bit on
+  // making these routez lazy loaded via
+  // webpacks optimization chunks.
+  // Should be too hard to renable,
+  // was just having some trouble keeping
+  // hot reload working which is more of a
+  // priority
+  const ${name}_container = Loadable({
+    loader: () => imporzzt('${importPath}'),
+    loading: function Loading() {
+      return <></>;
+    },
+  });
+  */
+
+  return `
+    containers.push({
+      path: '${path}',
+      container: require('${importPath}').default
+    })
+  `;
+}
+
+function makeModuleCode(modules) {
+
+  return Object.keys(modules).map(moduleName => {
     return `
-      
-      const ${name}_container = Loadable({
-        loader: () => import('${importPath}'), 
-        loading: function Loading() {
-          return <></>;
-        },
-      });
-
-      injecture.registerClass(class ${name}Container {
-        getContainer() { return ${name}_container; }
-        getPath() { return '${path}' }
-      }, {
-        interfaces: ['AppContainer']
-      });
+      modules['${moduleName}'] = require('${modules[moduleName]}').default;
     `;
-  }
+  }).join('\n');
+}
+
+export default function getEntryWrappers(reactHandlerPaths, modules = {}) {
+
 
   const containers = reactHandlerPaths
       .containers
@@ -46,14 +64,22 @@ export default function getEntryWrappers(reactHandlerPaths, options) {
 
   if (containers.legnth === 0) return [];
 
+  const prefix = __dirname + '/dist';
+  const beforeFilename = reactHandlerPaths.reactRoot + '_beforeEntry.js';
+
+  const beforeEntryFilePath = prefix + '/' + beforeFilename;
+
+  const afterFilename = reactHandlerPaths.reactRoot + '_afterEntry.js';
+  const afterEntryFilePath = prefix + '/' + afterFilename;
+
   const code = `
     // THIS IS A GENERATED FILE, PLEASE DO NOT MODIFY
-
-    import Loadable from 'react-loadable';  
-    import injecture from 'injecture';
-    import React from 'react';
-        
-  ` + containers.map(makeConainerCode).join('\n');
+    const containers = [];
+    const modules = [];
+  ` + containers.map(makeConainerCode).join('\n')
+    + makeModuleCode(modules)
+    + beforeEntryLoader.toString()
+    + '\nbeforeEntryLoader();';
 
   const babelOptions = {
     'babelrc': false,
@@ -77,24 +103,23 @@ export default function getEntryWrappers(reactHandlerPaths, options) {
 
   const babelResults = babel.transformSync(code, babelOptions);
 
-  const prefix = __dirname + '/dist/'+reactHandlerPaths.reactRoot;
 
-  const beforeEntryFilePath = prefix+'_beforeEntry.js';
-  let writeBefore = true;
+  let writeNewBefore = true;
   if (fs.existsSync(beforeEntryFilePath)) {
     if (fs.readFileSync(beforeEntryFilePath) == babelResults.code) {
-      writeBefore = false;
+      writeNewBefore = false;
       logger.debug(`The fle ${beforeEntryFilePath} has already been generated, nothing has changed`);
     }
   }
 
-  if (writeBefore) {
+  if (writeNewBefore) {
     logger.debug(`The fle ${beforeEntryFilePath} is being generated, please do not change it's contents`);
     fs.writeFileSync(beforeEntryFilePath, babelResults.code);
+    fs.writeFileSync(beforeEntryFilePath+'.map', JSON.stringify(babelResults.map));
   }
-  fs.writeFileSync(prefix+'_beforeEntry.js.map', JSON.stringify(babelResults.map));
-  fs.writeFileSync(prefix+'_afterEntry.js', `//afterEntry hook`);
+
+  fs.writeFileSync(afterEntryFilePath, `//afterEntry hook`);
 
 
-  return [prefix+'_beforeEntry.js', prefix+'_afterEntry.js'];
+  return [beforeEntryFilePath, afterEntryFilePath];
 };

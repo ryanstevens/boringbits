@@ -7,7 +7,10 @@ import { createGenerateClassName } from '@material-ui/core/styles';
 import { routerMiddleware, connectRouter } from 'connected-react-router'
 import isNode from 'detect-node';
 
-function performDOMTasks() {
+function extractStateFromDOM() {
+  var state = {
+    composeEnhancers: compose
+  };
   try {
     if (!isNode) {
       
@@ -15,26 +18,25 @@ function performDOMTasks() {
       if (jssStyles && jssStyles.parentNode) {
         jssStyles.parentNode.removeChild(jssStyles);
       }      
-      
-      if (window.__PRELOADED_STATE__) {
-        preloadedState = window.__PRELOADED_STATE__;
-        delete window.__PRELOADED_STATE__;
-      }
 
-      return window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+      state.preloadedState = window.__PRELOADED_STATE__ || {};
+      state.composeEnhancers =  window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
     }    
   }
   catch(e) {}
-  return compose;
+  
+  return state;
 }
  
 export default function getAppComponents(dependencies) {
 
   // Grab the state from a global variable injected into the server-generated HTML
-  var preloadedState = undefined;
+  var domExtractedState = extractStateFromDOM();
+  var preloadedState = domExtractedState.preloadedState;
+  var composeEnhancers = domExtractedState.composeEnhancers;
+  
   var App  = dependencies.App;
   var reducers = dependencies.reducers;
-  var composeEnhancers = performDOMTasks();
 
   var middleware = [];
   if (dependencies.history) {

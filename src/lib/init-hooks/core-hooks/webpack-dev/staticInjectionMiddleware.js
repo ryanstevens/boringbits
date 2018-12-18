@@ -13,6 +13,9 @@ function assetsByManifest() {
   const js = Object.keys(manifest).reduce((collector, name) => {
     const assets = [].concat(manifest[name]).filter(asset => asset.endsWith('.js'));
     if (assets.length === 0) return collector;
+    if (manifest['runtime.js']) {
+      assets.unshift(manifest['runtime.js']);
+    }
     collector[name.split('.').shift()] = assets;
     return collector;
   }, {});
@@ -38,6 +41,9 @@ function assetsByDevserver(webpackStats) {
   const js = Object.keys(chunks).reduce((collector, name) => {
     const assets = chunks[name].filter(chunk => chunk.endsWith('.js'));
     if (assets.length === 0) return collector;
+    if (chunks.runtime) {
+      assets.unshift([].concat(chunks.runtime).filter(asset => asset.endsWith('.js')));
+    }
     collector[name.split('.').shift()] = assets;
     return collector;
   }, {});

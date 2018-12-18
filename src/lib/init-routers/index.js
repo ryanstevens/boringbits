@@ -127,32 +127,33 @@ function wrapHandler(boring, route, endpoint, methods, method) {
       route,
       endpoint,
       method,
-      middleware: normalizedMiddleware
+      middleware: normalizedMiddleware,
     };
     ctx[method] = methods[method];
 
 
     // first execute the middleware
-    boring.perform(`http::${method.toLowerCase()}::middleware`, ctx, () => new Promise(function(resolve, reject) {
+    boring.perform(`http::${method.toLowerCase()}::middleware`,
+        ctx,
+        () => new Promise(function(resolve, reject) {
 
-      compose(ctx.middleware)(ctx.req, ctx.res, function(err) {
-        if (err) return reject(err);
-        resolve(ctx);
-      });
+          compose(ctx.middleware)(ctx.req, ctx.res, function(err) {
+            if (err) return reject(err);
+            resolve(ctx);
+          });
 
-    }))
-    .then(() => {
-    // then execte handler
-      boring.perform(`http::${method.toLowerCase()}`, ctx, async function () {
-        handler.call(this, ctx.req, ctx.res, ctx.next);
-        return ctx;
-      }).catch((e) => {
-        logger.debug(e, `There was rejection from a {{http::${method}}} interceptor for `+url);
-      });
-    })
-    .catch((e) => {
-      logger.debug(e, `There was rejection from a {{http::${method}::middleware}} interceptor for `+url);
-    });
+        }))
+        .then(() => {
+          boring.perform(`http::${method.toLowerCase()}`, ctx, async () => {
+            handler(...[ctx.req, ctx.res, ctx.next]);
+            return ctx;
+          }).catch((e) => {
+            logger.debug(e, `There was rejection from a {{http::${method}}} interceptor for `+url);
+          });
+        })
+        .catch((e) => {
+          logger.debug(e, `There was rejection from a {{http::${method}::middleware}} interceptor for `+url);
+        });
 
   };
 }
