@@ -62,3 +62,6 @@ typings/
 scratch.js
 
 /dist
+
+src/lib/init-hooks/core-hooks/react/dynamicComponents/dist/*.js
+src/lib/init-hooks/core-hooks/react/dynamicComponents/dist/*.js.map

@@ -6,7 +6,8 @@ import injecture from 'injecture';
 import { ConnectedRouter } from 'connected-react-router'
 import createBrowserHistory from 'history/createBrowserHistory';
 import getAppComponents from './AppInit';
-
+import BoringRouter from './dynamicComponents/BoringRouter';
+import isNode from 'detect-node';
 
 function renderRedux(App, reducers) {
 
@@ -15,7 +16,7 @@ function renderRedux(App, reducers) {
   function Router(props) {
     return (
       <ConnectedRouter history={history}>
-          {props.children}
+        {props.children}
       </ConnectedRouter>
     )
   }
@@ -38,12 +39,20 @@ function renderRedux(App, reducers) {
   return components;
 }
 
-
-module.exports = {
+const toExport = {
   renderRedux: renderRedux,
-  React: React,
-  ReactDOM: ReactDOM,
-  Redux: Redux,
+  React: React, //backwards compat, remove @ v4
+  react: React,
+  ReactDOM: ReactDOM, //backwards compat, remove @ v4
+  Redux: Redux, //backwards compat, remove @ v4
+  redux: Redux,
   injecture: injecture,
-  ReactRedux: ReactRedux
+  ReactRedux: ReactRedux,  //backwards compat, remove @ v4
+  BoringRouter: BoringRouter,
+  MagicallyDeliciousRouter: BoringRouter
 };
+
+toExport['react-redux'] = ReactRedux;
+toExport['react-dom'] = ReactDOM;
+
+module.exports = toExport;

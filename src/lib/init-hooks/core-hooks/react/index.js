@@ -39,7 +39,7 @@ module.exports = function reactHook(BoringInjections) {
       const clientRoot = options.clientRoot || config.get('boring.react.clientRoot', 'client/pages');
 
       options = {
-        app_dir: paths.app_dir + '/',
+        ...paths,
         clientRoot,
         baseAppPath: clientRoot + '/' + options.reactRoot,
         entrypointFile: config.get('boring.react.entrypoint', 'entrypoint'),
@@ -51,13 +51,14 @@ module.exports = function reactHook(BoringInjections) {
       };
 
       const reactHandlerPaths = {
-        // This grouping are absolute filepaths
+        // This grouping are filepaths
+        // relative to the application
         // meant to be required / imported.
         // These are the `defaults` for borings
         // react / redux conventions
-        entrypoint: options.app_dir + options.baseAppPath + '/' + options.entrypointFile,
-        mainApp: options.app_dir + options.baseAppPath + '/'+ options.mainAppFile,
-        reducers: options.app_dir+ options.baseAppPath + '/'+ options.reducersFile,
+        entrypoint: options.baseAppPath + '/' + options.entrypointFile,
+        mainApp: options.baseAppPath + '/'+ options.mainAppFile,
+        reducers: options.baseAppPath + '/'+ options.reducersFile,
         // this one is a little special, we want to
         // make sure it's relative to the app_dir
         // but not having the app_dir in it's path
@@ -67,7 +68,20 @@ module.exports = function reactHook(BoringInjections) {
 
       reactHandlerPaths.containers = getContainers(reactHandlerPaths);
 
-      const [beforeEntry, afterEntry] = dynamicComponents(reactHandlerPaths, options);
+      const modulesToRequire = {};
+      const entryPointPath = options.app_dir +'/'+reactHandlerPaths.entrypoint;
+      
+      // check to make sure entrypoint is real
+      if (!fs.existsSync(entryPointPath + '.js') &&
+        !fs.existsSync(entryPointPath + '.jsx') &&
+        !fs.existsSync(entryPointPath + '.ts') &&
+        !fs.existsSync(entryPointPath + '.tsx')) {
+        reactHandlerPaths.entrypoint = __dirname + '/defaultEntrypoint.js';
+        modulesToRequire['reducers'] = reactHandlerPaths.reducers;
+        modulesToRequire['mainApp'] = reactHandlerPaths.mainApp;
+      }
+
+      const [beforeEntry, afterEntry] = dynamicComponents(reactHandlerPaths, modulesToRequire);
 
       const entrypointPaths = [
         beforeEntry,
@@ -103,7 +117,7 @@ module.exports = function reactHook(BoringInjections) {
 
 
 function getContainers(reactHandlerPaths) {
-  const containersDirPath = reactHandlerPaths.app_dir + reactHandlerPaths.routerContainers;
+  const containersDirPath = reactHandlerPaths.app_dir +'/'+ reactHandlerPaths.routerContainers;
   try {
     return fs.readdirSync(containersDirPath).map(function(file) {
       if (file.endsWith('.map')) return null;
@@ -117,6 +131,6 @@ function getContainers(reactHandlerPaths) {
       };
     }).filter(Boolean);
   } catch (e) {
-    return []
+    return [];
   }
 }
