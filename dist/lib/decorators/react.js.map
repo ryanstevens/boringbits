@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../../src/lib/decorators/react.js"],"names":["toExport","module","exports"],"mappings":";;AAAA,MAAMA,QAAQ,GAAG,EAAjB;AAGAC,MAAM,CAACC,OAAP,GAAiBF,QAAjB","sourcesContent":["const toExport = {};\n\n\nmodule.exports = toExport;"],"file":"react.js"}
