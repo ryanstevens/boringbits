@@ -24,6 +24,7 @@ require('yargs')
     .command('build-node', 'Babel (ES7 + TypeScript) on your project\'s server', makeCmd('build-node'))
     .command('up', 'Run `docker-compose up` to launch infrastructure such as reverse proxy', makeCmd('docker-compose-up'))
     .command('down', 'Run `docker-compose down` to tear down infrastructure', makeCmd('docker-compose-down'))
+    .command('yo', 'Generate routes / views / app structure', makeCmd('yo'))
     .demandCommand(1)
     .help()
     .argv;

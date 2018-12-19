@@ -14,7 +14,8 @@
     "prepublishOnly": "npm test && npm run build"
   },
   "bin": {
-    "boring": "./bin/boring-cli.js"
+    "boring": "./bin/boring-cli.js",
+    "boringbits": "./bin/boring-cli.js"
   },
   "author": "Ryan Stevens",
   "license": "MIT",
