@@ -5,7 +5,7 @@ import logger from 'boring-logger';
 import beforeEntryLoader from './beforeEntryLoader';
 
 function makeConainerCode({path, importPath} = container) {
-  // const name = path.replace(/\//g, '');
+  const name = path.replace(/\//g, '');
 
   /*
   // TODO: I had to backpedal a bit on
@@ -15,19 +15,23 @@ function makeConainerCode({path, importPath} = container) {
   // was just having some trouble keeping
   // hot reload working which is more of a
   // priority
-  const ${name}_container = Loadable({
-    loader: () => imporzzt('${importPath}'),
-    loading: function Loading() {
-      return <></>;
-    },
-  });
+  
   */
 
   return `
+  console.log('setting dynamic target: ${name}');
+  (function() {
     containers.push({
       path: '${path}',
-      container: require('${importPath}').default
-    })
+      container: Loadable({
+        loader: () => import('${importPath}'),
+        loading: function Loading() {
+          return <></>;
+        },
+      })
+    });
+  })();
+
   `;
 }
 
@@ -74,6 +78,9 @@ export default function getEntryWrappers(reactHandlerPaths, modules = {}) {
 
   const code = `
     // THIS IS A GENERATED FILE, PLEASE DO NOT MODIFY
+    import Loadable from 'react-loadable';
+    import * as React from 'react';
+
     const containers = [];
     const modules = [];
   ` + containers.map(makeConainerCode).join('\n')
