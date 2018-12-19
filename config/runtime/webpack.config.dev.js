@@ -74,7 +74,6 @@ module.exports = {
       // https://www.smashingmagazine.com/2016/08/a-glimpse-into-the-future-with-react-native-for-web/
       'react-native': 'react-native-web',
       'modules': path.resolve(process.cwd(), 'src/modules'),
-      'generated': path.resolve(process.cwd(), 'src/generated'),
       'client': path.resolve(process.cwd(), 'src/client'),
       'server': path.resolve(process.cwd(), 'src/server'),
     },
