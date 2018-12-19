@@ -9,4 +9,7 @@ module.exports = {
   paths: {
     base_app_path: 'src',
   },
+  server: {
+    disable_cache: false,
+  },
 };

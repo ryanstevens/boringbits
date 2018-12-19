@@ -3,7 +3,8 @@ import requireInject from 'require-inject-all';
 import logger from 'boring-logger';
 import injecture from 'injecture';
 import endpoint_transformer from './transform-annotation';
-//import * as decorators from '../decorators'
+import config from 'boring-config';
+
 const compose = require('compose-middleware').compose;
 
 
@@ -119,6 +120,19 @@ function wrapHandler(boring, route, endpoint, methods, method) {
 
   const handler = methods[method].handler;
   methods[method].handler = function wrappedHandler(req, res, next) {
+
+    if (config.get('boring.server.disable_cache', false) === true) {
+      Object.keys(require.cache).forEach(key => {
+        // clearling cache from just /src
+        // ensures this is not ran in production
+        // and only on our webapp
+        if (key.indexOf(process.cwd() + '/src') === 0) {
+          delete require.cache[key];
+        }
+      });
+    }
+
+
     const url = (req) ? req.path : '';
     const ctx = {
       req,
@@ -136,7 +150,6 @@ function wrapHandler(boring, route, endpoint, methods, method) {
     boring.perform(`http::${method.toLowerCase()}::middleware`,
         ctx,
         () => new Promise(function(resolve, reject) {
-
           compose(ctx.middleware)(ctx.req, ctx.res, function(err) {
             if (err) return reject(err);
             resolve(ctx);
