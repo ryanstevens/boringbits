@@ -62,6 +62,7 @@ typings/
 scratch.js
 
 yo/node_modules
+yeoman-generator/node_modules
 
 /dist
 

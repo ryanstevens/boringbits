@@ -6,9 +6,6 @@
     "name": "Ryan Stevens",
     "email": "js.maniacs@gmail.com"
   },
-  "files": [
-    "generators"
-  ],
   "keywords": [
     "yeoman-generator"
   ],
