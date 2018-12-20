@@ -5,7 +5,7 @@ require('@babel/register')({
   'presets': [
     ['@babel/preset-env', {
       'targets': {
-        'node': config.get('boring.babel.node_target', '8.10.0')
+        'node': config.get('boring.babel.node_target', '8.10.0'),
       },
     }],
     ['@babel/preset-typescript'],
