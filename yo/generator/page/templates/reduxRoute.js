@@ -9,9 +9,9 @@ module.exports = function setupRoute(/* dependencies from boring */ boring) {
 
   const {
     endpoint,
-    post,
     get,
-    entrypoint,
+    post,
+    reactEntry,
   } = decorators.router;
 
   // signals to boring this class has HTTP decortors as class methods
@@ -27,25 +27,11 @@ module.exports = function setupRoute(/* dependencies from boring */ boring) {
     }
 
     @get('<%= path %>')
-    @entrypoint('client/pages/<%= pageName %>/entrypoint.js')
+    @reactEntry('/<%= pageName %>')
     serve_<%= pageName %>_get(req, res) {
-      logger.info('Severing HTML for <%= pageName %>');
 
-      const links = res.locals.pageInjections.headLinks || [];
-      const scripts = res.locals.pageInjections.bodyEndScripts || [];
+      res.renderRedux();
 
-      res.send(`
-      <!DOCTYPE html>
-      <html>
-        <head>
-          ${links.map(link => `<link rel="stylesheet" href="${link.href}" />`).join('\n')}
-        </head>
-        <body>
-          <div id="root"></div>
-          ${scripts.map(script => `<script src="${script.src}"></script>`).join('\n')}
-        </body>
-      </html>
-      `)
     }
   }
 

@@ -12,7 +12,7 @@ module.exports = function(args) {
         stdio: [process.stdin, process.stdout, process.stderr],
         cwd: __dirname + '/../yo/',
       });
-      console.log('\n\n 🦕 npm install of yo complete 🦕\n\n');
+      console.log(' 🦕  npm install of yo complete 🦕\n\n');
     }
 
 

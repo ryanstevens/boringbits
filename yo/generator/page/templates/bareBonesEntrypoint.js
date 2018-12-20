@@ -10,7 +10,7 @@ function printMsg(data) {
   return Promise.resolve();
 }
 
-fetch('/data.json', {
+fetch('<%= path %data.json', {
   method: 'POST',
   body: JSON.stringify({name}),
   headers: {'Content-Type': 'application/json; charset=utf-8'},

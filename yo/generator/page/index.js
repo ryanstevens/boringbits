@@ -19,8 +19,8 @@ module.exports = class extends Generator {
       name: 'pageType',
       message: 'What type of page do you want to generate',
       choices: [
-        {name: 'Bare bones: simple page with just webpack configured entrypoint', value: 'bareBones'},
         {name: 'React / Redux: Universal rendering of react using redux and react router', value: 'redux'},
+        {name: 'Bare bones: simple page with just webpack configured entrypoint', value: 'bareBones'},
       ],
     });
 
@@ -45,17 +45,43 @@ module.exports = class extends Generator {
 
   async writing() {
 
-    this.fs.copyTpl(
-        this.templatePath('bareBonesRoute.js'),
-        this.destinationPath(`src/server/routers/${this.props.pageName}.js`),
-        this.props
-    );
+    if (this.props.pageType === 'bareBones') {
+      this.fs.copyTpl(
+          this.templatePath('bareBonesRoute.js'),
+          this.destinationPath(`src/server/routers/${this.props.pageName}.js`),
+          this.props
+      );
 
-    this.fs.copyTpl(
-        this.templatePath('bareBonesEntrypoint.js'),
-        this.destinationPath(`src/client/pages/${this.props.pageName}/entrypoint.js`),
-        this.props
-    );
+      this.fs.copyTpl(
+          this.templatePath('bareBonesEntrypoint.js'),
+          this.destinationPath(`src/client/pages/${this.props.pageName}/entrypoint.js`),
+          this.props
+      );
+    } else if (this.props.pageType === 'redux') {
+      this.fs.copyTpl(
+          this.templatePath('reduxRoute.js'),
+          this.destinationPath(`src/server/routers/${this.props.pageName}.js`),
+          this.props
+      );
+
+      this.fs.copyTpl(
+          this.templatePath('reduxApp.js'),
+          this.destinationPath(`src/client/pages/${this.props.pageName}/App.js`),
+          this.props
+      );
+
+      this.fs.copyTpl(
+          this.templatePath('reduxReducers.js'),
+          this.destinationPath(`src/client/pages/${this.props.pageName}/reducers/index.js`),
+          this.props
+      );
+
+      this.fs.copyTpl(
+          this.templatePath('reduxContainer.js'),
+          this.destinationPath(`src/client/pages/${this.props.pageName}/containers/${this.props.pageName}.js`),
+          this.props
+      );
+    }
   }
 
 };
