@@ -1,32 +1,38 @@
 'use strict';
 const Generator = require('yeoman-generator');
 const chalk = require('chalk');
-const yosay = require('yosay');
 
 module.exports = class extends Generator {
+  initializing() {
+
+    const options = {
+      props: {},
+      processPrompt,
+    };
+
+    const prompt = this.prompt.bind(this);
+
+    async function processPrompt(promptObj, context, propToMerge) {
+      const answers = await prompt(promptObj);
+
+      if (!context) {
+        context = options;
+      }
+      if (!propToMerge) propToMerge = 'props';
+
+      Object.assign(context[propToMerge], answers);
+      return context[propToMerge];
+    }
+
+    this.composeWith(require.resolve('../server'), options);
+    this.composeWith(require.resolve('../page'), options);
+  }
+
   async prompting() {
+
     // Have Yeoman greet the user.
-    this.log(`\n\nWelcome to the very exciting ${chalk.red('generator-boring')} generator!\n\n`);
-
-    const answers = await this.prompt([{
-      type: 'input',
-      name: 'name',
-      message: 'Your project name',
-      default: this.appname, // Default to current folder name
-    }]);
-
-    this.log('app name', answers.name);
-  }
-
-  writing() {
-    // console.log(this.props);
-    // this.fs.copy(
-    //     this.templatePath('dummyfile.txt'),
-    //     this.destinationPath('dummyfile.txt')
-    // );
-  }
-
-  install() {
+    this.log('\n\nWelcome to the very exciting '+
+      `${chalk.red('boringbits')} generator!\n\n`);
 
   }
 };

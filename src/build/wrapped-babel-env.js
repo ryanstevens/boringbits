@@ -6,7 +6,7 @@ module.exports = function(...args) {
   const dirname = args[2]; 
   
   options.targets = {
-    "node": "10.9.0"
+    "node": "8"
   }
   return preset.default(api, options, dirname);
 }

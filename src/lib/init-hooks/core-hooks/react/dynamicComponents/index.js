@@ -7,17 +7,6 @@ import beforeEntryLoader from './beforeEntryLoader';
 function makeConainerCode({path, importPath} = container) {
   const name = path.replace(/\//g, '');
 
-  /*
-  // TODO: I had to backpedal a bit on
-  // making these routez lazy loaded via
-  // webpacks optimization chunks.
-  // Should be too hard to renable,
-  // was just having some trouble keeping
-  // hot reload working which is more of a
-  // priority
-  
-  */
-
   return `
   console.log('setting dynamic target: ${name}');
   (function() {

@@ -58,8 +58,10 @@ module.exports = function createWebpackStack(BoringInjections) {
         return collector;
       }, {});
 
-
-      if (config.get('boring.useWebpackDevServer')) {
+      if (config.get('boring.useWebpackDevServer') &&
+        // only bother to run webpack if we someone
+        // has actually used the @entrypoint decorator
+        Object.keys(webpack_config.entry).length > 0) {
         const webpack = require('webpack');
         const compiler = webpack(webpack_config);
 

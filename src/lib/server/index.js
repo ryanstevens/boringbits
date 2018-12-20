@@ -1,3 +1,5 @@
+if (!process.env.NODE_ENV) process.env.NODE_ENV = 'development';
+
 const config = require('boring-config');
 const logger = require('boring-logger');
 const paths = require('paths');
@@ -10,30 +12,27 @@ async function startExpress(app, port) {
 }
 
 class BoringServer extends InitPipeline {
-  constructor() {
-    super();
-  }
 
   async start(options) {
 
-    const webpack_config_path = config.get('boring.isDevelopment', true) ?
+    const webpackConfig = config.get('boring.isDevelopment', true) ?
       paths.boring_webpack_dev_config : paths.boring_webpack_prod_config;
 
     const injections = await this.build(Object.assign({}, {
-      webpack_config: require(webpack_config_path)
+      webpack_config: require(webpackConfig),
     }, options));
 
     const port = process.env.PORT || config.get('boring.app.port');
     injections.port = port;
 
-    return await this.perform('listen', injections, async() => {
+    return await this.perform('listen', injections, async () => {
       await startExpress(this.app, port);
       logger.info('Listening on port ' + port);
 
       return injections;
-    })
+    });
 
   }
 }
 
-module.exports = BoringServer
+module.exports = BoringServer;

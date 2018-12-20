@@ -1,0 +1,52 @@
+'use strict';
+const Generator = require('yeoman-generator');
+const chalk = require('chalk');
+// const inquirer = require('inquirer');
+const copyConfigs = require('./copyConfigs');
+const makeApp = require('./makeApp');
+
+
+module.exports = class extends Generator {
+  constructor(args, options) {
+    super(args, options);
+    this.options = options;
+
+    this.props = this.options.props;
+    this.processPrompt = this.options.processPrompt;
+  }
+
+  async prompting() {
+
+    await this.processPrompt({
+      type: 'list',
+      name: 'scope',
+      message: 'What do you want to generate?',
+      choices: [
+        {name: 'Scaffold an entire boring app', value: 'all'},
+        {name: 'Add a component', value: 'component'},
+      ],
+    });
+
+    if (this.props.scope === 'all') {
+      await this.processPrompt({
+        type: 'input',
+        name: 'projectName',
+        message: 'What is the name of project',
+        default: this.appname, // Default to current folder name
+      });
+
+      this.props.projectName = this.props
+          .projectName.replace(/\s+/g, '-').toLowerCase();
+
+    }
+
+  }
+
+  async writing() {
+    if (this.props.scope === 'all') {
+      await copyConfigs.call(this);
+      await makeApp.call(this);
+    }
+  }
+
+};
