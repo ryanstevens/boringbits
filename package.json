@@ -42,6 +42,7 @@
     "@babel/register": "^7.0.0",
     "@babel/runtime": "^7.1.2",
     "@material-ui/core": "^3.6.0",
+    "@material-ui/icons": "^3.0.1",
     "@types/history": "^4.7.2",
     "@types/node": "^10.12.12",
     "app-module-path": "^2.2.0",
