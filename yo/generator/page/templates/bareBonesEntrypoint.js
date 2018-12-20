@@ -20,4 +20,4 @@ fetch('/data.json', {
     console.log('Fetch Error :-S', err);
   });
 
-if (module.hot)  module.hot.accept((err) => console.log("error reloading", err));
+if (module.hot) module.hot.accept((err) => console.log('error reloading', err));

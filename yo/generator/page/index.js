@@ -13,6 +13,18 @@ module.exports = class extends Generator {
 
   async prompting() {
 
+
+    await this.processPrompt({
+      type: 'list',
+      name: 'pageType',
+      message: 'What type of page do you want to generate',
+      choices: [
+        {name: 'Bare bones: simple page with just webpack configured entrypoint', value: 'bareBones'},
+        {name: 'React / Redux: Universal rendering of react using redux and react router', value: 'redux'},
+      ],
+    });
+
+
     await this.processPrompt({
       type: 'input',
       name: 'pageName',
@@ -34,13 +46,13 @@ module.exports = class extends Generator {
   async writing() {
 
     this.fs.copyTpl(
-        this.templatePath('page.js'),
+        this.templatePath('bareBonesRoute.js'),
         this.destinationPath(`src/server/routers/${this.props.pageName}.js`),
         this.props
     );
 
     this.fs.copyTpl(
-        this.templatePath('app.js'),
+        this.templatePath('bareBonesEntrypoint.js'),
         this.destinationPath(`src/client/pages/${this.props.pageName}/entrypoint.js`),
         this.props
     );
