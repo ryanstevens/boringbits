@@ -14,9 +14,8 @@ module.exports = function setupRoute(/* dependencies from boring */ boring) {
     reactEntry,
   } = decorators.router;
 
-  // signals to boring this class has HTTP decortors as class methods
   @endpoint()
-  class <%= className %> {
+  class <%= className %>Router {
 
     @post('<%= path %>data.json')
     serve_<%= pageName %>_data(req, res) {
@@ -27,11 +26,9 @@ module.exports = function setupRoute(/* dependencies from boring */ boring) {
     }
 
     @get('<%= path %>')
-    @reactEntry('/<%= pageName %>')
+    @reactEntry('<%= pageName %>')
     serve_<%= pageName %>_get(req, res) {
-
       res.renderRedux();
-
     }
   }
 

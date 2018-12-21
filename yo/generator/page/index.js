@@ -19,11 +19,11 @@ module.exports = class extends Generator {
       name: 'pageType',
       message: 'What type of page do you want to generate',
       choices: [
-        {name: 'React / Redux: Universal rendering of react using redux and react router', value: 'redux'},
-        {name: 'Bare bones: simple page with just webpack configured entrypoint', value: 'bareBones'},
+        {name: 'React / Redux / React Router: Universally rendered page with automagic route setup', value: 'redux'},
+        {name: 'Bare bones: simple page with just server and single empty(ish) client entrypoint', value: 'bareBones'},
+        {name: 'A React view container to plug into a pre-existing page', value: 'container'},
       ],
     });
-
 
     await this.processPrompt({
       type: 'input',
@@ -41,6 +41,16 @@ module.exports = class extends Generator {
 
     this.props.pageName = this.props.pageName.replace(/\s+/g, '-');
     this.props.className = this.props.pageName.charAt(0).toUpperCase() + this.props.pageName.substring(1);
+
+    if (this.props.pageType === 'redux') {
+      this.props.containers = [
+        {
+          name: this.props.pageName + 'Container',
+          path: this.props.path,
+        },
+      ];
+    }
+
   }
 
   async writing() {
@@ -76,11 +86,15 @@ module.exports = class extends Generator {
           this.props
       );
 
-      this.fs.copyTpl(
-          this.templatePath('reduxContainer.js'),
-          this.destinationPath(`src/client/pages/${this.props.pageName}/containers/${this.props.pageName}.js`),
-          this.props
-      );
+      this.props.containers.forEach(container => {
+
+        this.fs.copyTpl(
+            this.templatePath('reduxContainer.js'),
+            this.destinationPath(`src/client/pages/${this.props.pageName}/containers/${container}.js`),
+            Object.assign({}, this.props, container),
+        );
+
+      });
     }
   }
 

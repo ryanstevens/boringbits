@@ -9,10 +9,10 @@ async function build() {
   fsExtra.emptyDirSync(paths.app_dist);
 
   return childPocess.spawnSync('docker-compose', ['down'],
-      {
-        stdio: [process.stdin, process.stdout, process.stderr],
-        cwd: path.normalize(__dirname + '/..'),
-      }
+    {
+      stdio: [process.stdin, process.stdout, process.stderr],
+      cwd: path.normalize(__dirname + '/..'),
+    }
   );
 
 }

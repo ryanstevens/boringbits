@@ -5,7 +5,7 @@ import {StaticRouter} from 'react-router-dom';
 import Layout from './Layout';
 import getAppComponents from './AppInit';
 
-module.exports = function renderRedux(options = { layout: { clientConfig: {}, pageInjections: {}}}) {
+module.exports = function renderRedux(options = {layout: {clientConfig: {}, pageInjections: {}}}) {
 
   const res = this;
   const req = res.req;
@@ -32,7 +32,7 @@ module.exports = function renderRedux(options = { layout: { clientConfig: {}, pa
 
   const layout = options.layout || {
     clientConfig: {},
-    pageInjections: {}
+    pageInjections: {},
   };
 
   res.send('<!DOCTYPE html>' + ReactDOMServer.renderToStaticMarkup(
@@ -44,5 +44,5 @@ module.exports = function renderRedux(options = { layout: { clientConfig: {}, pa
         redux_state={store.getState()}>
         <Container />
       </Layout>
-  ))
-}
+  ));
+};

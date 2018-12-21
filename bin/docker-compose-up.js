@@ -1,29 +1,27 @@
 #!/usr/bin/env node
-const fs_extra = require('fs-extra');
-const path = require('path')
-const paths = require('../dist/node_modules/paths')
-const child_process = require('child_process')
-const fs = require('fs');
+const fsExtra = require('fs-extra');
+const path = require('path');
+const paths = require('../dist/node_modules/paths');
+const childProcess = require('child_process');
 
 async function build() {
 
-  fs_extra.emptyDirSync(paths.app_dist);
+  fsExtra.emptyDirSync(paths.app_dist);
 
-  return child_process.spawnSync('docker-compose', ['up', '-d'],
+  return childProcess.spawnSync('docker-compose', ['up', '-d'],
     {
       stdio: [process.stdin, process.stdout, process.stderr],
-      cwd: path.normalize(__dirname + '/..')
+      cwd: path.normalize(__dirname + '/..'),
     }
-  ); 
+  );
 
 }
 
 module.exports = function(argv) {
   try {
     return build();
-  }
-  catch(e) {
+  } catch (e) {
     console.error('There was a problem booting up docker', e);
     return Promise.reject(e);
   }
-}
+};

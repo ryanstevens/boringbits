@@ -172,7 +172,7 @@ injecture.register('decorator.router.endpoint',
     function endpointFactory(Klass) {
       return Klass;
     },
-    { mapInstances: true }
+    {mapInstances: true}
 );
 
 
@@ -191,6 +191,9 @@ toExport.endpoint = function endpoint(path = '') {
     return target;
   };
 };
+
+// this alias feels right fow now... consider depricating @endpoint()
+toExport.router = toExport.endpoint;
 
 toExport.subscribeDecorators = function subscribeDecorators(emitter) {
   extenrnalEmitters.push(emitter);
