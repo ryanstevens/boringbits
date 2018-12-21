@@ -12,7 +12,6 @@ module.exports = function pathatize(pathArr) {
 
     let path = (pathObj.canonicalPath) ? pathObj.canonicalPath : pathObj;
 
-    console.log('##########', path);
     if (path.indexOf(paths.app_dir) === 0) {
       path = path.substring(paths.app_dir.length);
     }

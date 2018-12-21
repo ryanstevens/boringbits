@@ -47,6 +47,7 @@ module.exports = class extends Generator {
         {
           name: this.props.pageName + 'Container',
           path: this.props.path,
+          personName: 'Josh',
         },
       ];
     }
@@ -57,41 +58,41 @@ module.exports = class extends Generator {
 
     if (this.props.pageType === 'bareBones') {
       this.fs.copyTpl(
-          this.templatePath('bareBonesRoute.js'),
-          this.destinationPath(`src/server/routers/${this.props.pageName}.js`),
-          this.props
+        this.templatePath('bareBonesRoute.js'),
+        this.destinationPath(`src/server/routers/${this.props.pageName}.js`),
+        this.props
       );
 
       this.fs.copyTpl(
-          this.templatePath('bareBonesEntrypoint.js'),
-          this.destinationPath(`src/client/pages/${this.props.pageName}/entrypoint.js`),
-          this.props
+        this.templatePath('bareBonesEntrypoint.js'),
+        this.destinationPath(`src/client/pages/${this.props.pageName}/entrypoint.js`),
+        this.props
       );
     } else if (this.props.pageType === 'redux') {
       this.fs.copyTpl(
-          this.templatePath('reduxRoute.js'),
-          this.destinationPath(`src/server/routers/${this.props.pageName}.js`),
-          this.props
+        this.templatePath('reduxRoute.js'),
+        this.destinationPath(`src/server/routers/${this.props.pageName}.js`),
+        this.props
       );
 
       this.fs.copyTpl(
-          this.templatePath('reduxApp.js'),
-          this.destinationPath(`src/client/pages/${this.props.pageName}/App.js`),
-          this.props
+        this.templatePath('reduxApp.js'),
+        this.destinationPath(`src/client/pages/${this.props.pageName}/App.js`),
+        this.props
       );
 
       this.fs.copyTpl(
-          this.templatePath('reduxReducers.js'),
-          this.destinationPath(`src/client/pages/${this.props.pageName}/reducers/index.js`),
-          this.props
+        this.templatePath('reduxReducers.js'),
+        this.destinationPath(`src/client/pages/${this.props.pageName}/reducers/index.js`),
+        this.props
       );
 
       this.props.containers.forEach(container => {
 
         this.fs.copyTpl(
-            this.templatePath('reduxContainer.js'),
-            this.destinationPath(`src/client/pages/${this.props.pageName}/containers/${container}.js`),
-            Object.assign({}, this.props, container),
+          this.templatePath('reduxContainer.js'),
+          this.destinationPath(`src/client/pages/${this.props.pageName}/containers/${container.name}.js`),
+          Object.assign({}, this.props, container),
         );
 
       });

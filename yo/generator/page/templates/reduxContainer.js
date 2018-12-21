@@ -16,12 +16,12 @@ import Grid from '@material-ui/core/Grid';
     margin: '30px',
   },
 }))
-class <%= className %> extends React.Component {
+class <%= className %>Container extends React.Component {
 
   static path = '<%= path %>';
 
   componentDidMount() {
-    this.props.update('Josh');
+    this.props.update('<%= personName %>');
   }
 
   render() {
@@ -52,4 +52,4 @@ function update(name, dispatch) {
 }
 
 
-export default <%= className %>;
+export default <%= className %>Container;
