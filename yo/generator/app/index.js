@@ -99,7 +99,7 @@ ${chalk.yellow(`************************************************************`)}
     }
 
     if (this.props.scripts.indexOf('start')>=0) {
-      this.spawnCommand('npm', ['start']);
+      this.spawnCommand('npx', ['boring', 'start', '--url', 'https://www.boringlocal.com/']);
     }
   }
 
