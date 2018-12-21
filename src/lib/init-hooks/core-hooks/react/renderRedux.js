@@ -36,13 +36,13 @@ module.exports = function renderRedux(options = {layout: {clientConfig: {}, page
   };
 
   res.send('<!DOCTYPE html>' + ReactDOMServer.renderToStaticMarkup(
-      <Layout
-        getStyleSheets={getStyleSheets}
-        locals={res.locals}
-        client_config={layout.clientConfig}
-        pageInjections={layout.pageInjections}
-        redux_state={store.getState()}>
-        <Container />
-      </Layout>
+    <Layout
+      getStyleSheets={getStyleSheets}
+      locals={res.locals}
+      client_config={layout.clientConfig}
+      pageInjections={layout.pageInjections}
+      redux_state={store.getState()}>
+      <Container />
+    </Layout>
   ));
 };

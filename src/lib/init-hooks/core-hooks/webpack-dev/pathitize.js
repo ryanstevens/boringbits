@@ -8,8 +8,11 @@ module.exports = function pathatize(pathArr) {
 
   const standardEntryPath = 'src-client-pages-';
 
-  return pathArr.map(path => {
+  return pathArr.map(pathObj => {
 
+    let path = (pathObj.canonicalPath) ? pathObj.canonicalPath : pathObj;
+
+    console.log('##########', path);
     if (path.indexOf(paths.app_dir) === 0) {
       path = path.substring(paths.app_dir.length);
     }
@@ -26,7 +29,7 @@ module.exports = function pathatize(pathArr) {
     if (path === 'dist-lib-init-hooks-core-hooks-react-clientEntry') {
       path = 'entry';
     }
-    
+
     if (path.indexOf('beforeEntry')>0 || path.indexOf('afterEntry')>0) {
       path = '';
     }

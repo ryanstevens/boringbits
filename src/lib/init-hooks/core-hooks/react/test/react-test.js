@@ -42,7 +42,7 @@ describe('React Tests', function reactTests() {
 
     const [beforeEntryPath, entrypointPath, afterEntryPath] = metaData.endpoints.beep.methods.get.entrypoint;
     assert.equal(beforeEntryPath.split('/boring').pop(), '/src/lib/init-hooks/core-hooks/react/dynamicComponents/dist/1_beforeEntry.js');
-    assert.equal(entrypointPath.split('/boring').pop(), '/src/lib/init-hooks/core-hooks/react/defaultEntrypoint.js');
+    assert.equal(entrypointPath.canonicalPath, '1');
     assert.equal(afterEntryPath.split('/boring').pop(), '/src/lib/init-hooks/core-hooks/react/dynamicComponents/dist/1_afterEntry.js');
 
     assert.equal(metaData.endpoints.beep.methods.get.reactEntry[0].reactRoot,  '1');

@@ -25,4 +25,15 @@ describe('Pathitize', function() {
     const pathitize = require('../pathitize');
     assert.equal(pathitize(entryPoints), 'entry_demo');
   });
+
+  it('can deal with objects passed into pathitize', function() {
+
+    const entryPoints = [
+      {canonicalPath: 'meow/foo/beep', assetPath: 'doesn not matter'},
+      {canonicalPath: 'bark', assetPath: 'doesn not matter'},
+    ];
+
+    const pathitize = require('../pathitize');
+    assert.equal(pathitize(entryPoints), 'meow-foo-beep_bark');
+  });
 });

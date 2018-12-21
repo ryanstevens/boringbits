@@ -45,7 +45,36 @@ module.exports = function createWebpackStack(BoringInjections) {
           Object.keys(endpoint.methods).forEach(method => {
             const methodObj = endpoint.methods[method];
             if (methodObj.entrypoint) {
-              const entrypoints = ['@babel/polyfill'].concat(methodObj.entrypoint);
+              /**
+               * So an entrypoint can be a single string, object, or an array.
+               * Ultimately we want to make sure we work on an array so the
+               * first thing to do is to make a single item array if it's an string or object.
+               *
+               * Each item in the array can either be a string or object.
+               * A string implies both the path and canonical name are the same.
+               * If a programmer wanted to point to path / file, but name the
+               * canonical entrypoint something different then they will use an object
+               * of this structure
+               * {
+               *    // canonicalPath will define the URL in the browsers
+               *    name: 'amazing_client',
+               *    // This is the path we use to require the entrypoint into the bundle
+               *    assetPath: 'client/pagse/meow/mycustom_entrypoint'
+               * }
+               *
+               * Boring requires entrypoints to have an unique canonicalPath.
+               * Why would the be different.  A pretty common use case many boring
+               * routes will point to the "defaultEntrypoint.js" within boring,
+               * which is the same file for many entrypoints but has different bundles
+               * due to dynamic imports.
+               */
+              const entrypointArr = (methodObj.entrypoint instanceof Array) ? methodObj.entrypoint : [methodObj.entrypoint];
+
+              const entrypoints = ['@babel/polyfill'].concat(entrypointArr.map(entrypoint => {
+                if (entrypoint.assetPath) return entrypoint.assetPath;
+                else return entrypoint;
+              }));
+
               if (config.get('boring.useWebpackDevServer')) {
                 entrypoints.unshift('webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000');
               }

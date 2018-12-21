@@ -70,13 +70,16 @@ module.exports = function reactHook(BoringInjections) {
 
       const modulesToRequire = {};
       const entryPointPath = options.app_dir +'/'+reactHandlerPaths.entrypoint;
-      
+
       // check to make sure entrypoint is real
       if (!fs.existsSync(entryPointPath + '.js') &&
         !fs.existsSync(entryPointPath + '.jsx') &&
         !fs.existsSync(entryPointPath + '.ts') &&
         !fs.existsSync(entryPointPath + '.tsx')) {
-        reactHandlerPaths.entrypoint = __dirname + '/defaultEntrypoint.js';
+        reactHandlerPaths.entrypoint = {
+          canonicalPath: options.reactRoot,
+          assetPath: __dirname + '/defaultEntrypoint.js',
+        };
         modulesToRequire['reducers'] = reactHandlerPaths.reducers;
         modulesToRequire['mainApp'] = reactHandlerPaths.mainApp;
       }
@@ -90,9 +93,9 @@ module.exports = function reactHook(BoringInjections) {
       ].filter(Boolean);
 
       return decorators.router.entrypoint(...entrypointPaths)(
-          target,
-          field,
-          shadowedReactEntry(reactHandlerPaths)(target, field, descriptor)
+        target,
+        field,
+        shadowedReactEntry(reactHandlerPaths)(target, field, descriptor)
       );
     };
   };
