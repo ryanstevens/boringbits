@@ -17,7 +17,6 @@ module.exports = class extends Generator {
 
   async prompting() {
 
-
     if (this.props.scope === 'all') {
       await this.processPrompt({
         type: 'input',
@@ -27,7 +26,7 @@ module.exports = class extends Generator {
       });
 
       this.props.projectName = this.props
-          .projectName.replace(/\s+/g, '-').toLowerCase();
+        .projectName.replace(/\s+/g, '-').toLowerCase();
     }
 
   }

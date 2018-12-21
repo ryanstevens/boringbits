@@ -26,10 +26,10 @@ async function run(argv) {
   console.log('tcs ', args.join(' '));
 
   return childProcess.spawnSync(path.normalize(__dirname+tscPath), args,
-      {
-        stdio: [process.stdin, process.stdout, process.stderr],
-        cwd: process.cwd(),
-      }
+    {
+      stdio: [process.stdin, process.stdout, process.stderr],
+      cwd: process.cwd(),
+    }
   );
 
 }

@@ -6,7 +6,8 @@ module.exports = function(args) {
   try {
     const debug = false;
     const isDevelopment = (config.get('boring.isDevelopment') === true);
-    return runServer(isDevelopment, debug);
+
+    return runServer(isDevelopment, debug, args.argv.url);
   } catch (e) {
     console.error('There was a problem the boring command', e);
     return Promise.reject({status: 1});

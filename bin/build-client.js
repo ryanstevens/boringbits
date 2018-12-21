@@ -58,10 +58,10 @@ async function build(previousFileSizes) {
         messages.warnings.length
       ) {
         console.log(
-            chalk.yellow(
-                '\nTreating warnings as errors because process.env.CI = true.\n' +
-                  'Most CI servers set it automatically.\n'
-            )
+          chalk.yellow(
+            '\nTreating warnings as errors because process.env.CI = true.\n' +
+              'Most CI servers set it automatically.\n'
+          )
         );
         return reject(new Error(messages.warnings.join('\n\n')));
       }
@@ -81,50 +81,50 @@ module.exports = function(argv) {
     // First, read the current file sizes in build directory.
     // This lets us display how much they changed later.
     measureFileSizesBeforeBuild(paths.app_build)
-        .then(async previousFileSizes => {
-          // Remove all content but keep the directory so that
-          // if you're in it, you don't end up in Trash
-          fs.emptyDirSync(paths.app_build);
-          // Start the webpack build
-          return await build(previousFileSizes);
-        })
-        .then(({stats, previousFileSizes, warnings}) => {
-          if (warnings.length) {
-            console.log(chalk.yellow('Compiled with warnings.\n'));
-            console.log(warnings.join('\n\n'));
-            console.log(
-                '\nSearch for the ' +
-                chalk.underline(chalk.yellow('keywords')) +
-                ' to learn more about each warning.'
-            );
-            console.log(
-                'To ignore, add ' +
-                chalk.cyan('// eslint-disable-next-line') +
-                ' to the line before.\n'
-            );
-          } else {
-            console.log(chalk.green('Compiled successfully.\n'));
-          }
-
-          console.log('File sizes after gzip:\n');
-          printFileSizesAfterBuild(
-              stats,
-              previousFileSizes,
-              paths.app_build,
-              WARN_AFTER_BUNDLE_GZIP_SIZE,
-              WARN_AFTER_CHUNK_GZIP_SIZE
+      .then(async previousFileSizes => {
+        // Remove all content but keep the directory so that
+        // if you're in it, you don't end up in Trash
+        fs.emptyDirSync(paths.app_build);
+        // Start the webpack build
+        return await build(previousFileSizes);
+      })
+      .then(({stats, previousFileSizes, warnings}) => {
+        if (warnings.length) {
+          console.log(chalk.yellow('Compiled with warnings.\n'));
+          console.log(warnings.join('\n\n'));
+          console.log(
+            '\nSearch for the ' +
+            chalk.underline(chalk.yellow('keywords')) +
+            ' to learn more about each warning.'
           );
+          console.log(
+            'To ignore, add ' +
+            chalk.cyan('// eslint-disable-next-line') +
+            ' to the line before.\n'
+          );
+        } else {
+          console.log(chalk.green('Compiled successfully.\n'));
+        }
 
-          // give time to print warnings
-          setTimeout(() => {
-            resolve({status: 0});
-          }, 200);
+        console.log('File sizes after gzip:\n');
+        printFileSizesAfterBuild(
+          stats,
+          previousFileSizes,
+          paths.app_build,
+          WARN_AFTER_BUNDLE_GZIP_SIZE,
+          WARN_AFTER_CHUNK_GZIP_SIZE
+        );
 
-        }, err => {
-          console.log(chalk.red('Failed to compile.\n'));
-          printBuildError(err);
-          reject({status: 1});
-        });
+        // give time to print warnings
+        setTimeout(() => {
+          resolve({status: 0});
+        }, 200);
+
+      }, err => {
+        console.log(chalk.red('Failed to compile.\n'));
+        printBuildError(err);
+        reject({status: 1});
+      });
 
   });
 };
