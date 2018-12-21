@@ -9,21 +9,19 @@ const opn = require('opn');
 module.exports = async function run(isDevelopment, debug, urlToOpen) {
 
 
-  if (isDevelopment) {
-
-  }
-
   console.log('running ' + paths.main_server);
 
-  const args = [paths.main_server];
-  if (debug) args.unshift('--inspect-brk');
-
-  const node = childProcess.spawn('node', args, {
-    stdio: ['ignore', 'pipe', process.stderr],
-    cwd: process.cwd(),
-  });
-
   if (isDevelopment) {
+
+    const args = [paths.main_server];
+    if (debug) args.unshift('--inspect-brk');
+
+    const node = childProcess.spawn('node', args, {
+      stdio: ['ignore', 'pipe', process.stderr],
+      cwd: process.cwd(),
+    });
+
+
     const bunyan = childProcess.spawn('npx', ['bunyan'], {
       stdio: ['pipe', process.stdout, 'ignore'],
       cwd: process.cwd(),
@@ -48,6 +46,9 @@ module.exports = async function run(isDevelopment, debug, urlToOpen) {
       .pipe(split())
       .pipe(logIntercept)
       .pipe(bunyan.stdin);
+  } else {
+    // for production, just boot the server by directly requiring
+    require(paths.main_server);
   }
 
   return new Promise((resolve, reject) => {
