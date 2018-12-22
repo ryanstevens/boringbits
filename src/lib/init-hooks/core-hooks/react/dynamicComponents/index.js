@@ -37,23 +37,23 @@ export default function getEntryWrappers(reactHandlerPaths, modules = {}) {
 
 
   const containers = reactHandlerPaths
-      .containers
-      .filter(container => container.path)
-      .sort((containerA, containerB) => {
-        /**
-         * This is a reverse sort on the path, the
-         * goal here is so paths that are more specific
-         * end up rendering first and the "default"
-         * path, which is typically the shortest
-         * will be at the bottom.  For now
-         * this seems to work but I assume someone
-         * will tell me a use case and we'll have to
-         * rework this
-         */
-        if (containerA.path.length<containerB.path.length) return 1;
-        if (containerA.path.length>containerB.path.length) return -1;
-        return 0;
-      });
+    .containers
+    .filter(container => container.path)
+    .sort((containerA, containerB) => {
+      /**
+       * This is a reverse sort on the path, the
+       * goal here is so paths that are more specific
+       * end up rendering first and the "default"
+       * path, which is typically the shortest
+       * will be at the bottom.  For now
+       * this seems to work but I assume someone
+       * will tell me a use case and we'll have to
+       * rework this
+       */
+      if (containerA.path.length<containerB.path.length) return 1;
+      if (containerA.path.length>containerB.path.length) return -1;
+      return 0;
+    });
 
   if (containers.legnth === 0) return [];
 

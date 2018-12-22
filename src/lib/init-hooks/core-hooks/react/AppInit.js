@@ -51,9 +51,9 @@ export default function getAppComponents(dependencies) {
   var enhancer = composeEnhancers(applyMiddleware.apply(null, middleware));
 
   var store = createStore(
-      combineReducers(reducers),
-      preloadedState,
-      enhancer
+    combineReducers(reducers),
+    preloadedState,
+    enhancer
   );
 
   // Create a new class name generator.

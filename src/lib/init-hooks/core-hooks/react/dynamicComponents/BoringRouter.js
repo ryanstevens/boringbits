@@ -6,13 +6,15 @@ class RouterSwitch extends React.Component {
 
   render() {
 
+    // Doing this temporarily which effecitvely
+    // turns off server side rendering for all containers
+    // Until SSR is more of a priority this is fine for now
     if (isNode) {
       return <></>;
     }
 
     const containers = window.__boring_internals.containers;
 
-    let key=0;
     return (
       <Switch>
         {this.props.children}
@@ -20,7 +22,7 @@ class RouterSwitch extends React.Component {
         {containers.map(component => {
           return (
             <Route
-              key={key++}
+              key={component.path} // <-- that should work riiiiggggt?
               path={component.path}
               component={component.container}
             />
