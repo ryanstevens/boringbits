@@ -5,8 +5,8 @@ import * as ReactRedux from 'react-redux';
 import injecture from 'injecture';
 import {ConnectedRouter} from 'connected-react-router';
 import createBrowserHistory from 'history/createBrowserHistory';
-import getAppComponents from './react_AppInit';
-import BoringRouter from './react_BoringRouter';
+import getAppComponents from './AppInit';
+import BoringRouter from './BoringRouter';
 
 function renderRedux(App, reducers) {
 

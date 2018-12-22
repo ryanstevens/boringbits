@@ -1,5 +1,5 @@
 
-import {renderRedux} from './react-clientEntry';
+import {renderRedux} from './clientEntry';
 
 function renderApp() {
 
