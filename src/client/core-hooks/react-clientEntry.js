@@ -1,4 +1,3 @@
-/* eslint-disable no-var, comma-dangle*/
 import ReactDOM from 'react-dom';
 import React from 'react';
 import * as Redux from 'redux';
@@ -6,12 +5,12 @@ import * as ReactRedux from 'react-redux';
 import injecture from 'injecture';
 import {ConnectedRouter} from 'connected-react-router';
 import createBrowserHistory from 'history/createBrowserHistory';
-import getAppComponents from './AppInit';
-import BoringRouter from './dynamicComponents/BoringRouter';
+import getAppComponents from './react_AppInit';
+import BoringRouter from './react_BoringRouter';
 
 function renderRedux(App, reducers) {
 
-  var history = createBrowserHistory();
+  const history = createBrowserHistory();
   function Router(props) {
     return (
       <ConnectedRouter history={history}>
@@ -20,14 +19,14 @@ function renderRedux(App, reducers) {
     );
   }
 
-  var components = getAppComponents({
+  const components = getAppComponents({
     App: App,
     reducers: reducers,
     history: history,
-    Router: Router
+    Router: Router,
   });
 
-  var Container = components.Container;
+  const Container = components.Container;
 
 
   ReactDOM.hydrate(
@@ -48,7 +47,7 @@ const toExport = {
   injecture: injecture,
   ReactRedux: ReactRedux, // backwards compat, remove @ v4
   BoringRouter: BoringRouter,
-  MagicallyDeliciousRouter: BoringRouter
+  MagicallyDeliciousRouter: BoringRouter,
 };
 
 toExport['react-redux'] = ReactRedux;

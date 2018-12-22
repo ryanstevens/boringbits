@@ -1,5 +1,5 @@
 
-import {renderRedux} from './clientEntry';
+import {renderRedux} from './clientEntryProxy';
 
 function renderApp() {
 

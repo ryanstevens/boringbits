@@ -3,7 +3,7 @@ import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import {StaticRouter} from 'react-router-dom';
 import Layout from './Layout';
-import getAppComponents from './AppInit';
+import getAppComponents from './AppInitProxy';
 
 module.exports = function renderRedux(options = {layout: {clientConfig: {}, pageInjections: {}}}) {
 

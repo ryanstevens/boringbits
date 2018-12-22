@@ -1,2 +1,2 @@
 
-module.exports = require('./dist/lib/init-hooks/core-hooks/react/clientEntry');
+module.exports = require('./dist/lib/init-hooks/core-hooks/react/clientEntryProxy');

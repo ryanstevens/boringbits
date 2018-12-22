@@ -1,4 +1,3 @@
-/* eslint-disable no-var */
 import React from 'react';
 import {SheetsRegistry} from 'react-jss/lib/jss';
 import JssProvider from 'react-jss/lib/JssProvider';
@@ -11,13 +10,13 @@ import thunk from 'redux-thunk';
 
 
 function extractStateFromDOM() {
-  var state = {
+  const state = {
     composeEnhancers: compose,
   };
   try {
     if (!isNode) {
 
-      var jssStyles = window.document.getElementById('jss-server-side');
+      const jssStyles = window.document.getElementById('jss-server-side');
       if (jssStyles && jssStyles.parentNode) {
         jssStyles.parentNode.removeChild(jssStyles);
       }
@@ -33,32 +32,32 @@ function extractStateFromDOM() {
 export default function getAppComponents(dependencies) {
 
   // Grab the state from a global variable injected into the server-generated HTML
-  var domExtractedState = extractStateFromDOM();
-  var preloadedState = domExtractedState.preloadedState;
-  var composeEnhancers = domExtractedState.composeEnhancers;
+  const domExtractedState = extractStateFromDOM();
+  const preloadedState = domExtractedState.preloadedState;
+  const composeEnhancers = domExtractedState.composeEnhancers;
 
-  var App = dependencies.App;
-  var reducers = dependencies.reducers;
+  const App = dependencies.App;
+  const reducers = dependencies.reducers;
 
-  var middleware = [];
+  const middleware = [];
   if (dependencies.history) {
     middleware.push(routerMiddleware(dependencies.history));
     reducers.router = connectRouter(dependencies.history);
   }
   middleware.push(thunk);
 
-  var Router = dependencies.Router;
-  var enhancer = composeEnhancers(applyMiddleware.apply(null, middleware));
+  const Router = dependencies.Router;
+  const enhancer = composeEnhancers(applyMiddleware.apply(null, middleware));
 
-  var store = createStore(
+  const store = createStore(
     combineReducers(reducers),
     preloadedState,
     enhancer
   );
 
   // Create a new class name generator.
-  var generateClassName = createGenerateClassName();
-  var sheetsRegistry = new SheetsRegistry();
+  const generateClassName = createGenerateClassName();
+  const sheetsRegistry = new SheetsRegistry();
 
   // eslint-disable-next-line valid-jsdoc
   /**

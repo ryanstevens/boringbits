@@ -6,7 +6,7 @@ module.exports = function(...args) {
   const dirname = args[2];
 
   options.targets = {
-    'node': '8',
+    'ie': '11',
   };
   return preset.default(api, options, dirname);
 };

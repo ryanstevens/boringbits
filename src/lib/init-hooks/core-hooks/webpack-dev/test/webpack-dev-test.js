@@ -17,7 +17,7 @@ describe('Pathitize', function() {
   it('should deal with arrays', function() {
     const entryPoints= [
       'what/ever/which/that/foo_beforeEntry.js',
-      process.cwd() +'/dist/lib/init-hooks/core-hooks/react/clientEntry.js',
+      process.cwd() +'/dist/lib/init-hooks/core-hooks/react/clientEntryProxy.js',
       '/src/client/pages/demo/entrypoint.js',
       'what/ever/which/that/foo_afterEntry.js',
     ];
