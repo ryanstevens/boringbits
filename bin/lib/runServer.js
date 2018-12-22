@@ -7,6 +7,7 @@ const opn = require('opn');
 const checkProxy = require('./checkProxy.js');
 const inquirer = require('inquirer');
 const chalk = require('chalk');
+const retryerer = require('./retryerer');
 
 module.exports = async function run(isDevelopment, debug, urlToOpen) {
 
@@ -124,9 +125,17 @@ module.exports = async function run(isDevelopment, debug, urlToOpen) {
       try {
         const line = JSON.parse(data);
         if (urlToOpen && line.msg === 'Listening on port 5000') {
-          setTimeout(() => {
-            opn(urlToOpen);
-          }, 2000); // give ha proxy time to register
+          (async function() {
+            try {
+              const health = await retryerer('http://www.boringlocal.com/__health', 15);
+              if (JSON.parse(health).status === 'ok') {
+                opn(urlToOpen);
+              }
+            } catch (e) {
+              console.log('Could not open URL, something seems wrong with bootup', e);
+            }
+          })();
+
         }
       } catch (e) {}
       cb(null, data+'\n');
