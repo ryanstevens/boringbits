@@ -1,7 +1,6 @@
 'use strict';
 const Generator = require('yeoman-generator');
 const chalk = require('chalk');
-// const inquirer = require('inquirer');
 const copyConfigs = require('./copyConfigs');
 const makeApp = require('./makeApp');
 

@@ -11,7 +11,9 @@ module.exports = function(BoringInjections) {
 
   const {HealthCheck, HealthModel} = healthy;
 
-  const healthCheck = new HealthCheck({}, {
+  const healthCheck = new HealthCheck({
+    baseRoute: '__health',
+  }, {
     started: new Date(),
     hostname: os.hostname(),
     pid: process.pid
