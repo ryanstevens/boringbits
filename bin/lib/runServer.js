@@ -74,7 +74,37 @@ module.exports = async function run(isDevelopment, debug, urlToOpen) {
 
         `);
       }
+    }
 
+    if (status.appStatus === 'UP') {
+
+      console.log(`
+
+  ${chalk.red(`****************************************************`)}
+  ${chalk.red(`**                                                **`)}
+  ${chalk.red(`**    🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥  Warining 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥     **`)}
+  ${chalk.red(`**                                                **`)}
+  ${chalk.red(`**    Boring has detected another app running     **`)}
+  ${chalk.red(`**    on the same port, please kill 9 things      **`)}
+  ${chalk.red(`**                                                **`)}
+  ${chalk.red(`****************************************************`)}
+
+    `);
+
+      const continueQuestion = await inquirer
+        .prompt([{
+          type: 'list',
+          name: 'continue',
+          message: 'Please feel free to continue if you have killed which ever process was listening on 5000',
+          choices: [
+            {name: chalk.bold('Continue'), value: true},
+            {name: 'nvm, I\'ll try again', value: false},
+          ],
+        }]);
+
+      if (!continueQuestion.continue) {
+        return Promise.reject('Stopped npm start due to port collision');
+      }
     }
 
     const args = [paths.main_server];

@@ -1,6 +1,6 @@
 'use strict';
 const Generator = require('yeoman-generator');
-
+const chalk = require('chalk');
 
 module.exports = class extends Generator {
 
@@ -13,15 +13,15 @@ module.exports = class extends Generator {
 
   async prompting() {
 
-
+    console.log('\n\n****************************');
     await this.processPrompt({
       type: 'list',
       name: 'pageType',
-      message: 'What type of page do you want to generate',
+      message: 'What type of component do you want to generate',
       choices: [
-        {name: 'React / Redux / React Router: Universally rendered page with automagic route setup', value: 'redux'},
-        {name: 'Bare bones: simple page with just server and single empty(ish) client entrypoint', value: 'bareBones'},
-        {name: 'A React view container to plug into a pre-existing page', value: 'container'},
+        {name: chalk.bold('The Works:') +'   Universally rendered page using React / Redux / React Router with automagic route configuration', value: 'redux'},
+        {name: chalk.bold('Bare bones:') +'  simple page with just server and single empty(ish) client entrypoint', value: 'bareBones'},
+        {name: chalk.bold('Container:') + '   A React view container to plug into a pre-existing page', value: 'container'},
       ],
     });
 

@@ -1,4 +1,3 @@
-
 module.exports = function setupRoute(/* dependencies from boring */ boring) {
 
   const {

@@ -1,23 +1,8 @@
 const parse = require('csv-parse');
-const request = require('request');
+const retryerer = require('./retryerer');
 
-function makeRequest(url) {
-  console.log('Attempting ' + url);
-  return new Promise((resolve, reject) => {
-    request.get(url, function(err, resp, body) {
-      if (err) return reject(err);
-      resolve(body);
-    });
-  });
-}
 
-function sleep(seconds) {
-  return new Promise((resolve, reject) => {
-    setTimeout(resolve, seconds * 1000);
-  });
-}
-
-function parseFile(lines) {
+function praseResponse(lines) {
 
   return new Promise((resolve, reject) => {
     // Create the parser
@@ -38,28 +23,14 @@ function parseFile(lines) {
 
 }
 
-async function tryPollHaProxy(attempt) {
-  if (attempt === 0) return false;
-  try {
-    const proxyOutput = await makeRequest('http://www.boringlocal.com/__haproxy_stats;csv;norefresh');
-    // do stuffs
-    const proxyResults = await parseFile(proxyOutput);
-
-    return proxyResults;
-  } catch (e) {
-    console.log('Problem hitting ha proxy', e);
-    await sleep(2);
-    return await tryPollHaProxy(--attempt);
-  }
-}
 
 module.exports = async function checkProxy() {
 
-  const haProxyResponse = await tryPollHaProxy(3);
+  const haProxyResponse = await retryerer('http://www.boringlocal.com/__haproxy_stats;csv;norefresh', 3);
   if (!haProxyResponse) return {haProxyStatus: 'DOWN', appStatus: 'DOWN'};
 
-  const nodeBackend = haProxyResponse.filter(result => result.svname === 'node_server');
-  if (nodeBackend && nodeBackend.status === 'UP') return {haProxyStatus: 'UP', appStatus: 'UP'};
+  const nodeBackend = (await praseResponse(haProxyResponse)).filter(result => result.svname === 'node_server').pop();
+  if (nodeBackend && nodeBackend.status == 'UP') return {haProxyStatus: 'UP', appStatus: 'UP'};
 
   return {haProxyStatus: 'UP', appStatus: 'DOWN'};
 };
