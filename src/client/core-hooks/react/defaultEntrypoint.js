@@ -1,19 +1,14 @@
+// if you copy and paste this, change this to `import ... from 'boringbits/client'`
+import {getRootComponents, renderRedux} from './clientEntry';
 
-import {renderRedux} from './clientEntry';
+const {
+  mainApp,
+  reducers,
+  subscribeHotReload,
+} = getRootComponents();
 
 function renderApp() {
-
-  const {
-    mainApp,
-    reducers,
-  } = __boring_internals.modules;
-
   renderRedux(mainApp, reducers);
 }
 
-if (!__boring_internals.hot.entrypointSubscribed) {
-  __boring_internals.hot.subscribe(renderApp);
-  __boring_internals.hot.entrypointSubscribed = true;
-  renderApp();
-}
-
+subscribeHotReload(renderApp);

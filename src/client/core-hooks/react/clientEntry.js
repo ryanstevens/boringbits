@@ -34,12 +34,43 @@ function renderRedux(App, reducers) {
     document.querySelector('#root')
   );
 
-  return components;
+  return new Promise((resolve, reject) => {
+    resolve(components);
+  });
 }
 
+/**
+ * This is pure sugar / convience
+ *
+ * @return {Promise}
+ */
+function getRootComponents() {
+
+  const {
+    mainApp,
+    reducers,
+  } = __boring_internals.modules;
+
+
+  function subscribeHotReload(fn) {
+    if (!__boring_internals.hot[fn.toString()]) {
+      __boring_internals.hot.subscribe(fn);
+      __boring_internals.hot[fn.toString()] = true;
+      fn();
+    }
+  }
+
+  return {
+    mainApp,
+    App: mainApp, // alias
+    reducers,
+    subscribeHotReload,
+  };
+};
+
 const toExport = {
-  renderRedux: renderRedux,
-  React: React, // backwards compat, remove @ v4
+  renderRedux,
+  React, // backwards compat, remove @ v4
   react: React,
   ReactDOM: ReactDOM, // backwards compat, remove @ v4
   Redux: Redux, // backwards compat, remove @ v4
@@ -48,6 +79,7 @@ const toExport = {
   ReactRedux: ReactRedux, // backwards compat, remove @ v4
   BoringRouter: BoringRouter,
   MagicallyDeliciousRouter: BoringRouter,
+  getRootComponents,
 };
 
 toExport['react-redux'] = ReactRedux;

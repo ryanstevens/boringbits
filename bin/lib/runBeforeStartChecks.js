@@ -2,7 +2,7 @@
 const checkProxy = require('./checkProxy.js');
 const inquirer = require('inquirer');
 const chalk = require('chalk');
-
+const childProcess = require('child_process');
 
 module.exports = async function runChecks() {
   const status = await checkProxy();

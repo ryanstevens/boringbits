@@ -4,8 +4,8 @@ function makeRequest(url) {
   console.log('Attempting ' + url);
   return new Promise((resolve, reject) => {
     request.get(url, function(err, resp, body) {
-      if (resp.statusCode !== 200) return reject('non 200 statuCode, ' + resp.statusCode);
       if (err) return reject(err);
+      if (resp.statusCode !== 200) return reject('non 200 statuCode, ' + resp.statusCode);
       resolve(body);
     });
   });
