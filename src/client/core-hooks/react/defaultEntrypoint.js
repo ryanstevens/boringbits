@@ -1,13 +1,13 @@
 // if you copy and paste this, change this to `import ... from 'boringbits/client'`
-import {getRootComponents, renderRedux} from './clientEntry';
-
-const {
-  mainApp,
-  reducers,
-  subscribeHotReload,
-} = getRootComponents();
+import {getRootComponents, renderRedux, subscribeHotReload} from './clientEntry';
 
 function renderApp() {
+
+  const {
+    mainApp,
+    reducers,
+  } = getRootComponents();
+
   renderRedux(mainApp, reducers);
 }
 

@@ -51,15 +51,6 @@ function getRootComponents() {
     reducers,
   } = __boring_internals.modules;
 
-
-  function subscribeHotReload(fn) {
-    if (!__boring_internals.hot[fn.toString()]) {
-      __boring_internals.hot.subscribe(fn);
-      __boring_internals.hot[fn.toString()] = true;
-      fn();
-    }
-  }
-
   return {
     mainApp,
     App: mainApp, // alias
@@ -67,6 +58,14 @@ function getRootComponents() {
     subscribeHotReload,
   };
 };
+
+function subscribeHotReload(fn) {
+  if (!__boring_internals.hot[fn.toString()]) {
+    __boring_internals.hot.subscribe(fn);
+    __boring_internals.hot[fn.toString()] = true;
+    fn();
+  }
+}
 
 const toExport = {
   renderRedux,
@@ -80,6 +79,7 @@ const toExport = {
   BoringRouter: BoringRouter,
   MagicallyDeliciousRouter: BoringRouter,
   getRootComponents,
+  subscribeHotReload,
 };
 
 toExport['react-redux'] = ReactRedux;
