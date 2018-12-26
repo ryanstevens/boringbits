@@ -71,6 +71,11 @@ module.exports = function reactHook(BoringInjections) {
       const modulesToRequire = {};
       const entryPointPath = options.app_dir +'/'+reactHandlerPaths.entrypoint;
 
+      if (!fs.existsSync(reactHandlerPaths.mainApp)) {
+        reactHandlerPaths.mainApp = __dirname + '/defaultRootAppProxy.js';
+        modulesToRequire.mainApp = reactHandlerPaths.mainApp;
+      }
+
       // check to make sure entrypoint is real
       if (!fs.existsSync(entryPointPath + '.js') &&
         !fs.existsSync(entryPointPath + '.jsx') &&
@@ -78,11 +83,12 @@ module.exports = function reactHook(BoringInjections) {
         !fs.existsSync(entryPointPath + '.tsx')) {
         reactHandlerPaths.entrypoint = {
           canonicalPath: options.reactRoot,
-          assetPath: __dirname + '/defaultEntrypoint.js',
+          assetPath: __dirname + '/defaultEntrypointProxy.js',
         };
-        modulesToRequire['reducers'] = reactHandlerPaths.reducers;
-        modulesToRequire['mainApp'] = reactHandlerPaths.mainApp;
+        modulesToRequire.reducers = reactHandlerPaths.reducers;
+        modulesToRequire.mainApp = reactHandlerPaths.mainApp;
       }
+
 
       const [beforeEntry, afterEntry] = dynamicComponents(reactHandlerPaths, modulesToRequire);
 

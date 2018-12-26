@@ -19,6 +19,13 @@ function renderRedux(App, reducers) {
     );
   }
 
+  if (!App) {
+    App = getRootComponents().mainApp;
+  }
+  if (!reducers) {
+    reducers = getRootComponents().reducers;
+  }
+
   const components = getAppComponents({
     App: App,
     reducers: reducers,
@@ -41,21 +48,17 @@ function renderRedux(App, reducers) {
 
 /**
  * This is pure sugar / convience
+ * to abstract pulling modules
+ * from __boring_internals;
  *
- * @return {Promise}
+ * @return {object}
  */
 function getRootComponents() {
 
-  const {
-    mainApp,
-    reducers,
-  } = __boring_internals.modules;
-
   return {
-    mainApp,
-    App: mainApp, // alias
-    reducers,
+    App: __boring_internals.modules.mainApp, // alias
     subscribeHotReload,
+    ...__boring_internals.modules,
   };
 };
 
