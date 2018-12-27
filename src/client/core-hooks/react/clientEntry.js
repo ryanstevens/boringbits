@@ -7,6 +7,8 @@ import {ConnectedRouter} from 'connected-react-router';
 import createBrowserHistory from 'history/createBrowserHistory';
 import getAppComponents from './AppInit';
 import BoringRouter from './BoringRouter';
+import isNode from 'detect-node';
+
 
 function renderRedux(App, reducers) {
 
@@ -55,12 +57,18 @@ function renderRedux(App, reducers) {
  */
 function getRootComponents() {
 
-  return {
-    App: __boring_internals.modules.mainApp, // alias
-    subscribeHotReload,
-    decorators: __boring_internals.decorators,
-    ...__boring_internals.modules,
-  };
+  if (isNode) {
+    return {
+
+    };
+  } else {
+    return {
+      App: __boring_internals.modules.mainApp, // alias
+      decorators: __boring_internals.decorators,
+      ...__boring_internals.modules,
+    };
+  }
+
 };
 
 function subscribeHotReload(fn) {
@@ -84,6 +92,8 @@ const toExport = {
   MagicallyDeliciousRouter: BoringRouter,
   getRootComponents,
   subscribeHotReload,
+  isNode,
+  ...getRootComponents(),
 };
 
 toExport['react-redux'] = ReactRedux;

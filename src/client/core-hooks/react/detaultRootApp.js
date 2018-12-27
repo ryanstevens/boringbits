@@ -1,5 +1,5 @@
 import React from 'react';
-import {MagicallyDeliciousRouter} from './clientEntry';
+import MagicallyDeliciousRouter from './BoringRouter';
 import {withStyles} from '@material-ui/core/styles';
 
 import Grid from '@material-ui/core/Grid';
