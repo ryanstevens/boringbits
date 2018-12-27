@@ -9,10 +9,11 @@ const modules = {};
  * in a JS file that can be linted,
  * as opposed to writing a string with JS.
  *
- * Since boring only babels to node, we need to write
- * our JavaScript ES5'y
+ * This function will ultimately be toString'd then ran
+ * through babel with a target of ie11. Both
+ * the containes and modules varaiables will be in scope
  */
-module.exports = function beforeEntryLoader() {
+export default function beforeEntryLoader() {
 
   if (!window.__boring_internals) {
     window.__boring_internals = {

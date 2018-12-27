@@ -24,11 +24,14 @@ function makeConainerCode({path, importPath} = container) {
   `;
 }
 
-function makeModuleCode(modules) {
+function mapModules(modules) {
 
   return Object.keys(modules).map(moduleName => {
     return `
-      modules['${moduleName}'] = require('${modules[moduleName]}').default;
+      (function() {
+        const requiredMod = require('${modules[moduleName]}');
+        modules['${moduleName}'] =  (requiredMod.default) ? requiredMod.default : requiredMod;
+      })();
     `;
   }).join('\n');
 }
@@ -73,7 +76,7 @@ export default function getEntryWrappers(reactHandlerPaths, modules = {}) {
     const containers = [];
     const modules = [];
   ` + containers.map(makeConainerCode).join('\n')
-    + makeModuleCode(modules)
+    + mapModules(modules)
     + beforeEntryLoader.toString()
     + '\nbeforeEntryLoader();';
 
