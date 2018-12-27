@@ -6,7 +6,6 @@ module.exports = function(BoringInjections) {
 
   const {
     boring,
-    config,
   } = BoringInjections;
 
   const {HealthCheck, HealthModel} = healthy;
@@ -16,18 +15,18 @@ module.exports = function(BoringInjections) {
   }, {
     started: new Date(),
     hostname: os.hostname(),
-    pid: process.pid
+    pid: process.pid,
   });
 
   healthCheck.model.serialize = function() {
     const healthObj = this.getHealthObject();
     healthObj.uptime = moment(healthObj.started).fromNow();
     return this.options.serializer(healthObj);
-  }
+  };
 
   function getHeap() {
     const mem = process.memoryUsage();
-    return Object.keys(mem).reduce((acc, key)  => {
+    return Object.keys(mem).reduce((acc, key) => {
       acc[key] = Math.ceil(mem[key] / 1024 / 1024 * 100) / 100;
       return acc;
     }, {});
@@ -39,16 +38,17 @@ module.exports = function(BoringInjections) {
       const heap = getHeap();
       Object.keys(heap).forEach(key => {
         memoryHealth.set(key, heap[key]);
-      })
+      });
       cb();
-    }
+    },
   });
 
   const requestData = {
     total: {
-      cnt: 0
-    }
-  }
+      cnt: 0,
+    },
+  };
+
   const requestHealth = new HealthModel(requestData);
 
   healthCheck.addChildCheck('memory', memoryHealth);
@@ -71,7 +71,5 @@ module.exports = function(BoringInjections) {
     return Promise.resolve();
   });
 
-
-
-  return {name: 'healthy'}
-}
+  return {name: 'healthy'};
+};

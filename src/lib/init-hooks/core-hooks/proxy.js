@@ -1,7 +1,7 @@
 module.exports = function(BoringInjections) {
 
   const {
-    boring
+    boring,
   } = BoringInjections;
 
   boring.before('add-hooks', function() {
@@ -11,5 +11,5 @@ module.exports = function(BoringInjections) {
 
   });
 
-  return {name: 'trust-proxy'}
-}
+  return {name: 'trust-proxy'};
+};

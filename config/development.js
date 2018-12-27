@@ -12,4 +12,5 @@ module.exports = {
   server: {
     disable_cache: false,
   },
+  logUserAgent: false,
 };
