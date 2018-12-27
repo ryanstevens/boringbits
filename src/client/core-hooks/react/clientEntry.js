@@ -58,9 +58,9 @@ function renderRedux(App, reducers) {
 function getRootComponents() {
 
   if (isNode) {
-    return {
-
-    };
+    // putting the path prevents webpack from bundling getNodeRootComponents
+    const nodeRootComponents = '../../../lib/init-hooks/core-hooks/react/getNodeRootComponents';
+    return require(nodeRootComponents);
   } else {
     return {
       App: __boring_internals.modules.mainApp, // alias
@@ -80,19 +80,22 @@ function subscribeHotReload(fn) {
 }
 
 const toExport = {
-  renderRedux,
+  // vendor exports for convience
   React, // backwards compat, remove @ v4
   react: React,
   ReactDOM: ReactDOM, // backwards compat, remove @ v4
   Redux: Redux, // backwards compat, remove @ v4
   redux: Redux,
-  injecture: injecture,
   ReactRedux: ReactRedux, // backwards compat, remove @ v4
+  injecture: injecture,
+  isNode,
+
+  // boring components
+  renderRedux,
   BoringRouter: BoringRouter,
   MagicallyDeliciousRouter: BoringRouter,
   getRootComponents,
   subscribeHotReload,
-  isNode,
   ...getRootComponents(),
 };
 

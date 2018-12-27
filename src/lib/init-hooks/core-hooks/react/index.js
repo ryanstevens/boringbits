@@ -35,13 +35,14 @@ module.exports = function reactHook(BoringInjections) {
 
       const reactHandlerPaths = getReactHandlerPaths(options);
 
-      // console.log("#############", reactHandlerPaths)
+      reactHandlerPaths.decorators = getDecorators(reactHandlerPaths);
+      reactHandlerPaths.containers = getContainers(reactHandlerPaths);
 
       const [beforeEntry, afterEntry] = dynamicComponents(
         reactHandlerPaths.reactRoot,
-        getContainers(reactHandlerPaths),
+        reactHandlerPaths.containers,
         reactHandlerPaths.modulesToRequire,
-        getDecorators(reactHandlerPaths)
+        reactHandlerPaths.decorators
       );
 
       const entrypointPaths = [

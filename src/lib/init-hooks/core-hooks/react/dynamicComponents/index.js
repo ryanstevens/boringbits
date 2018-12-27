@@ -69,8 +69,6 @@ export default function getEntryWrappers(reactRoot, containers = [], modules = {
       return 0;
     });
 
-  // if (containers.legnth === 0) return [];
-
   const prefix = __dirname + '/dist';
   const beforeFilename = reactRoot + '_beforeEntry.js';
 

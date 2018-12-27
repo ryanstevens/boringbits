@@ -87,6 +87,7 @@ module.exports = {
   },
   module: {
     strictExportPresence: true,
+    exprContextCritical: false,
     rules: [
       {
         // "oneOf" will traverse all following loaders until one will
@@ -197,7 +198,7 @@ module.exports = {
           ecma: undefined,
           warnings: false,
           parse: {},
-          compress: {},   
+          compress: {},
           mangle: true,
           module: false,
           output: null,

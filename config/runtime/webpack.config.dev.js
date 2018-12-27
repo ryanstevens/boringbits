@@ -88,6 +88,7 @@ module.exports = {
   },
   module: {
     strictExportPresence: true,
+    exprContextCritical: false,
     rules: [
       {
         // "oneOf" will traverse all following loaders until one will
