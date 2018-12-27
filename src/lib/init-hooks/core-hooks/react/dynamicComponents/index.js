@@ -28,7 +28,7 @@ function mapModules(modules) {
 
   return Object.keys(modules).map(moduleName => {
     return `
-      (function() {
+      (function requireModule() {
         const requiredMod = require('${modules[moduleName]}');
         modules['${moduleName}'] =  (requiredMod.default) ? requiredMod.default : requiredMod;
       })();
@@ -36,11 +36,23 @@ function mapModules(modules) {
   }).join('\n');
 }
 
-export default function getEntryWrappers(reactHandlerPaths, modules = {}) {
+
+function mapDecorators(decorators) {
+
+  return decorators.map(decorator => {
+    return `
+      (function requireDecorator() {
+        const requiredMod = require('${decorator.importPath}');
+        decorators['${decorator.moduleName}'] =  (requiredMod.default) ? requiredMod.default : requiredMod;
+      })();
+    `;
+  }).join('\n');
+}
+
+export default function getEntryWrappers(reactRoot, containers = [], modules = {}, decorators = []) {
 
 
-  const containers = reactHandlerPaths
-    .containers
+  const filteredContainers = containers
     .filter(container => container.path)
     .sort((containerA, containerB) => {
       /**
@@ -58,14 +70,14 @@ export default function getEntryWrappers(reactHandlerPaths, modules = {}) {
       return 0;
     });
 
-  if (containers.legnth === 0) return [];
+  // if (containers.legnth === 0) return [];
 
   const prefix = __dirname + '/dist';
-  const beforeFilename = reactHandlerPaths.reactRoot + '_beforeEntry.js';
+  const beforeFilename = reactRoot + '_beforeEntry.js';
 
   const beforeEntryFilePath = prefix + '/' + beforeFilename;
 
-  const afterFilename = reactHandlerPaths.reactRoot + '_afterEntry.js';
+  const afterFilename = reactRoot + '_afterEntry.js';
   const afterEntryFilePath = prefix + '/' + afterFilename;
 
   const code = `
@@ -75,8 +87,11 @@ export default function getEntryWrappers(reactHandlerPaths, modules = {}) {
 
     const containers = [];
     const modules = [];
-  ` + containers.map(makeConainerCode).join('\n')
+    const decorators = {};
+
+  ` + filteredContainers.map(makeConainerCode).join('\n')
     + mapModules(modules)
+    + mapDecorators(decorators)
     + beforeEntryLoader.toString()
     + '\nbeforeEntryLoader();';
 

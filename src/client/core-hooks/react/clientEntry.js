@@ -58,6 +58,7 @@ function getRootComponents() {
   return {
     App: __boring_internals.modules.mainApp, // alias
     subscribeHotReload,
+    decorators: __boring_internals.decorators,
     ...__boring_internals.modules,
   };
 };

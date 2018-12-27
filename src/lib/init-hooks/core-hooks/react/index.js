@@ -44,6 +44,7 @@ module.exports = function reactHook(BoringInjections) {
         baseAppPath: clientRoot + '/' + options.reactRoot,
         entrypointFile: config.get('boring.react.entrypoint', 'entrypoint'),
         routeContainersDirectory: config.get('boring.react.routerContainersDirectory', 'containers'),
+        decoratorDirectory: config.get('boring.react.decoratorDirectory', 'decorators'),
         // not quite sure if we are gonna require this for people.
         mainAppFile: config.get('boring.react.mainApp', 'App.js'),
         reducersFile: config.get('boring.react.reducers', 'reducers'),
@@ -62,11 +63,11 @@ module.exports = function reactHook(BoringInjections) {
         // this one is a little special, we want to
         // make sure it's relative to the app_dir
         // but not having the app_dir in it's path
-        routerContainers: options.baseAppPath + '/' + options.routeContainersDirectory,
+        routerContainersPath: options.baseAppPath + '/' + options.routeContainersDirectory,
+        decoratorsPath: options.baseAppPath + '/' + options.decoratorDirectory,
+
         ...options,
       };
-
-      reactHandlerPaths.containers = getContainers(reactHandlerPaths);
 
       const modulesToRequire = {};
       const entryPointPath = options.app_dir +'/'+reactHandlerPaths.entrypoint;
@@ -90,7 +91,12 @@ module.exports = function reactHook(BoringInjections) {
       }
 
 
-      const [beforeEntry, afterEntry] = dynamicComponents(reactHandlerPaths, modulesToRequire);
+      const [beforeEntry, afterEntry] = dynamicComponents(
+        reactHandlerPaths.reactRoot,
+        getContainers(reactHandlerPaths),
+        modulesToRequire,
+        getDecorators(reactHandlerPaths)
+      );
 
       const entrypointPaths = [
         beforeEntry,
@@ -126,7 +132,7 @@ module.exports = function reactHook(BoringInjections) {
 
 
 function getContainers(reactHandlerPaths) {
-  const containersDirPath = reactHandlerPaths.app_dir +'/'+ reactHandlerPaths.routerContainers;
+  const containersDirPath = reactHandlerPaths.app_dir +'/'+ reactHandlerPaths.routerContainersPath;
   try {
     return fs.readdirSync(containersDirPath).map(function(file) {
       if (file.endsWith('.map')) return null;
@@ -136,7 +142,25 @@ function getContainers(reactHandlerPaths) {
         path: container.path,
         container,
         moduleName,
-        importPath: reactHandlerPaths.routerContainers + '/' + moduleName,
+        importPath: reactHandlerPaths.routerContainersPath + '/' + moduleName,
+      };
+    }).filter(Boolean);
+  } catch (e) {
+    return [];
+  }
+}
+
+
+function getDecorators(reactHandlerPaths) {
+  const decoratorsPath = reactHandlerPaths.app_dir +'/'+ reactHandlerPaths.decoratorsPath;
+  try {
+    return fs.readdirSync(decoratorsPath).map(function(file) {
+      if (file.endsWith('.map')) return null;
+      const moduleName = file.split('.').shift(); // don't worry about what type of extension
+      return {
+        moduleName,
+        // decorator: require(decoratorsPath + '/' + moduleName).default,
+        importPath: reactHandlerPaths.decoratorsPath + '/' + moduleName,
       };
     }).filter(Boolean);
   } catch (e) {

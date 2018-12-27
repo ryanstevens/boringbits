@@ -1,8 +1,3 @@
-
-// just so linting doesn't break
-const containers = [];
-const modules = {};
-
 /**
  * This file is used to append to the generated entrypoint
  * of beforeEntry.  It's purpose is to maintain the code
@@ -25,6 +20,7 @@ export default function beforeEntryLoader() {
 
   internals.containers = containers || [];
   internals.modules = modules || {};
+  internals.decorators = decorators || {};
 
   if (!internals.hot) {
     internals.hot = {
