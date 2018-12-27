@@ -4,7 +4,6 @@ import getReactHandlerPaths from './reactHandlerPaths';
 import renderRedux from './renderRedux';
 import dynamicComponents from './dynamicComponents';
 import fs from 'fs-extra';
-import cls from 'boring-cls';
 
 module.exports = function reactHook(BoringInjections) {
   const {
@@ -33,8 +32,6 @@ module.exports = function reactHook(BoringInjections) {
         // Would end up mapping to {app_root}/client/pages/helloworld/entrypoint.js
         options.reactRoot = field.toLowerCase();
       }
-
-      const handlerNS = cls.createNamespace('createHandlerDecorator');
 
       const reactHandlerPaths = getReactHandlerPaths(options);
 
