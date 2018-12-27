@@ -51,7 +51,6 @@ function mapDecorators(decorators) {
 
 export default function getEntryWrappers(reactRoot, containers = [], modules = {}, decorators = []) {
 
-
   const filteredContainers = containers
     .filter(container => container.path)
     .sort((containerA, containerB) => {
@@ -86,7 +85,7 @@ export default function getEntryWrappers(reactRoot, containers = [], modules = {
     import * as React from 'react';
 
     const containers = [];
-    const modules = [];
+    const modules = {};
     const decorators = {};
 
   ` + filteredContainers.map(makeConainerCode).join('\n')

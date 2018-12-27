@@ -1,10 +1,9 @@
-const Layout = require('./Layout');
-const decorators = require('../../../decorators');
-const config = require('boring-config');
-const paths = require('paths');
-const renderRedux = require('./renderRedux');
-const dynamicComponents = require('./dynamicComponents').default;
-const fs = require('fs');
+import Layout from './Layout';
+import decorators from '../../../decorators';
+import getReactHandlerPaths from './reactHandlerPaths';
+import renderRedux from './renderRedux';
+import dynamicComponents from './dynamicComponents';
+import fs from 'fs-extra';
 
 module.exports = function reactHook(BoringInjections) {
   const {
@@ -34,67 +33,14 @@ module.exports = function reactHook(BoringInjections) {
         options.reactRoot = field.toLowerCase();
       }
 
-      // this needs to live outside of the spread
-      // because it is used to create baseAppPath
-      const clientRoot = options.clientRoot || config.get('boring.react.clientRoot', 'client/pages');
+      const reactHandlerPaths = getReactHandlerPaths(options);
 
-      options = {
-        ...paths,
-        clientRoot,
-        baseAppPath: clientRoot + '/' + options.reactRoot,
-        entrypointFile: config.get('boring.react.entrypoint', 'entrypoint'),
-        routeContainersDirectory: config.get('boring.react.routerContainersDirectory', 'containers'),
-        decoratorDirectory: config.get('boring.react.decoratorDirectory', 'decorators'),
-        // not quite sure if we are gonna require this for people.
-        mainAppFile: config.get('boring.react.mainApp', 'App.js'),
-        reducersFile: config.get('boring.react.reducers', 'reducers'),
-        ...options,
-      };
-
-      const reactHandlerPaths = {
-        // This grouping are filepaths
-        // relative to the application
-        // meant to be required / imported.
-        // These are the `defaults` for borings
-        // react / redux conventions
-        entrypoint: options.baseAppPath + '/' + options.entrypointFile,
-        mainApp: options.baseAppPath + '/'+ options.mainAppFile,
-        reducers: options.baseAppPath + '/'+ options.reducersFile,
-        // this one is a little special, we want to
-        // make sure it's relative to the app_dir
-        // but not having the app_dir in it's path
-        routerContainersPath: options.baseAppPath + '/' + options.routeContainersDirectory,
-        decoratorsPath: options.baseAppPath + '/' + options.decoratorDirectory,
-
-        ...options,
-      };
-
-      const modulesToRequire = {};
-      const entryPointPath = options.app_dir +'/'+reactHandlerPaths.entrypoint;
-
-      if (!fs.existsSync(reactHandlerPaths.mainApp)) {
-        reactHandlerPaths.mainApp = __dirname + '/defaultRootAppProxy.js';
-        modulesToRequire.mainApp = reactHandlerPaths.mainApp;
-      }
-
-      // check to make sure entrypoint is real
-      if (!fs.existsSync(entryPointPath + '.js') &&
-        !fs.existsSync(entryPointPath + '.jsx') &&
-        !fs.existsSync(entryPointPath + '.ts') &&
-        !fs.existsSync(entryPointPath + '.tsx')) {
-        reactHandlerPaths.entrypoint = {
-          canonicalPath: options.reactRoot,
-          assetPath: __dirname + '/defaultEntrypointProxy.js',
-        };
-        modulesToRequire.reducers = reactHandlerPaths.reducers;
-        modulesToRequire.mainApp = reactHandlerPaths.mainApp;
-      }
-
+      // console.log("#############", reactHandlerPaths)
 
       const [beforeEntry, afterEntry] = dynamicComponents(
         reactHandlerPaths.reactRoot,
         getContainers(reactHandlerPaths),
-        modulesToRequire,
+        reactHandlerPaths.modulesToRequire,
         getDecorators(reactHandlerPaths)
       );
 
