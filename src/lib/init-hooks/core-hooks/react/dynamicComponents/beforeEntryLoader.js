@@ -29,7 +29,10 @@ export default function beforeEntryLoader() {
         this.subscribers.push(fn);
       },
       notify: function() {
-        this.subscribers.forEach(fn => fn());
+        this.subscribers.forEach(fn => {
+          console.log('notifying subscriber of a change');
+          fn();
+        });
       },
     };
   } else {
