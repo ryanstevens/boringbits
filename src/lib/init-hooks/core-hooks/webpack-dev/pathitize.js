@@ -25,7 +25,8 @@ module.exports = function pathatize(pathArr) {
     // to strip out of the path that are
     // set by boring internals.  Maybe later
     // we can find a more elegant solution
-    if (path === 'dist-lib-init-hooks-core-hooks-react-clientEntryProxy') {
+    if (path === 'dist-lib-init-hooks-core-hooks-react-clientEntryProxy' ||
+        path === 'lib-init-hooks-core-hooks-react-clientEntryProxy') {
       path = 'entry';
     }
 
