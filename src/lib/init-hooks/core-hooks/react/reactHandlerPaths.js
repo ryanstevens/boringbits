@@ -45,7 +45,7 @@ export default function getPaths(options = {}) {
   reactHandlerPaths.modulesToRequire = {};
   const entryPointPath = options.app_dir +'/'+reactHandlerPaths.entrypoint;
 
-  if (!fs.existsSync(reactHandlerPaths.mainApp)) {
+  if (!fs.existsSync(options.app_dir +'/'+ reactHandlerPaths.mainApp)) {
     reactHandlerPaths.mainApp = __dirname + '/defaultRootAppProxy.js';
     reactHandlerPaths.modulesToRequire.mainApp = reactHandlerPaths.mainApp;
   }

@@ -88,10 +88,11 @@ export default function getEntryWrappers(reactRoot, containers = [], modules = {
     const decorators = {};
 
   ` + filteredContainers.map(makeConainerCode).join('\n')
-    + mapModules(modules)
     + mapDecorators(decorators)
-    + beforeEntryLoader.toString()
-    + '\nbeforeEntryLoader();';
+      + beforeEntryLoader.toString()
+      + '\nbeforeEntryLoader();'
+    + mapModules(modules);
+
 
   const babelOptions = {
     'babelrc': false,

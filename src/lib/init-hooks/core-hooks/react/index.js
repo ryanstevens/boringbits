@@ -104,6 +104,7 @@ function reduceMods(mods) {
 function requireDirectory(appDir, directoryPath) {
   const dirToRead = appDir +'/'+ directoryPath;
   try {
+    if (!fs.existsSync(dirToRead)) return [];
     return fs.readdirSync(dirToRead).map(function(file) {
       if (file.endsWith('.map')) return null;
       const moduleName = file.split('.').shift(); // don't worry about what type of extension
