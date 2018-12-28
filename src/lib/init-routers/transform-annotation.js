@@ -1,12 +1,12 @@
 
-module.exports = function convert_class_to_endpoint(class_metadata) {
+module.exports = function convertClassToMetaData(classMetadata) {
 
-  const endpoints = class_metadata.endpoints || [];
+  const endpoints = classMetadata.endpoints || [];
 
   // rewrite endpoints from an object into an array.
-  class_metadata.endpoints = Object.keys(endpoints).map(name => {
+  classMetadata.endpoints = Object.keys(endpoints).map(name => {
     return endpoints[name];
   });
 
-  return class_metadata;
+  return classMetadata;
 };

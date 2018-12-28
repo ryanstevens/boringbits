@@ -8,6 +8,7 @@ import glob from 'glob';
 const syncGlob = promisify(glob);
 
 
+// eslint-disable-next-line valid-jsdoc
 /**
    * Hooks do not need to export anything, by default the
    * name of the hook will be the module name

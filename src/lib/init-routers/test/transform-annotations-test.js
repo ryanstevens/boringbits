@@ -37,10 +37,10 @@ describe('Transform Annotations', function() {
     }
 
 
-    const endpoint_meta = transformer(getMetaDataByClass(Stuff).metadata);
-    //    console.log(JSON.stringify(endpoint_meta, null, 2))
+    const endpointMeta = transformer(getMetaDataByClass(Stuff).metadata);
+    //    console.log(JSON.stringify(endpointMeta, null, 2))
     assert.deepEqual(
-      endpoint_meta,
+      endpointMeta,
       {
         'path': '/meow',
         'endpoints': [

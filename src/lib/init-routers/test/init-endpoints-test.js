@@ -18,8 +18,8 @@ function findByName(arr, name) {
 function wipeInjectoreStore() {
   debugger;
   const jectureStore = injecture.getInstanceByInterface('instanceStore');// require('injecture/injecture-store');
-  const jecture_keys = Object.keys(jectureStore);
-  jecture_keys.forEach(key => {
+  const jectureKeys = Object.keys(jectureStore);
+  jectureKeys.forEach(key => {
     const stored = jectureStore[key];
     stored.instances = {};
   });
@@ -28,6 +28,7 @@ function wipeInjectoreStore() {
 
 describe('Init Endpoints', function() {
 
+  // eslint-disable-next-line no-invalid-this
   this.timeout(7000);
 
   function mockRequireAll(dataToMock) {

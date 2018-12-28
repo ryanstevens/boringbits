@@ -2,6 +2,7 @@
 import paths from 'paths';
 import requireInject from 'require-inject-all';
 
+// eslint-disable-next-line valid-jsdoc
 /**
    * Hooks do not need to export anything, by default the
    * name of the hook will be the module name

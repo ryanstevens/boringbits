@@ -5,15 +5,15 @@ const injecture = require('injecture');
 
 describe('Endpoint decorator', function() {
 
-  let endpoint_decortators;
+  let endpointDecortators;
 
   beforeEach(() => {
-    endpoint_decortators = require('../router');
+    endpointDecortators = require('../router');
   });
 
 
   it('will push a prop into the class prototype', done => {
-    const {endpoint, get, getMetaDataByClass} = endpoint_decortators;
+    const {endpoint, get, getMetaDataByClass} = endpointDecortators;
 
     @endpoint('/foo')
     class Meow {
@@ -41,7 +41,7 @@ describe('Endpoint decorator', function() {
 
 
   it('will combine annotations into the metadata', done => {
-    const {endpoint, get, middleware, post, entrypoint, getMetaDataByClass} = endpoint_decortators;
+    const {endpoint, get, middleware, post, entrypoint, getMetaDataByClass} = endpointDecortators;
 
     @endpoint('/bar')
     class Meow {
@@ -70,13 +70,14 @@ describe('Endpoint decorator', function() {
 
 
   it('will reply all added decorated classes when a new emitter is added', done => {
-    const {endpoint, get, middleware, post, entrypoint, getMetaDataByClass, subscribeDecorators} = endpoint_decortators;
+    const {endpoint, get, middleware, post, entrypoint, getMetaDataByClass, subscribeDecorators} = endpointDecortators;
 
     const emitter1 = new Emitter({wildcard: true});
     const emitterCollecter1 = [];
 
     emitter1.on('decorator.router.*', function(...args) {
       emitterCollecter1.push({
+        // eslint-disable-next-line no-invalid-this
         eventName: this.event,
         args,
       });
@@ -105,7 +106,7 @@ describe('Endpoint decorator', function() {
   });
 
   it('will ensure get is actually wrapped', done => {
-    const {endpoint, get, middleware, post, entrypoint, getMetaDataByClass, subscribeDecorators} = endpoint_decortators;
+    const {endpoint, get, middleware, post, entrypoint, getMetaDataByClass, subscribeDecorators} = endpointDecortators;
 
     @endpoint('/foo')
     class Clazz {

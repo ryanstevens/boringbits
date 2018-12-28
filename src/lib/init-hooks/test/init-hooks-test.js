@@ -9,6 +9,7 @@ describe('Init Hooks', function() {
 
   it('will require all the hook files in directory', function(done) {
 
+    // eslint-disable-next-line no-invalid-this
     this.timeout(5000);
 
     const init = require('../index');
