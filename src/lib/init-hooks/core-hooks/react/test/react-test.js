@@ -1,7 +1,9 @@
 const assert = require('assert');
 const decorators = require('../../../../decorators');
 const Understudy = require('boring-understudy');
+const cls = require('boring-cls');
 
+cls.createNamespace('http-request');
 
 describe('React Tests', function reactTests() {
 
@@ -19,6 +21,7 @@ describe('React Tests', function reactTests() {
     };
 
     Understudy.call(injection.boring);
+
 
     reactHook(injection);
 
