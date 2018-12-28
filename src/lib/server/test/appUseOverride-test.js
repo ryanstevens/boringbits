@@ -11,7 +11,7 @@ describe('appUseOverride', function() {
     const middleware = [];
     const originalUse = function(fn) {
       middleware.push(fn);
-    }
+    };
     const express = {
       use: originalUse,
     };

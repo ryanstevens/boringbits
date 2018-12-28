@@ -1,5 +1,5 @@
 const assert = require('assert');
-const proxyquire = require('proxyquire').noPreserveCache()
+const proxyquire = require('proxyquire').noPreserveCache();
 const logger = require('boring-logger');
 
 describe('Static Injections', function() {
@@ -9,8 +9,8 @@ describe('Static Injections', function() {
   beforeEach(() => {
     staticInjections = proxyquire('../staticInjectionMiddleware', {
       'paths': {
-        asset_manifest: __dirname +'/test-asset-manifest.json'
-      }
+        asset_manifest: __dirname +'/test-asset-manifest.json',
+      },
     });
   });
 
@@ -32,8 +32,8 @@ describe('Static Injections', function() {
   it('Will read a manifest file and return the proper entrypoint', function(done) {
 
     const res = {
-      locals : {}
-    }
+      locals: {},
+    };
 
     assertions(res);
 
@@ -43,21 +43,21 @@ describe('Static Injections', function() {
 
   it('Will read webpack object on locals', function(done) {
     const res = {
-      locals : {
+      locals: {
         webpackStats: {
           toJson: function() {
             return {
               // this object is put on locals by the webpack middleware
               assetsByChunkName: {
-                "beep-boop.js": ["/beep/boop.js", '/beep/boop.js.map'],
-                "beep-boop.css": ["/beep/boop.css", '/beep/boop.css.map'],
-                "meow-bark.js": ["meow/bark.js", "meow/bark.js.map"]
-              }
-            }
-          }
-        }
-      }
-    }
+                'beep-boop.js': ['/beep/boop.js', '/beep/boop.js.map'],
+                'beep-boop.css': ['/beep/boop.css', '/beep/boop.css.map'],
+                'meow-bark.js': ['meow/bark.js', 'meow/bark.js.map'],
+              },
+            };
+          },
+        },
+      },
+    };
 
     assertions(res);
 

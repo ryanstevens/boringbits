@@ -2,25 +2,25 @@ const assert = require('assert');
 const proxyquire = require('proxyquire').noPreserveCache();
 const logger = require('boring-logger');
 const Emitter = require('eventemitter2');
-const decorators = require('../../decorators')
-const Understudy = require('boring-understudy')
+const decorators = require('../../decorators');
+const Understudy = require('boring-understudy');
 const injecture = require('injecture');
 
-const noop = function() {}
+const noop = function() {};
 
 function findByName(arr, name) {
-  for (var i=0; i<arr.length; i++) {
+  for (let i=0; i<arr.length; i++) {
     if (arr[i].name === name) return arr[i];
   }
   return undefined;
 }
 
 function wipeInjectoreStore() {
-debugger;
+  debugger;
   const jectureStore = injecture.getInstanceByInterface('instanceStore');// require('injecture/injecture-store');
   const jecture_keys = Object.keys(jectureStore);
   jecture_keys.forEach(key => {
-    const stored = jectureStore[key]
+    const stored = jectureStore[key];
     stored.instances = {};
   });
 
@@ -28,11 +28,11 @@ debugger;
 
 describe('Init Endpoints', function() {
 
-  this.timeout(7000)
+  this.timeout(7000);
 
   function mockRequireAll(dataToMock) {
 
-    wipeInjectoreStore()
+    wipeInjectoreStore();
 
     return proxyquire('../index', {
       'require-inject-all': function() {
@@ -40,38 +40,38 @@ describe('Init Endpoints', function() {
           resolve(dataToMock);
         });
       },
-    })
+    });
   }
 
   afterEach(function() {
     wipeInjectoreStore();
-  })
+  });
 
 
   it('will install endpoint verbs from JSON', function(done) {
 
     const init = mockRequireAll({
-      "pageA": {
+      'pageA': {
         endpoints: [
           {
             methods: {
-              get: noop
-            }
-          }
-        ]
+              get: noop,
+            },
+          },
+        ],
       },
-      "pageB": {
+      'pageB': {
         endpoints: [
           {
             methods: {
               post: noop,
-              head: noop
-            }
-          }
-        ]
+              head: noop,
+            },
+          },
+        ],
       },
-      "pageC": undefined
-    })
+      'pageC': undefined,
+    });
 
     class Boring extends Emitter {
       constructor() {
@@ -98,7 +98,7 @@ describe('Init Endpoints', function() {
 
       done();
 
-    })
+    });
   });
 
   it('will install endpoint verbs from annotation', done => {
@@ -118,7 +118,7 @@ describe('Init Endpoints', function() {
 
     const {
       endpoint,
-      get
+      get,
     }= decorators.router;
 
     const calls = [];
@@ -130,12 +130,12 @@ describe('Init Endpoints', function() {
 
       @get('/beep')
       serveFoo() {
-        calls.push('meat')
+        calls.push('meat');
       }
 
       @get('/guz')
       meep() {
-        calls.push('meep')
+        calls.push('meep');
       }
     }
 
@@ -160,7 +160,7 @@ describe('Init Endpoints', function() {
           done();
         });
       });
-    })
+    });
 
   });
 
@@ -183,7 +183,7 @@ describe('Init Endpoints', function() {
 
     const {
       endpoint,
-      get
+      get,
     }= decorators.router;
 
     const calls = [];
@@ -193,7 +193,7 @@ describe('Init Endpoints', function() {
 
       @get('/foo')
       foo() {
-        calls.push('matt')
+        calls.push('matt');
       }
 
     }
@@ -203,24 +203,24 @@ describe('Init Endpoints', function() {
       boring.before('http::get', function(ctx) {
         return new Promise(resolve => {
           setTimeout(resolve, 100);
-        })
+        });
       });
 
       result[0].endpoints[0].methods.get.handler();
       assert.equal(calls.length, 0);
 
-      //check once
+      // check once
       setTimeout(function() {
         assert.equal(calls.length, 0);
       }, 50);
 
-      //last check, this one should be set
+      // last check, this one should be set
       setTimeout(function() {
         assert.equal(calls[0], 'matt');
         done();
       }, 200);
 
-    })
+    });
 
   });
 

@@ -10,7 +10,7 @@ describe('Transform Annotations', function() {
   it('Will transform class metadata', done => {
 
     const {
-      endpoint, get, post, getMetaDataByClass
+      endpoint, get, post, getMetaDataByClass,
     } = decorators;
 
 
@@ -42,41 +42,41 @@ describe('Transform Annotations', function() {
     assert.deepEqual(
       endpoint_meta,
       {
-        "path": "/meow",
-        "endpoints": [
+        'path': '/meow',
+        'endpoints': [
           {
-            "methods": {
-              "get": {
-                "path": "/beep",
-                "handler": Stuff.prototype.serveFoo
+            'methods': {
+              'get': {
+                'path': '/beep',
+                'handler': Stuff.prototype.serveFoo,
               },
-              "post" : {
-                "path": "/beep",
-                "handler": Stuff.prototype.serveFoo
-              }
-            }
+              'post': {
+                'path': '/beep',
+                'handler': Stuff.prototype.serveFoo,
+              },
+            },
           },
           {
-            "methods": {
-              "get": {
-                "path": "/guz",
-                "handler": Stuff.prototype.meep
-              }
-            }
+            'methods': {
+              'get': {
+                'path': '/guz',
+                'handler': Stuff.prototype.meep,
+              },
+            },
           },
           // WHATEVS, for now this wasn't the goal as
           // this should be combined with the GET:/guz.
           // TODO: fix later.  This can be left as is
           // because connect_express will treat this all the same
           {
-            "methods": {
-              "post" : {
-                "path": "/guz",
-                "handler": Stuff.prototype.jeep
-              }
-            }
-          }
-        ]
+            'methods': {
+              'post': {
+                'path': '/guz',
+                'handler': Stuff.prototype.jeep,
+              },
+            },
+          },
+        ],
       }
     );
 

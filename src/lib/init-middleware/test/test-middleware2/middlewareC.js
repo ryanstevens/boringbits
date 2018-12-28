@@ -6,7 +6,7 @@ function func(req, res, next) {
 module.exports = async function registerMiddleware(boring) {
 
   return {
-    name: 'foo', 
-    func 
-  }
-}
+    name: 'foo',
+    func,
+  };
+};

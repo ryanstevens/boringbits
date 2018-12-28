@@ -4,5 +4,5 @@ function middleware(req, res, next) {
 }
 
 module.exports = async function registerMiddleware(boring) {
-  return middleware
-}
+  return middleware;
+};

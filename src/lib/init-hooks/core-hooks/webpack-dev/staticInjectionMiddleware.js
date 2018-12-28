@@ -88,7 +88,7 @@ module.exports = function getStaticInjections(res, entrypoint) {
       async: true,
       src: asset,
     };
-  }))
+  }));
 
   res.locals.pageInjections.headLinks = res.locals.pageInjections.headLinks.concat(cssFiles.map((asset) => {
     if (asset[0] !== '/') asset = `/${asset}`;

@@ -47,7 +47,7 @@ export default function getAppComponents(dependencies) {
   middleware.push(thunk);
 
   const Router = dependencies.Router;
-  const enhancer = composeEnhancers(applyMiddleware.apply(null, middleware));
+  const enhancer = composeEnhancers(applyMiddleware(...middleware));
 
   const store = createStore(
     combineReducers(reducers),
