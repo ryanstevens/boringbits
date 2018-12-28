@@ -1,3 +1,5 @@
+import {getNamespace, createNamespace} from 'boring-cls';
+
 const config = require('boring-config');
 const express = require('express');
 const initRouters = require('./init-routers');
@@ -12,11 +14,15 @@ const decorators = require('./decorators')
 const appUseOverride = require('./server/appUseOverride');
 const injecture = require('injecture');
 
+
 class InitPipeline extends EventEmitter  {
 
   constructor() {
     super({wildcard: true});
     Understudy.call(this);
+
+    this.requestNS = createNamespace('http-request');
+
     this.config = config;
     this.logger = logger;
     this.paths = paths;
@@ -32,18 +38,21 @@ class InitPipeline extends EventEmitter  {
     this.app.use = appUseOverride(this.app, perform);
   }
 
+  // eslint-disable-next-line camelcase
   add_middleware(name, middleware) {
-    if (this.middleware[name]) throw new Error('Cannot add middleware with the same key as '+ name)
+    if (this.middleware[name]) throw new Error('Cannot add middleware with the same key as '+ name);
     this.middleware[name] = middleware;
     this.emit('added.middleware', name, middleware);
   }
 
+  // eslint-disable-next-line camelcase
   add_hook(name, hook) {
-    if (this.hooks[name]) throw new Error('Cannot add hook with the same key as '+ name)
+    if (this.hooks[name]) throw new Error('Cannot add hook with the same key as '+ name);
     this.hooks[name] = hook;
     this.emit('added.hook', name, hook);
   }
 
+  // eslint-disable-next-line camelcase
   add_router(router) {
 
     const routePath = router.path || '';

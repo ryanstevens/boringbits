@@ -1,5 +1,10 @@
+import {getNamespace} from 'boring-cls';
 
-// TODO: magically figure out the right components
-module.exports = {
-  foo: 'bar',
+module.exports = function get() {
+  const ns = getNamespace('http-request');
+  const reactHandlerPaths = ns.get('reactHandlerPaths');
+
+  return {
+    ...reactHandlerPaths,
+  };
 };

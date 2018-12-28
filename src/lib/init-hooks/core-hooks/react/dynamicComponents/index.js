@@ -4,7 +4,8 @@ import * as babel from '@babel/core';
 import logger from 'boring-logger';
 import beforeEntryLoader from './beforeEntryLoader';
 
-function makeConainerCode({path, importPath} = container) {
+function makeConainerCode({module, moduleName, importPath} = container) {
+  const path = module.path;
   const name = path.replace(/\//g, '');
 
   return `
@@ -52,7 +53,7 @@ function mapDecorators(decorators) {
 export default function getEntryWrappers(reactRoot, containers = [], modules = {}, decorators = []) {
 
   const filteredContainers = containers
-    .filter(container => container.path)
+    .filter(container => container.module.path)
     .sort((containerA, containerB) => {
       /**
        * This is a reverse sort on the path, the
@@ -64,8 +65,8 @@ export default function getEntryWrappers(reactRoot, containers = [], modules = {
        * will tell me a use case and we'll have to
        * rework this
        */
-      if (containerA.path.length<containerB.path.length) return 1;
-      if (containerA.path.length>containerB.path.length) return -1;
+      if (containerA.module.path.length<containerB.module.path.length) return 1;
+      if (containerA.module.path.length>containerB.module.path.length) return -1;
       return 0;
     });
 

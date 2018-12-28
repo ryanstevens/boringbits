@@ -60,10 +60,10 @@ function getRootComponents() {
   if (isNode) {
     // putting the path prevents webpack from bundling getNodeRootComponents
     const nodeRootComponents = '../../../lib/init-hooks/core-hooks/react/getNodeRootComponents';
-    return require(nodeRootComponents);
+    return require(nodeRootComponents)();
   } else {
+    __boring_internals.modules.App = __boring_internals.modules.mainApp;
     return {
-      App: __boring_internals.modules.mainApp, // alias
       decorators: __boring_internals.decorators,
       ...__boring_internals.modules,
     };
