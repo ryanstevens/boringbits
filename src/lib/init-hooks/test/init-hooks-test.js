@@ -2,8 +2,8 @@ const assert = require('assert');
 const proxyquire = require('proxyquire');
 const paths = require('paths');
 const config = require('config');
-const Understudy = require('understudy')
-const noop = function() {}
+const Understudy = require('understudy');
+const noop = function() {};
 
 describe('Init Hooks', function() {
 
@@ -20,14 +20,14 @@ describe('Init Hooks', function() {
           use: function(middleware) {
 
           },
-          set: function() {}
-        }
-      }
-    }
+          set: function() {},
+        },
+      },
+    };
 
     Understudy.call(injectionMoch.boring);
 
-    init(injectionMoch)
+    init(injectionMoch);
 
     done();
   });

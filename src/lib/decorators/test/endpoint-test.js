@@ -9,11 +9,11 @@ describe('Endpoint decorator', function() {
 
   beforeEach(() => {
     endpoint_decortators = require('../router');
-  })
+  });
 
 
   it('will push a prop into the class prototype', done => {
-    const { endpoint, get, getMetaDataByClass} = endpoint_decortators;
+    const {endpoint, get, getMetaDataByClass} = endpoint_decortators;
 
     @endpoint('/foo')
     class Meow {
@@ -41,7 +41,7 @@ describe('Endpoint decorator', function() {
 
 
   it('will combine annotations into the metadata', done => {
-    const { endpoint, get, middleware, post, entrypoint, getMetaDataByClass} = endpoint_decortators;
+    const {endpoint, get, middleware, post, entrypoint, getMetaDataByClass} = endpoint_decortators;
 
     @endpoint('/bar')
     class Meow {
@@ -63,24 +63,24 @@ describe('Endpoint decorator', function() {
     assert.equal(classMetaData.endpoints.screetch.middleware[0], 'meep');
     assert.equal(classMetaData.endpoints.screetch.methods.get.path, '/beep');
     assert.equal(classMetaData.endpoints.screetch.methods.get.handler, Meow.prototype.screetch);
-    assert.deepEqual(classMetaData.endpoints.screetch.methods.get.entrypoint, ['foo_client.js'])
+    assert.deepEqual(classMetaData.endpoints.screetch.methods.get.entrypoint, ['foo_client.js']);
     assert.equal(classMetaData.endpoints.stopper.methods.post.handler, Meow.prototype.stopper);
     done();
   });
 
 
   it('will reply all added decorated classes when a new emitter is added', done => {
-    const { endpoint, get, middleware, post, entrypoint, getMetaDataByClass, subscribeDecorators} = endpoint_decortators;
+    const {endpoint, get, middleware, post, entrypoint, getMetaDataByClass, subscribeDecorators} = endpoint_decortators;
 
     const emitter1 = new Emitter({wildcard: true});
-    const emitterCollecter1 = []
+    const emitterCollecter1 = [];
 
     emitter1.on('decorator.router.*', function(...args) {
       emitterCollecter1.push({
         eventName: this.event,
-        args
+        args,
       });
-    })
+    });
     subscribeDecorators(emitter1);
 
     @endpoint('/foo')
@@ -102,10 +102,10 @@ describe('Endpoint decorator', function() {
     assert.ok(instances.indexOf(Class2) >= 0);
     done();
 
-  })
+  });
 
   it('will ensure get is actually wrapped', done => {
-    const { endpoint, get, middleware, post, entrypoint, getMetaDataByClass, subscribeDecorators} = endpoint_decortators;
+    const {endpoint, get, middleware, post, entrypoint, getMetaDataByClass, subscribeDecorators} = endpoint_decortators;
 
     @endpoint('/foo')
     class Clazz {

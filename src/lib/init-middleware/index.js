@@ -1,14 +1,14 @@
 
-import paths from 'paths'
-import requireInject from 'require-inject-all'
+import paths from 'paths';
+import requireInject from 'require-inject-all';
 
 module.exports = async function initMiddleware(BoringInjections) {
 
   const {
-    boring
+    boring,
   } = BoringInjections;
-  
-  const moduleData = await requireInject([paths.boring_middleware, paths.server_middleware], boring)
+
+  const moduleData = await requireInject([paths.boring_middleware, paths.server_middleware], boring);
 
   return Object.keys(moduleData).reduce(function(prev, key) {
     const middlewareExport = moduleData[key];
@@ -21,8 +21,8 @@ module.exports = async function initMiddleware(BoringInjections) {
     }
 
     prev[name] = func;
-//    boring.add_middleware(name, func);
+    //    boring.add_middleware(name, func);
     return prev;
   }, {});
 
-}
+};

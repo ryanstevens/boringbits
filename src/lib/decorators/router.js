@@ -27,7 +27,7 @@ localEmitter.on('decorator.router.*', function routerEvents(...args) {
   // This way emitters will ALWAYS get every endpoint
   // reguardless of when it was subscribed
   extenrnalEmitters.forEach(emitter => {
-    emitter.emit.apply(emitter, nameWithArgs);
+    emitter.emit(...nameWithArgs);
   });
 });
 
@@ -166,13 +166,13 @@ toExport.post = function post(path) {
 createEndpointDecorator('entrypoint', 'get');
 
 injecture.register('decorator.router.endpoint',
-    // since we are only using the container
-    // to collect all the instances we give it a
-    // dummy factory
-    function endpointFactory(Klass) {
-      return Klass;
-    },
-    {mapInstances: true}
+  // since we are only using the container
+  // to collect all the instances we give it a
+  // dummy factory
+  function endpointFactory(Klass) {
+    return Klass;
+  },
+  {mapInstances: true}
 );
 
 

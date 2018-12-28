@@ -1,9 +1,9 @@
 const assert = require('assert');
 const proxyquire = require('proxyquire');
-const noop = function() {}
+const noop = function() {};
 
 function getMiddlewareFromModule(path) {
-  return require(path)({ boring: {}}).then(result => Promise.resolve(result));
+  return require(path)({boring: {}}).then(result => Promise.resolve(result));
 }
 
 describe('Init Middleware', function() {
@@ -12,11 +12,11 @@ describe('Init Middleware', function() {
     const init = proxyquire('../index', {
       'paths': {
         server_middleware: __dirname + '/test-middleware',
-        boring_middleware: __dirname + '/test-middleware2'
-      }
-    })
+        boring_middleware: __dirname + '/test-middleware2',
+      },
+    });
 
-    const middlewareReturned = await init({ boring: {}});
+    const middlewareReturned = await init({boring: {}});
 
     assert.equal(Object.keys(middlewareReturned).length, 3);
     assert.ok(middlewareReturned.middlewareB, 'This one exported a function so we took the module as the key');
