@@ -36,7 +36,11 @@ export default function beforeEntryLoader() {
       },
     };
   } else {
-    internals.hot.notify();
+    setTimeout(() => {
+      // I know this seems jank but it's ONLY
+      // when we are in a partial state because HMR
+      internals.hot.notify();
+    }, 1);
   }
 
   if (module.hot) {

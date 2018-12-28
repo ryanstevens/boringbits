@@ -80,7 +80,9 @@ module.exports = function reactHook(BoringInjections) {
       ctx.res.reactPaths = ctx.get.reactEntry[0];
       ctx.res.renderRedux = renderRedux;
       const reactNS = getNamespace('http-request');
-      reactNS.set('reactHandlerPaths', ctx.res.reactPaths);
+      if (reactNS && reactNS.set) {
+        reactNS.set('reactHandlerPaths', ctx.res.reactPaths);
+      }
     }
 
     return Promise.resolve();
