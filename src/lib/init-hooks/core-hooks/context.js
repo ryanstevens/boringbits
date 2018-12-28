@@ -9,10 +9,13 @@ module.exports = function(BoringInjections) {
 
   boring.before('add-hooks', function() {
 
-    const ns = cls.createNamespace('http-request');
+    const ns = cls.getNamespace('http-request');
     boring.after('app.use', function(ctx) {
       if (ctx.name === 'healthy') {
         boring.app.use('context', function contextMiddleware(req, res, next) {
+
+          ns.bindEmitter(req);
+          ns.bindEmitter(res);
 
           ns.run(() => {
             req.corrId = uuid.v4();

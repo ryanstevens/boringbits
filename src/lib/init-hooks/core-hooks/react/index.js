@@ -4,6 +4,8 @@ import getReactHandlerPaths from './reactHandlerPaths';
 import renderRedux from './renderRedux';
 import dynamicComponents from './dynamicComponents';
 import fs from 'fs-extra';
+import {getNamespace} from 'boring-cls';
+import logger from 'boring-logger';
 
 module.exports = function reactHook(BoringInjections) {
   const {
@@ -11,6 +13,7 @@ module.exports = function reactHook(BoringInjections) {
   } = BoringInjections;
 
   decorators.router.createEndpointDecorator('reactEntry', 'get');
+
 
   const shadowedReactEntry = decorators.router.reactEntry;
   decorators.router.reactEntry = function shadowedEntrypoint(options = {}) {
@@ -33,17 +36,30 @@ module.exports = function reactHook(BoringInjections) {
         options.reactRoot = field.toLowerCase();
       }
 
+      let beforeEntry;
+      let afterEntry;
+
       const reactHandlerPaths = getReactHandlerPaths(options);
 
-      reactHandlerPaths.decorators = getDecorators(reactHandlerPaths);
-      reactHandlerPaths.containers = getContainers(reactHandlerPaths);
+      const reactNS = getNamespace('http-request');
+      reactNS.run(function() {
+        reactNS.set('reactHandlerPaths', reactHandlerPaths);
 
-      const [beforeEntry, afterEntry] = dynamicComponents(
-        reactHandlerPaths.reactRoot,
-        reactHandlerPaths.containers,
-        reactHandlerPaths.modulesToRequire,
-        reactHandlerPaths.decorators
-      );
+        // actually run `require` on decorators / containers
+        const decorators = requireDirectory(reactHandlerPaths.app_dir, reactHandlerPaths.decoratorsPath);
+        reactHandlerPaths.decorators = reduceMods(decorators);
+
+        const containers = requireDirectory(reactHandlerPaths.app_dir, reactHandlerPaths.routerContainersPath);
+        reactHandlerPaths.containers = reduceMods(containers);
+
+        [beforeEntry, afterEntry] = dynamicComponents(
+          reactHandlerPaths.reactRoot,
+          containers,
+          reactHandlerPaths.modulesToRequire,
+          decorators
+        );
+
+      });
 
       const entrypointPaths = [
         beforeEntry,
@@ -63,8 +79,9 @@ module.exports = function reactHook(BoringInjections) {
     if (ctx.get.reactEntry) {
       ctx.res.reactPaths = ctx.get.reactEntry[0];
       ctx.res.renderRedux = renderRedux;
+      const reactNS = getNamespace('http-request');
+      reactNS.set('reactHandlerPaths', ctx.res.reactPaths);
     }
-
 
     return Promise.resolve();
   });
@@ -77,40 +94,29 @@ module.exports = function reactHook(BoringInjections) {
   return {name: 'react'};
 };
 
-
-function getContainers(reactHandlerPaths) {
-  const containersDirPath = reactHandlerPaths.app_dir +'/'+ reactHandlerPaths.routerContainersPath;
-  try {
-    return fs.readdirSync(containersDirPath).map(function(file) {
-      if (file.endsWith('.map')) return null;
-      const moduleName = file.split('.').shift(); // don't worry about what type of extension
-      const container = require(containersDirPath + '/' + moduleName).default;
-      return {
-        path: container.path,
-        container,
-        moduleName,
-        importPath: reactHandlerPaths.routerContainersPath + '/' + moduleName,
-      };
-    }).filter(Boolean);
-  } catch (e) {
-    return [];
-  }
+function reduceMods(mods) {
+  return mods.reduce((acc, cur) => {
+    acc[cur.moduleName] = cur.module;
+    return acc;
+  }, {});
 }
 
-
-function getDecorators(reactHandlerPaths) {
-  const decoratorsPath = reactHandlerPaths.app_dir +'/'+ reactHandlerPaths.decoratorsPath;
+function requireDirectory(appDir, directoryPath) {
+  const dirToRead = appDir +'/'+ directoryPath;
   try {
-    return fs.readdirSync(decoratorsPath).map(function(file) {
+    return fs.readdirSync(dirToRead).map(function(file) {
       if (file.endsWith('.map')) return null;
       const moduleName = file.split('.').shift(); // don't worry about what type of extension
+      const mod = require(dirToRead + '/' + moduleName);
       return {
         moduleName,
-        // decorator: require(decoratorsPath + '/' + moduleName).default,
-        importPath: reactHandlerPaths.decoratorsPath + '/' + moduleName,
+        module: (mod.default) ? mod.default : mod,
+        importPath: directoryPath + '/' + moduleName,
       };
-    }).filter(Boolean);
+    });
+
   } catch (e) {
+    logger.error(e, 'Problem requiring directory');
     return [];
   }
 }
