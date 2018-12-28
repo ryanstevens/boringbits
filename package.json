@@ -13,7 +13,8 @@
     "test-build": "nodemon --watch src --ignore src/lib/init-hooks/core-hooks/react/dynamicComponents/dist --exec \"npm test && npm run build\"",
     "build-client": "rm -rf dist/client && babel --no-babelrc src/client -d dist/client --extensions=.ts,.tsx,.js,.jsx --source-maps --copy-files --presets=./dist/build/wrapped-babel-env-client,@babel/preset-typescript,@babel/preset-react --plugins=@babel/plugin-proposal-object-rest-spread,./dist/build/wrapped-babel-plugin-proposal-decorators,@babel/plugin-proposal-class-properties,@babel/plugin-syntax-dynamic-import",
     "build": "npm run clean && babel src -d dist --extensions \".ts,.tsx,.js,.jsx\" --source-maps && npm run build-client",
-    "prepublishOnly": "npm test && npm run build"
+    "prepublishOnly": "npm test && npm run build",
+    "lint": "npx eslint ./src ./bin"
   },
   "bin": {
     "boring": "./bin/boring-cli.js",

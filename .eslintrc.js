@@ -13,10 +13,13 @@ module.exports = {
     "arrow-parens": 0,
     "require-jsdoc": 0,
     "prefer-spread": 1,
-    "max-len": 1,
+    "max-len": 0,
     "padded-blocks": 0,
     "no-unused-vars": 1,
     "indent":  ["error", 2, { "VariableDeclarator": 1 }]
   },
-  "extends": "google"
+  "plugins": [
+    "react"
+  ],
+  "extends": "google",
 };

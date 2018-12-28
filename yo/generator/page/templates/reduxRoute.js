@@ -7,13 +7,13 @@ module.exports = function setupRoute(/* dependencies from boring */ boring) {
   } = boring;
 
   const {
-    endpoint,
+    router,
     get,
     post,
     reactEntry,
   } = decorators.router;
 
-  @endpoint()
+  @router()
   class <%= className %>Router {
 
     @post('<%= path %>data.json')

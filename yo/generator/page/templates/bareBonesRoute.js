@@ -8,14 +8,14 @@ module.exports = function setupRoute(/* dependencies from boring */ boring) {
   } = boring;
 
   const {
-    endpoint,
+    router,
     post,
     get,
     entrypoint,
   } = decorators.router;
 
   // signals to boring this class has HTTP decortors as class methods
-  @endpoint()
+  @router()
   class <%= className %> {
 
     @post('<%= path %>data.json')
