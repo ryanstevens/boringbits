@@ -116,7 +116,7 @@ function requireDirectory(appDir, directoryPath) {
         module: (mod.default) ? mod.default : mod,
         importPath: directoryPath + '/' + moduleName,
       };
-    }).filter(Boolean)
+    }).filter(Boolean);
 
   } catch (e) {
     logger.error(e, 'Problem requiring directory');

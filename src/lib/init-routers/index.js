@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import paths from 'paths';
 import requireInject from 'require-inject-all';
 import logger from 'boring-logger';
@@ -27,7 +28,7 @@ module.exports = async function initRoutes(BoringInjections) {
    */
   boring.on('decorator.router.endpoint', (eventData) => {
 
-    const metadata= decorators.router.getMetaDataByClass(eventData.target).metadata
+    const metadata= decorators.router.getMetaDataByClass(eventData.target).metadata;
     endpoint_meta.push(endpoint_transformer(metadata));
   });
   boring.decorators.subscribeDecorators(boring);
@@ -48,7 +49,7 @@ module.exports = async function initRoutes(BoringInjections) {
   const moduleData = await requireInject([paths.boring_routers, paths.server_routers], boring);
 
   const route_descriptors = endpoint_meta.concat(Object.keys(moduleData).map((name) => {
-    const route = moduleData[name] || { endpoints: [] };
+    const route = moduleData[name] || {endpoints: []};
     // If the route does not already have a name
     // then use the name of the module.  This object.name
     // will be added to the route_meta array

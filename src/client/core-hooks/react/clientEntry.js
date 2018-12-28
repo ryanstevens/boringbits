@@ -8,6 +8,7 @@ import createBrowserHistory from 'history/createBrowserHistory';
 import getAppComponents from './AppInit';
 import BoringRouter from './BoringRouter';
 import isNode from 'detect-node';
+import * as decoratorUntil from './decoratorUtil';
 
 
 function renderRedux(App, reducers) {
@@ -98,7 +99,7 @@ const toExport = {
   MagicallyDeliciousRouter: BoringRouter,
   getRootComponents,
   subscribeHotReload,
-  ...getRootComponents(),
+  ...decoratorUntil,
 };
 
 subscribeHotReload(function() {
