@@ -72,11 +72,13 @@ function getRootComponents() {
 };
 
 function subscribeHotReload(fn) {
-  if (!__boring_internals.hot[fn.toString()]) {
-    __boring_internals.hot.subscribe(fn);
-    __boring_internals.hot[fn.toString()] = true;
-    fn();
-  }
+  try {
+    if (!__boring_internals.hot[fn.toString()]) {
+      __boring_internals.hot.subscribe(fn);
+      __boring_internals.hot[fn.toString()] = true;
+      fn();
+    }
+  } catch (e) {}
 }
 
 const toExport = {
@@ -98,6 +100,13 @@ const toExport = {
   subscribeHotReload,
   ...getRootComponents(),
 };
+
+subscribeHotReload(function() {
+  const components = getRootComponents();
+  Object.keys(components).forEach(key => {
+    toExport[key] = components[key];
+  });
+});
 
 toExport['react-redux'] = ReactRedux;
 toExport['react-dom'] = ReactDOM;
