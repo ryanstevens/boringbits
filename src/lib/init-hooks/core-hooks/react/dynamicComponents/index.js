@@ -87,10 +87,10 @@ export default function getEntryWrappers(reactRoot, containers = [], modules = {
     const modules = {};
     const decorators = {};
 
-  ` + filteredContainers.map(makeConainerCode).join('\n')
-    + mapDecorators(decorators)
+  ` + mapDecorators(decorators)
       + beforeEntryLoader.toString()
       + '\nbeforeEntryLoader();'
+    + filteredContainers.map(makeConainerCode).join('\n')
     + mapModules(modules);
 
 
