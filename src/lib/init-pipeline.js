@@ -10,17 +10,19 @@ const initModules = require('./init-modules');
 const EventEmitter = require('eventemitter2');
 const paths = require('paths');
 const Understudy = require('boring-understudy');
-const decorators = require('./decorators')
+const decorators = require('./decorators');
 const appUseOverride = require('./server/appUseOverride');
 const injecture = require('injecture');
+const uuid = require('node-uuid');
 
 
-class InitPipeline extends EventEmitter  {
+class InitPipeline extends EventEmitter {
 
   constructor() {
     super({wildcard: true});
     Understudy.call(this);
 
+    this.initNS = createNamespace('boring-init');
     this.requestNS = createNamespace('http-request');
 
     this.config = config;
@@ -63,7 +65,7 @@ class InitPipeline extends EventEmitter  {
       // don't blow up if there are no methods
       const methods = endpoint.methods || {};
       Object.keys(methods).forEach(method => {
-        let methodsObj = endpoint.methods[method];
+        const methodsObj = endpoint.methods[method];
         let path = methodsObj.path;
         if (!path) return;
         else path = routePath + path;
@@ -73,56 +75,60 @@ class InitPipeline extends EventEmitter  {
       });
 
       this.emit('added.endpoint', endpoint);
-    })
+    });
 
   }
 
   async build(options) {
 
-    let injections = Object.assign({}, {
+    const injections = Object.assign({}, {
       boring: this,
       logger,
       config,
-      injecture
+      injecture,
     }, options);
 
+    await this.initNS.runPromise(async () => {
+      this.initNS.set('corrId', uuid.v4());
 
-    const modules = await this.perform('init-modules', injections, async() => {
-      return await initModules(injections);
-    })
+      const modules = await this.perform('init-modules', injections, async () => {
+        return await initModules(injections);
+      });
 
-    const hooks = await this.perform('init-hooks', injections, async () => {
-      return await initHooks(injections);
-    })
+      const hooks = await this.perform('init-hooks', injections, async () => {
+        return await initHooks(injections);
+      });
 
-    injections.hooks = hooks;
+      injections.hooks = hooks;
 
-    await this.perform('add-hooks', injections, async() => {
-      Object.keys(injections.hooks).forEach(name => this.add_hook(name, injections.hooks[name]));
-      return injections;
-    })
+      await this.perform('add-hooks', injections, async () => {
+        Object.keys(injections.hooks).forEach(name => this.add_hook(name, injections.hooks[name]));
+        return injections;
+      });
 
-    const middleware = await this.perform('init-middleware', injections, async () => {
-      return await initMiddleware(injections);
-    })
+      const middleware = await this.perform('init-middleware', injections, async () => {
+        return await initMiddleware(injections);
+      });
 
-    injections.middleware = middleware;
+      injections.middleware = middleware;
 
-    await this.perform('add-middleware', injections, async() => {
-      Object.keys(injections.middleware).forEach(name => this.add_middleware(name, injections.middleware[name]));
-      return injections;
-    })
+      await this.perform('add-middleware', injections, async () => {
+        Object.keys(injections.middleware).forEach(name => this.add_middleware(name, injections.middleware[name]));
+        return injections;
+      });
 
-    const routers = await this.perform('init-routers', injections, async () => {
-      return await initRouters(injections);
-    })
+      const routers = await this.perform('init-routers', injections, async () => {
+        return await initRouters(injections);
+      });
 
-    injections.routers = routers;
+      injections.routers = routers;
 
-    await this.perform('add-routers', injections, async() => {
-      injections.routers.forEach(route => this.add_router(route));
-      return injections;
-    })
+      await this.perform('add-routers', injections, async () => {
+        injections.routers.forEach(route => this.add_router(route));
+        return injections;
+      });
+
+    });
 
     return injections;
   }
