@@ -9,10 +9,10 @@ module.exports = function(app, perform) {
       name = middleware.name; // just use the name of the function
     }
 
-    let ctx = {
+    const ctx = {
       middleware,
       name,
-    }
+    };
 
     oldUse(deferMiddleware(name, new Promise(function(resolve, reject) {
 
@@ -30,11 +30,9 @@ module.exports = function(app, perform) {
         return ctx;
       }).catch(reject);
 
-    })))
-
-   };
-
-}
+    })));
+  };
+};
 
 function deferMiddleware(name, middlewarePromise) {
 
@@ -46,6 +44,6 @@ function deferMiddleware(name, middlewarePromise) {
       deferedMiddleware(req, res, next);
     }).catch((e) => {
       throw e;
-    })
-  }
+    });
+  };
 }
