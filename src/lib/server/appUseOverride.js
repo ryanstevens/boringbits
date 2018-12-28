@@ -16,7 +16,7 @@ module.exports = function(app, perform) {
 
     oldUse(deferMiddleware(name, new Promise(function(resolve, reject) {
 
-      logger.info('Registering middielware::' + ctx.name);
+      logger.info('Registering middleware::' + ctx.name);
       perform('app.use', ctx, async function() {
         // This in a way acts a dependency
         // system where a hook can only
