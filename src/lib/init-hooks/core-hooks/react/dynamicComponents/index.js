@@ -1,25 +1,24 @@
 
 import * as fs from 'fs';
-import * as babel from '@babel/core';
+import babel from 'babelCompiler';
 import logger from 'boring-logger';
 import beforeEntryLoader from './beforeEntryLoader';
 
 function makeConainerCode({module, moduleName, importPath} = container) {
-  const path = module.path;
-  const name = path.replace(/\//g, '');
 
   return `
-  console.log('setting dynamic target: ${name}');
   (function() {
-    containers.push({
-      path: '${path}',
-      container: Loadable({
-        loader: () => import('${importPath}'),
-        loading: function Loading() {
-          return <></>;
-        },
-      })
+
+    const loadableModule = Loadable({
+      loader: () => import('${importPath}'),
+      loading: function Loading() {
+        return <></>;
+      },
     });
+    loadableModule.path = '${module.path}';
+
+    containers['${moduleName}'] = loadableModule;
+
   })();
 
   `;
@@ -52,23 +51,6 @@ function mapDecorators(decorators) {
 
 export default function getEntryWrappers(reactRoot, containers = [], modules = {}, decorators = []) {
 
-  const filteredContainers = containers
-    .filter(container => container.module.path)
-    .sort((containerA, containerB) => {
-      /**
-       * This is a reverse sort on the path, the
-       * goal here is so paths that are more specific
-       * end up rendering first and the "default"
-       * path, which is typically the shortest
-       * will be at the bottom.  For now
-       * this seems to work but I assume someone
-       * will tell me a use case and we'll have to
-       * rework this
-       */
-      if (containerA.module.path.length<containerB.module.path.length) return 1;
-      if (containerA.module.path.length>containerB.module.path.length) return -1;
-      return 0;
-    });
 
   const prefix = __dirname + '/dist';
   const beforeFilename = reactRoot + '_beforeEntry.js';
@@ -83,39 +65,17 @@ export default function getEntryWrappers(reactRoot, containers = [], modules = {
     import Loadable from 'react-loadable';
     import * as React from 'react';
 
-    const containers = [];
+    const containers = {};
     const modules = {};
     const decorators = {};
 
   ` + mapDecorators(decorators)
       + beforeEntryLoader.toString()
       + '\nbeforeEntryLoader();'
-    + filteredContainers.map(makeConainerCode).join('\n')
+    + containers.map(makeConainerCode).join('\n')
     + mapModules(modules);
 
-
-  const babelOptions = {
-    'babelrc': false,
-    'sourceMaps': true,
-    'presets': [
-      ['@babel/preset-env', {
-        'targets': {
-          'ie': '11',
-        },
-      }],
-      '@babel/preset-react',
-    ],
-    'plugins': [
-      '@babel/plugin-proposal-object-rest-spread',
-      ['@babel/plugin-proposal-decorators', {
-        legacy: true,
-      }],
-      ['@babel/plugin-syntax-dynamic-import'],
-    ],
-  };
-
-  const babelResults = babel.transformSync(code, babelOptions);
-
+  const babelResults = babel(code);
 
   let writeNewBefore = true;
   if (fs.existsSync(beforeEntryFilePath)) {
