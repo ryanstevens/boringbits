@@ -21,7 +21,7 @@ function getProjPath(key, defaultVal) {
 function getAppDirPath(key, defaultVal) {
   return path.normalize(getProjPath(base_app_path_key, base_app_path) + '/'+ config.get(key , defaultVal));
 }
-  
+
 function getBoringPath(key, defaultVal) {
   return path.normalize(boring_dir + '/' + config.get(key, defaultVal));
 }

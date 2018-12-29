@@ -1,11 +1,10 @@
-const config = require('boring-config');
 
 require('@babel/register')({
   // ignore: [],
   'presets': [
     ['@babel/preset-env', {
       'targets': {
-        'node': config.get('boring.babel.node_target', '8.10.0'),
+        'node': '8',
       },
     }],
     ['@babel/preset-typescript'],

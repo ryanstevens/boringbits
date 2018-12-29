@@ -121,20 +121,20 @@ module.exports = {
               babelrc: false,
               configFile: false,
 
-              'presets': [
-                ['@babel/env', {
-                  'targets': {
-                    'ie': '11',
+              presets: [
+                [require.resolve('@babel/preset-env'), {
+                  targets: {
+                    ie: 11,
                   },
                 }],
-                ['@babel/preset-typescript'],
-                ['@babel/preset-react'],
+                [require.resolve('@babel/preset-typescript')],
+                [require.resolve('@babel/preset-react')],
               ],
-              'plugins': [
-                ['@babel/plugin-proposal-object-rest-spread'],
-                ['@babel/plugin-proposal-decorators', {'legacy': true}],
-                ['@babel/plugin-proposal-class-properties'],
-                ['@babel/plugin-syntax-dynamic-import'],
+              plugins: [
+                [require.resolve('@babel/plugin-proposal-object-rest-spread')],
+                [require.resolve('@babel/plugin-proposal-decorators'), {'legacy': true}],
+                [require.resolve('@babel/plugin-proposal-class-properties')],
+                [require.resolve('@babel/plugin-syntax-dynamic-import')],
               ],
             },
           },
@@ -166,7 +166,7 @@ module.exports = {
                         '>1%',
                         'last 4 versions',
                         'Firefox ESR',
-                        'not ie < 9', // React doesn't support IE8 anyway
+                        'not ie < 11', // React doesn't support IE8 anyway
                       ],
                       flexbox: 'no-2009',
                     }),

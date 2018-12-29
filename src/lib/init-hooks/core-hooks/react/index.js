@@ -109,7 +109,9 @@ function requireDirectory(appDir, directoryPath) {
     if (!fs.existsSync(dirToRead)) return [];
     return fs.readdirSync(dirToRead).map(function(file) {
       if (file.endsWith('.map')) return null;
-      const moduleName = file.split('.').shift(); // don't worry about what type of extension
+      const fileParts = file.split('.');
+      if (fileParts.length > 1) fileParts.pop();
+      const moduleName = fileParts.join('.'); // don't worry about what type of extension
       const mod = require(dirToRead + '/' + moduleName);
       return {
         moduleName,

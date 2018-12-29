@@ -11,6 +11,8 @@ const fs = require('fs');
 const ProgressBarPlugin = require('progress-bar-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const os = require('os');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+
 
 // Webpack uses `publicPath` to determine where the app is being served from.
 // It requires a trailing slash, or the file assets will get an incorrect path.
@@ -44,8 +46,8 @@ module.exports = {
     // Point sourcemap entries to original disk location (format as URL on Windows)
     devtoolModuleFilenameTemplate: info =>
       path
-          .relative(paths.app_src, info.absoluteResourcePath)
-          .replace(/\\/g, '/'),
+        .relative(paths.app_src, info.absoluteResourcePath)
+        .replace(/\\/g, '/'),
   },
   resolve: {
     // This allows you to set a fallback for where Webpack should look for modules.
@@ -66,15 +68,15 @@ module.exports = {
     // https://github.com/facebookincubator/create-react-app/issues/290
     // `web` extension prefixes have been added for better support
     // for React Native Web.
-    extensions: ['.web.js', '.mjs', '.js', '.json', '.web.jsx', '.jsx', '.ts', 'tsx'],
+    extensions: ['.web.js', '.mjs', '.js', '.json', '.web.jsx', '.jsx', '.ts', '.tsx'],
     alias: {
 
       // Support React Native Web
       // https://www.smashingmagazine.com/2016/08/a-glimpse-into-the-future-with-react-native-for-web/
       'react-native': 'react-native-web',
-      'modules': path.resolve(process.cwd(), 'dist/modules'),
-      'client': path.resolve(process.cwd(), 'dist/client'),
-      'server': path.resolve(process.cwd(), 'dist/server'),
+      'modules': path.resolve(process.cwd(), 'src/modules'),
+      'client': path.resolve(process.cwd(), 'src/client'),
+      'server': path.resolve(process.cwd(), 'src/server'),
     },
     plugins: [
       // Prevents users from importing files from outside of src/ (or node_modules/).
@@ -104,7 +106,6 @@ module.exports = {
               name: 'static/media/[name].[hash:8].[ext]',
             },
           },
-          // Process JS with Babel.
           {
             test: /\.(js|jsx|mjs|ts|tsx)$/,
             include: paths.app_src,
@@ -120,19 +121,19 @@ module.exports = {
               configFile: false,
 
               presets: [
-                ['@babel/env', {
+                [require.resolve('@babel/preset-env'), {
                   targets: {
-                    ie: '11',
+                    ie: 11,
                   },
                 }],
-                ['@babel/preset-typescript'],
-                ['@babel/preset-react'],
+                [require.resolve('@babel/preset-typescript')],
+                [require.resolve('@babel/preset-react')],
               ],
               plugins: [
-                ['@babel/plugin-proposal-object-rest-spread'],
-                ['@babel/plugin-proposal-decorators', {'legacy': true}],
-                ['@babel/plugin-proposal-class-properties'],
-                ['@babel/plugin-syntax-dynamic-import'],
+                [require.resolve('@babel/plugin-proposal-object-rest-spread')],
+                [require.resolve('@babel/plugin-proposal-decorators'), {'legacy': true}],
+                [require.resolve('@babel/plugin-proposal-class-properties')],
+                [require.resolve('@babel/plugin-syntax-dynamic-import')],
               ],
             },
           },
@@ -160,7 +161,7 @@ module.exports = {
                         '>1%',
                         'last 4 versions',
                         'Firefox ESR',
-                        'not ie < 9', // React doesn't support IE8 anyway
+                        'not ie < 11', // React doesn't support IE8 anyway
                       ],
                       flexbox: 'no-2009',
                     }),
@@ -187,6 +188,7 @@ module.exports = {
     ],
   },
   optimization: {
+    minimize: false,
     minimizer: [
       new TerserPlugin({
         cache: true,
@@ -195,13 +197,33 @@ module.exports = {
         parallel: os.cpus().length - 1,
         sourceMap: true,
         terserOptions: {
-          ecma: undefined,
           warnings: false,
-          parse: {},
-          compress: {},
+          parse: {
+            ecma: 8,
+          },
+          compress: {
+            ecma: 5,
+            warnings: false,
+            // Disabled because of an issue with Uglify breaking seemingly valid code:
+            // https://github.com/facebook/create-react-app/issues/2376
+            // Pending further investigation:
+            // https://github.com/mishoo/UglifyJS2/issues/2011
+            comparisons: false,
+            // Disabled because of an issue with Terser breaking valid code:
+            // https://github.com/facebook/create-react-app/issues/5250
+            // Pending futher investigation:
+            // https://github.com/terser-js/terser/issues/120
+            inline: 2,
+          },
           mangle: true,
           module: false,
-          output: null,
+          output: {
+            ecma: 5,
+            comments: false,
+            // Turned on because emoji and regex is not minified properly using default
+            // https://github.com/facebook/create-react-app/issues/2488
+            ascii_only: true,
+          },
           toplevel: false,
           nameCache: null,
           ie8: false,
@@ -261,6 +283,9 @@ module.exports = {
     }),
     new ProgressBarPlugin(),
 
+    // new BundleAnalyzerPlugin({
+    //   openAnalyzer: false,
+    // }),
   ],
   // Some libraries import Node modules but don't use them in the browser.
   // Tell Webpack to provide empty mocks for them so importing them works.
