@@ -47,6 +47,9 @@ module.exports = function renderRedux(options = {layout: {clientConfig: {}, page
   if (!layout.pageInjections.bodyEndScripts) {
     layout.pageInjections.bodyEndScripts = [];
   }
+  if (!layout.pageInjections.headLinks) {
+    layout.pageInjections.headLinks = [];
+  }
 
   const containerHTML = ReactDOMServer.renderToString(<Container />);
   const inlineCSS = getStyleSheets();
@@ -56,6 +59,11 @@ module.exports = function renderRedux(options = {layout: {clientConfig: {}, page
     .filter(bundle => bundle.file.endsWith('.js'))
     .map(bundle => '/' +bundle.file)
     .forEach(file => layout.pageInjections.bodyEndScripts.push(file));
+
+  bundles
+    .filter(bundle => bundle.file.endsWith('.css'))
+    .map(bundle => '/' +bundle.file)
+    .forEach(file => layout.pageInjections.headLinks.push(file));
 
 
   res.send('<!DOCTYPE html>' + ReactDOMServer.renderToStaticMarkup(

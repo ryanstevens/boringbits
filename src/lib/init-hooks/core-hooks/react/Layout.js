@@ -26,7 +26,7 @@ module.exports = class HTML extends React.Component {
     pageInjections.bodyEndScripts = pageInjections.bodyEndScripts.concat(this.props.locals.pageInjections.bodyEndScripts || []);
 
     pageInjections.headLinks = pageInjections.headLinks.map(link => {
-      return (typeof link === 'string') ? {src: link} : link;
+      return (typeof link === 'string') ? {rel: 'stylesheet', type: 'text/css', href: link} : link;
     });
 
     pageInjections.headScripts = pageInjections.headScripts.map(script => {
@@ -51,7 +51,7 @@ module.exports = class HTML extends React.Component {
           }
 
           {
-            pageInjections.headLinks.map((linkObj) => <link key={linkObj.src} {...linkObj} />)
+            pageInjections.headLinks.map((linkObj) => <link key={linkObj.href} {...linkObj} />)
           }
         </head>
         <body style={{height: '100%', padding: '0px', margin: '0px'}}>
