@@ -12,6 +12,7 @@ const ProgressBarPlugin = require('progress-bar-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const os = require('os');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const ReactLoadablePlugin = require('react-loadable/webpack').ReactLoadablePlugin;
 
 
 // Webpack uses `publicPath` to determine where the app is being served from.
@@ -134,6 +135,7 @@ module.exports = {
                 [require.resolve('@babel/plugin-proposal-decorators'), {'legacy': true}],
                 [require.resolve('@babel/plugin-proposal-class-properties')],
                 [require.resolve('@babel/plugin-syntax-dynamic-import')],
+                [require.resolve('react-loadable/babel')],
               ],
             },
           },
@@ -188,7 +190,7 @@ module.exports = {
     ],
   },
   optimization: {
-    minimize: false,
+    minimize: true,
     minimizer: [
       new TerserPlugin({
         cache: true,
@@ -233,11 +235,11 @@ module.exports = {
         },
       }),
     ],
-    runtimeChunk: 'single',
+    runtimeChunk: false,
     namedModules: true, // NamedModulesPlugin()
     splitChunks: {
       chunks: 'async',
-      minSize: 30000,
+      minSize: 10000000,
       maxSize: 0,
       minChunks: 1,
       maxAsyncRequests: 5,
@@ -282,6 +284,9 @@ module.exports = {
       chunkFilename: '[id].css',
     }),
     new ProgressBarPlugin(),
+    new ReactLoadablePlugin({
+      filename: './dist/react-loadable.json',
+    }),
 
     // new BundleAnalyzerPlugin({
     //   openAnalyzer: false,

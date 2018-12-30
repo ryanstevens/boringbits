@@ -85,7 +85,6 @@ module.exports = function getStaticInjections(res, entrypoint) {
   res.locals.pageInjections.bodyEndScripts = res.locals.pageInjections.bodyEndScripts.concat(jsFiles.map((asset) => {
     if (asset[0] !== '/') asset = `/${asset}`;
     return {
-      async: true,
       src: asset,
     };
   }));

@@ -1,8 +1,7 @@
 import React from 'react';
 import {Route, Switch} from 'react-router-dom';
 import isNode from 'detect-node';
-import loadable from 'react-loadable';
-
+import Loadable from 'react-loadable';
 
 class RouterSwitch extends React.Component {
 
@@ -13,15 +12,21 @@ class RouterSwitch extends React.Component {
     if (isNode) {
       const rootPath = '../../../lib/init-hooks/core-hooks/react/getNodeRootComponents'; // this simply ensures the node side isn't webpacked bundled
       const getNodeRootComponents = require(rootPath);
-      containers = getNodeRootComponents().containers;
 
-      // containers = Object.keys(rootContainers).reduce((acc, containerName) => {
-      //   acc[containerName] = loadable({
-      //     loader: () => Promise.resolve(rootContainers[containerName]),
-      //     loading: () => <></>,
-      //   });
-      //   return acc;
-      // }, {});
+      const rootContainers = getNodeRootComponents().containers;
+
+      containers = Object.keys(rootContainers).reduce((acc, containerName) => {
+        const Component = rootContainers[containerName];
+        // eslint-disable-next-line new-cap
+        acc[containerName] = Loadable({
+          loader: () => Promise.resolve(Component),
+          loading: () => <Component />,
+          modules: [Component.importPath],
+        });
+        acc[containerName].path = Component.path;
+        return acc;
+      }, {});
+
     } else {
       containers = window.__boring_internals.containers;
     }

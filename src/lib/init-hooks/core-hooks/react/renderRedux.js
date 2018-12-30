@@ -4,6 +4,10 @@ import ReactDOMServer from 'react-dom/server';
 import {StaticRouter} from 'react-router-dom';
 import Layout from './Layout';
 import getAppComponents from './AppInitProxy';
+import Loadable from 'react-loadable';
+import logger from 'boring-logger';
+import {getBundles} from 'react-loadable/webpack';
+
 
 module.exports = function renderRedux(options = {layout: {clientConfig: {}, pageInjections: {}}}) {
 
@@ -15,11 +19,16 @@ module.exports = function renderRedux(options = {layout: {clientConfig: {}, page
 
   const App = require(reactPaths.mainApp).default;
   const reducers = require(reactPaths.reducers).default;
+  const modules = [];
+  const stats = require(process.cwd() + '/dist/react-loadable.json');
+
 
   function Router(props) {
     return (
       <StaticRouter location={req.url} context={context} props={props}>
-        {props.children}
+        <Loadable.Capture report={moduleName => modules.push(moduleName)}>
+          {props.children}
+        </Loadable.Capture>
       </StaticRouter>
     );
   }
@@ -35,14 +44,29 @@ module.exports = function renderRedux(options = {layout: {clientConfig: {}, page
     pageInjections: {},
   };
 
+  if (!layout.pageInjections.bodyEndScripts) {
+    layout.pageInjections.bodyEndScripts = [];
+  }
+
+  const containerHTML = ReactDOMServer.renderToString(<Container />);
+  const inlineCSS = getStyleSheets();
+  const bundles = getBundles(stats, modules);
+
+  bundles
+    .filter(bundle => bundle.file.endsWith('.js'))
+    .map(bundle => '/' +bundle.file)
+    .forEach(file => layout.pageInjections.bodyEndScripts.push(file));
+
+
   res.send('<!DOCTYPE html>' + ReactDOMServer.renderToStaticMarkup(
     <Layout
-      getStyleSheets={getStyleSheets}
+      inlineCSS={inlineCSS}
       locals={res.locals}
       client_config={layout.clientConfig}
       pageInjections={layout.pageInjections}
+      containerHTML={containerHTML}
       redux_state={store.getState()}>
-      <Container />
     </Layout>
   ));
+
 };

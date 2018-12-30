@@ -20,12 +20,12 @@ describe('Static Injections', function() {
   function assertions(res) {
 
     staticInjections(res, '/beep/boop.js');
-    assert.deepEqual(res.locals.pageInjections.bodyEndScripts, [{async: true, src: '/beep/boop.js'}]);
+    assert.deepEqual(res.locals.pageInjections.bodyEndScripts, [{ src: '/beep/boop.js'}]);
     assert.deepEqual(res.locals.pageInjections.headLinks, [{rel: 'stylesheet', href: '/beep/boop.css'}]);
 
     res.locals = {};
     staticInjections(res, 'meow/bark.js');
-    assert.deepEqual(res.locals.pageInjections.bodyEndScripts, [{async: true, src: '/meow/bark.js'}]);
+    assert.deepEqual(res.locals.pageInjections.bodyEndScripts, [{ src: '/meow/bark.js'}]);
 
   }
 

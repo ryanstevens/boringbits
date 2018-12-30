@@ -25,7 +25,17 @@ module.exports = class HTML extends React.Component {
     pageInjections.headScripts = pageInjections.headScripts.concat(this.props.locals.pageInjections.headScripts || []);
     pageInjections.bodyEndScripts = pageInjections.bodyEndScripts.concat(this.props.locals.pageInjections.bodyEndScripts || []);
 
-    const app = ReactDOMServer.renderToString(this.props.children);
+    pageInjections.headLinks = pageInjections.headLinks.map(link => {
+      return (typeof link === 'string') ? {src: link} : link;
+    });
+
+    pageInjections.headScripts = pageInjections.headScripts.map(script => {
+      return (typeof script === 'string') ? {src: script} : script;
+    });
+
+    pageInjections.bodyEndScripts = pageInjections.bodyEndScripts.map(script => {
+      return (typeof script === 'string') ? {src: script} : script;
+    });
 
     return (
       <html style={{height: '100%'}}>
@@ -45,8 +55,8 @@ module.exports = class HTML extends React.Component {
           }
         </head>
         <body style={{height: '100%', padding: '0px', margin: '0px'}}>
-          <style dangerouslySetInnerHTML={{__html: this.props.getStyleSheets()}} id="jss-server-side"></style>
-          <div style={{width: '100%', height: '100%'}} id="root" dangerouslySetInnerHTML={{__html: app}}>
+          <style dangerouslySetInnerHTML={{__html: this.props.inlineCSS}} id="jss-server-side"></style>
+          <div style={{width: '100%', height: '100%'}} id="root" dangerouslySetInnerHTML={{__html: this.props.containerHTML}}>
 
           </div>
 

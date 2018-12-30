@@ -81,7 +81,11 @@ module.exports = function reactHook(BoringInjections) {
       ctx.res.renderRedux = renderRedux;
       const reactNS = getNamespace('http-request');
       if (reactNS && reactNS.set) {
-        reactNS.set('reactHandlerPaths', ctx.res.reactPaths);
+        try {
+          reactNS.set('reactHandlerPaths', ctx.res.reactPaths);
+        } catch (e) {
+          logger.trace(e, 'problem setting reactHandlerPaths');
+        }
       }
     }
 
@@ -98,6 +102,7 @@ module.exports = function reactHook(BoringInjections) {
 
 function reduceMods(mods) {
   return mods.reduce((acc, cur) => {
+    cur.module.importPath = cur.importPath;
     acc[cur.moduleName] = cur.module;
     return acc;
   }, {});

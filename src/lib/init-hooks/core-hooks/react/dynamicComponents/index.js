@@ -16,8 +16,14 @@ function makeConainerCode({module, moduleName, importPath} = container) {
       },
     });
     loadableModule.path = '${module.path}';
+    loadableModule.importPath = '${importPath}';
 
     containers['${moduleName}'] = loadableModule;
+
+    // containers['${moduleName}'] = {
+    //   path: '${module.path}',
+    //   module: import('${importPath}')
+    // };
 
   })();
 

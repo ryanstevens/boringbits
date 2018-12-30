@@ -9,6 +9,7 @@ const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
 const ProgressBarPlugin = require('progress-bar-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const ReactLoadablePlugin = require('react-loadable/webpack').ReactLoadablePlugin;
 
 // Webpack uses `publicPath` to determine where the app is being served from.
 // In development, we always serve from the root. This makes config easier.
@@ -135,6 +136,7 @@ module.exports = {
                 [require.resolve('@babel/plugin-proposal-decorators'), {'legacy': true}],
                 [require.resolve('@babel/plugin-proposal-class-properties')],
                 [require.resolve('@babel/plugin-syntax-dynamic-import')],
+                [require.resolve('react-loadable/babel')],
               ],
             },
           },
@@ -210,14 +212,17 @@ module.exports = {
     new BundleAnalyzerPlugin({
       openAnalyzer: false,
     }),
+    new ReactLoadablePlugin({
+      filename: './dist/react-loadable.json',
+    }),
   ],
 
   optimization: {
-    runtimeChunk: 'single',
+    runtimeChunk: false,
     namedModules: true, // NamedModulesPlugin()
     splitChunks: {
       chunks: 'async',
-      minSize: 30000,
+      minSize: 10000000,
       maxSize: 0,
       minChunks: 1,
       maxAsyncRequests: 5,
@@ -227,17 +232,17 @@ module.exports = {
       cacheGroups: {
         vendors: {
           test: /[\\/]node_modules[\\/]/,
-          priority: -10
+          priority: -10,
         },
         default: {
           minChunks: 1,
           priority: -20,
-          reuseExistingChunk: true
-        }
-      }
+          reuseExistingChunk: true,
+        },
+      },
     },
     noEmitOnErrors: false, // NoEmitOnErrorsPlugin
-    concatenateModules: false //ModuleConcatenationPlugin
+    concatenateModules: false, // ModuleConcatenationPlugin
   },
 
   // Some libraries import Node modules but don't use them in the browser.
