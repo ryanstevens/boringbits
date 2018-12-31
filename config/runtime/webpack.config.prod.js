@@ -280,8 +280,8 @@ module.exports = {
     new MiniCssExtractPlugin({
       // Options similar to the same options in webpackOptions.output
       // both options are optional
-      filename: 'static/css/[name].[chunkhash:8].css',
-      chunkFilename: '[id].css',
+      filename: 'static/css/[name].[hash:8].css',
+      chunkFilename: 'static/css/[id].[chunkhash:8].css',
     }),
     new ProgressBarPlugin(),
     new ReactLoadablePlugin({

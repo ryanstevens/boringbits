@@ -5,9 +5,7 @@ import Loadable from 'react-loadable';
 
 class RouterSwitch extends React.Component {
 
-  render() {
-
-    let containers;
+  componentWillMount() {
 
     if (isNode) {
       const rootPath = '../../../lib/init-hooks/core-hooks/react/getNodeRootComponents'; // this simply ensures the node side isn't webpacked bundled
@@ -15,12 +13,12 @@ class RouterSwitch extends React.Component {
 
       const rootContainers = getNodeRootComponents().containers;
 
-      containers = Object.keys(rootContainers).reduce((acc, containerName) => {
+      this.containers = Object.keys(rootContainers).reduce((acc, containerName) => {
         const Component = rootContainers[containerName];
         // eslint-disable-next-line new-cap
         acc[containerName] = Loadable({
           loader: () => Promise.resolve(Component),
-          loading: () => <Component />,
+          loading: () => <></>,
           modules: [Component.importPath],
         });
         acc[containerName].path = Component.path;
@@ -28,8 +26,14 @@ class RouterSwitch extends React.Component {
       }, {});
 
     } else {
-      containers = window.__boring_internals.containers;
+      this.containers = window.__boring_internals.containers;
     }
+
+  }
+
+  render() {
+
+    const containers = this.containers;
 
     const containerStack = Object.keys(containers).map(name => {
       return containers[name];

@@ -26,7 +26,7 @@ function praseResponse(lines) {
 
 module.exports = async function checkProxy() {
 
-  const haProxyResponse = await retryerer('http://www.boringlocal.com/__haproxy_stats;csv;norefresh', 3);
+  const haProxyResponse = await retryerer('http://www.boringlocal.com/__haproxy_stats;csv;norefresh', 2);
   if (!haProxyResponse) return {haProxyStatus: 'DOWN', appStatus: 'DOWN'};
 
   const nodeBackend = (await praseResponse(haProxyResponse)).filter(result => result.svname === 'node_server').pop();

@@ -4,6 +4,38 @@ const inquirer = require('inquirer');
 const chalk = require('chalk');
 const childProcess = require('child_process');
 
+async function tryDocker() {
+  const dockerResults = childProcess.spawnSync('npx', ['boring', 'up'], {
+    stdio: [process.stdin, process.stdout, process.stdout],
+    cwd: process.cwd(),
+  });
+
+  if (dockerResults.status !== 0) {
+    console.log(`
+${chalk.red.bold(`Sorry, there was a problem lunching the docker instance.`)}
+Maybe try runing \`docker ps\` to check if docker if
+running properly on your system.
+
+    `);
+
+    const relaunch = await inquirer
+      .prompt([{
+        type: 'list',
+        name: 'startProxy',
+        message: 'Would you like boring to try again and launch HA Proxy as a docker container',
+        choices: [
+          {name: chalk.bold('Yes, run HA Proxy for me'), value: true},
+          {name: 'No, I\'ll figure something else out', value: false},
+        ],
+      }]);
+
+    if (relaunch.startProxy) {
+      return await tryDocker();
+    }
+    return false;
+  } return true;
+}
+
 module.exports = async function runChecks() {
   const status = await checkProxy();
   console.log(status);
@@ -50,19 +82,36 @@ ${chalk.yellow.bold(`Okay fine, how do I move forward?`)}
       }]);
 
     if (launchProxy.startProxy) {
-      childProcess.spawnSync('npx', ['boring', 'up'], {
-        stdio: [process.stdin, process.stdout, process.stdout],
-        cwd: process.cwd(),
-      });
+      if (await tryDocker() === false) {
+        console.log(`
+${chalk.yellow('Okey doak, starting your application without Boring\'s local proxy')}
+Please make sure there is _some_ proxy running because you can not
+hit a boring route unless the HTTP request is secure and over a
+proper domain (not localhost).  TO be clear, this means
+HTTPS + domain + TLD and NO PORT
 
-      console.log(`
+Examples
+http://www.boringlocal.com       ${chalk.red('BAD - Not Secure')}
+https://www.boringlocal.com:5000 ${chalk.red('BAD - port # in url')}
+http://localhost:5000            ${chalk.red('BAD - Common, really')}
+https://mydomain.local           ${chalk.green('GOOD')}
+https://www.mydomain.local       ${chalk.green('GOOD')}
+https://www.mydomain.com         ${chalk.green('GOOD')}
+https://super.www.mydomain.com   ${chalk.green('GOOD')}
+https://super.www.localtest.me   ${chalk.green('GOOD')}
+https://www.boringlocal.com      ${chalk.green('GOOD (this is borings default domain to test on btw)')}
+
+`);
+      } else {
+        console.log(`
 ${chalk.yellow.bold(`All done!  HA Proxy is running in a docker container.`)}
 ${chalk.yellow.bold(`Your server will now resume, you should not see this `)}
-${chalk.yellow.bold(`prmopt again unless your docker container crashes`)}
+${chalk.yellow.bold(`prompt again unless your docker instance crashes`)}
 
 ******************************************************************************
 
-      `);
+        `);
+      }
     }
   }
 
