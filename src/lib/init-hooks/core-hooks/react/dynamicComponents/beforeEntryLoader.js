@@ -10,10 +10,17 @@
  */
 export default function beforeEntryLoader() {
 
+  // THIS IS A GENERATED FILE, PLEASE DO NOT MODIFY
+  const Loadable = require('react-loadable');
+  const React = require('react');
+
+  const containers = {};
+  const modules = {};
+  const decorators = {};
+
   if (!window.__boring_internals) {
     window.__boring_internals = {
       wutsthis: 'DO NOT LOOK HERE OR YOU ARE FIRED',
-      Loadable,
     };
   }
 
@@ -48,6 +55,7 @@ export default function beforeEntryLoader() {
     module.hot.accept(err => console.log('error reloading', err));
   }
 
+  // GENERATED_CODE
 };
 
 
