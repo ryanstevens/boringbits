@@ -12,7 +12,7 @@ function makeConainerCode({module, moduleName, importPath} = container) {
     const loadableModule = Loadable({
       loader: () => import('${importPath}'),
       loading: function Loading() {
-        return <></>;
+        return null;
       },
     });
     loadableModule.path = '${module.path}';

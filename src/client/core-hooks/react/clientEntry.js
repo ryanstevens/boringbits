@@ -9,7 +9,27 @@ import getAppComponents from './AppInit';
 import BoringRouter from './BoringRouter';
 import isNode from 'detect-node';
 import * as decoratorUntil from './decoratorUtil';
+import {Frontload} from 'react-frontload';
+import {preloadReady} from 'react-loadable';
 
+
+function extractStateFromDOM() {
+  const state = {
+    composeEnhancers: null,
+  };
+  try {
+    const jssStyles = window.document.getElementById('jss-server-side');
+    if (jssStyles && jssStyles.parentNode) {
+      jssStyles.parentNode.removeChild(jssStyles);
+    }
+
+    state.preloadedState = window.__PRELOADED_STATE__ || {};
+    state.composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+
+  } catch (e) {}
+
+  return state;
+}
 
 function renderRedux(App, reducers) {
 
@@ -17,7 +37,9 @@ function renderRedux(App, reducers) {
   function Router(props) {
     return (
       <ConnectedRouter history={history}>
-        {props.children}
+        <Frontload isServer={false}>
+          {props.children}
+        </Frontload>
       </ConnectedRouter>
     );
   }
@@ -29,23 +51,30 @@ function renderRedux(App, reducers) {
     reducers = getRootComponents().reducers;
   }
 
-  const components = getAppComponents({
-    App: App,
-    reducers: reducers,
-    history: history,
-    Router: Router,
+  // Object.keys(window.__boring_internals.containers).forEach(container => {
+  //   window.__boring_internals.containers[container].preload();
+  // });
+
+  preloadReady().then((...args) => {
+    console.log('HYDRATING');
+    const components = getAppComponents({
+      App: App,
+      reducers: reducers,
+      history: history,
+      Router: Router,
+      ...extractStateFromDOM(),
+    });
+
+    const Container = components.Container;
+
+    ReactDOM.hydrate(
+      <Container />,
+      document.querySelector('#root')
+    );
   });
 
-  const Container = components.Container;
-
-
-  ReactDOM.hydrate(
-    <Container />,
-    document.querySelector('#root')
-  );
-
   return new Promise((resolve, reject) => {
-    resolve(components);
+    resolve();
   });
 }
 
@@ -102,6 +131,7 @@ const toExport = {
   ...decoratorUntil,
 };
 
+// TODO: This does NOT work
 subscribeHotReload(function() {
   const components = getRootComponents();
   Object.keys(components).forEach(key => {

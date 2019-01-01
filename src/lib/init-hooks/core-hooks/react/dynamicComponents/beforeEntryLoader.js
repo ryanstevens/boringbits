@@ -13,6 +13,7 @@ export default function beforeEntryLoader() {
   if (!window.__boring_internals) {
     window.__boring_internals = {
       wutsthis: 'DO NOT LOOK HERE OR YOU ARE FIRED',
+      Loadable,
     };
   }
 

@@ -9,32 +9,11 @@ import isNode from 'detect-node';
 import thunk from 'redux-thunk';
 
 
-function extractStateFromDOM() {
-  const state = {
-    composeEnhancers: compose,
-  };
-  try {
-    if (!isNode) {
-
-      const jssStyles = window.document.getElementById('jss-server-side');
-      if (jssStyles && jssStyles.parentNode) {
-        jssStyles.parentNode.removeChild(jssStyles);
-      }
-
-      state.preloadedState = window.__PRELOADED_STATE__ || {};
-      state.composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-    }
-  } catch (e) {}
-
-  return state;
-}
-
 export default function getAppComponents(dependencies) {
 
   // Grab the state from a global variable injected into the server-generated HTML
-  const domExtractedState = extractStateFromDOM();
-  const preloadedState = domExtractedState.preloadedState;
-  const composeEnhancers = domExtractedState.composeEnhancers;
+  const preloadedState = dependencies.preloadedState || {};
+  const composeEnhancers = dependencies.composeEnhancers || compose;
 
   const App = dependencies.App;
   const reducers = dependencies.reducers;

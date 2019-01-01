@@ -5,8 +5,8 @@ import {StaticRouter} from 'react-router-dom';
 import Layout from './Layout';
 import getAppComponents from './AppInitProxy';
 import Loadable from 'react-loadable';
-import logger from 'boring-logger';
 import {getBundles} from 'react-loadable/webpack';
+import {frontloadServerRender, Frontload} from 'react-frontload';
 
 
 module.exports = function renderRedux(options = {layout: {clientConfig: {}, pageInjections: {}}}) {
@@ -26,18 +26,14 @@ module.exports = function renderRedux(options = {layout: {clientConfig: {}, page
   function Router(props) {
     return (
       <StaticRouter location={req.url} context={context} props={props}>
-        <Loadable.Capture report={moduleName => modules.push(moduleName)}>
-          {props.children}
-        </Loadable.Capture>
+        <Frontload isServer={true}>
+          <Loadable.Capture report={moduleName => modules.push(moduleName)}>
+            {props.children}
+          </Loadable.Capture>
+        </Frontload>
       </StaticRouter>
     );
   }
-
-  const {Container, getStyleSheets, store} = getAppComponents({
-    App,
-    Router,
-    reducers,
-  });
 
   const layout = options.layout || {
     clientConfig: {},
@@ -51,30 +47,58 @@ module.exports = function renderRedux(options = {layout: {clientConfig: {}, page
     layout.pageInjections.headLinks = [];
   }
 
-  const containerHTML = ReactDOMServer.renderToString(<Container />);
-  const inlineCSS = getStyleSheets();
-  const bundles = getBundles(stats, modules);
+  let getStyleSheets;
+  let store;
 
-  bundles
-    .filter(bundle => bundle.file.endsWith('.js'))
-    .map(bundle => '/' +bundle.file)
-    .forEach(file => layout.pageInjections.bodyEndScripts.push(file));
+  return frontloadServerRender((dryRun) => {
 
-  bundles
-    .filter(bundle => bundle.file.endsWith('.css'))
-    .map(bundle => '/' +bundle.file)
-    .forEach(file => layout.pageInjections.headLinks.push(file));
+    const components = getAppComponents({
+      App,
+      Router,
+      reducers,
+    });
 
+    if (!dryRun) {
+      getStyleSheets = components.getStyleSheets;
+      store = components.store;
+    }
 
-  res.send('<!DOCTYPE html>' + ReactDOMServer.renderToStaticMarkup(
-    <Layout
-      inlineCSS={inlineCSS}
-      locals={res.locals}
-      client_config={layout.clientConfig}
-      pageInjections={layout.pageInjections}
-      containerHTML={containerHTML}
-      redux_state={store.getState()}>
-    </Layout>
-  ));
+    return ReactDOMServer.renderToString(<components.Container />);
+  }).then((containerHTML) => {
+
+    // const containerHTML = ReactDOMServer.renderToString(<Container />);
+    const bundles = getBundles(stats, modules);
+
+    bundles
+      .filter(bundle => bundle.file.endsWith('.js'))
+      .map(bundle => '/' +bundle.file)
+      .forEach(file => {
+        if (layout.pageInjections.bodyEndScripts.indexOf(file) < 0) {
+          layout.pageInjections.bodyEndScripts.push(file);
+        }
+      });
+
+    bundles
+      .filter(bundle => bundle.file.endsWith('.css'))
+      .map(bundle => '/' +bundle.file)
+      .forEach(file => {
+        if (layout.pageInjections.headLinks.indexOf(file) < 0) {
+          layout.pageInjections.headLinks.push(file);
+        }
+      });
+
+    res.send('<!DOCTYPE html>' + ReactDOMServer.renderToStaticMarkup(
+      <Layout
+        inlineCSS={getStyleSheets()}
+        locals={res.locals}
+        client_config={layout.clientConfig}
+        pageInjections={layout.pageInjections}
+        containerHTML={containerHTML}
+        redux_state={store.getState()}>
+      </Layout>
+    ));
+
+  });
 
 };
+
