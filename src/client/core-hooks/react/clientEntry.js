@@ -62,6 +62,7 @@ function renderRedux(App, reducers) {
 
     const Container = components.Container;
 
+    console.log('Rendering Root App');
     ReactDOM.hydrate(
       <Container />,
       document.querySelector('#root')
@@ -97,13 +98,16 @@ function getRootComponents() {
 };
 
 function subscribeHotReload(fn) {
+
   try {
     if (!__boring_internals.hot[fn.toString()]) {
       __boring_internals.hot.subscribe(fn);
       __boring_internals.hot[fn.toString()] = true;
       fn();
     }
-  } catch (e) {}
+  } catch (e) {
+    console.log('ERROR', e);
+  }
 }
 
 const toExport = {
@@ -126,13 +130,15 @@ const toExport = {
   ...decoratorUntil,
 };
 
-// TODO: This does NOT work
-subscribeHotReload(function() {
-  const components = getRootComponents();
-  Object.keys(components).forEach(key => {
-    toExport[key] = components[key];
+if (!isNode) {
+  subscribeHotReload(function() {
+    console.log('updating root components');
+    const components = getRootComponents();
+    Object.keys(components).forEach(key => {
+      toExport[key] = components[key];
+    });
   });
-});
+}
 
 toExport['react-redux'] = ReactRedux;
 toExport['react-dom'] = ReactDOM;

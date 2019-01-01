@@ -67,6 +67,7 @@ class RouterSwitch extends React.Component {
         {this.props.children}
 
         {containerStack.map(component => {
+          // component.preload();
           return (
             <Route
               key={component.path} // <-- that should work riiiiggggt?

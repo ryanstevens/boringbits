@@ -2,7 +2,6 @@
 import * as fs from 'fs';
 import babel from 'babelCompiler';
 import logger from 'boring-logger';
-import beforeEntryLoader from './beforeEntryLoader';
 
 function makeConainerCode({module, moduleName, importPath} = container) {
 
@@ -76,10 +75,38 @@ export default function getEntryWrappers(reactRoot, containers = [], modules = {
       };
     }
 
-    `
-    + mapDecorators(decorators)
-      + beforeEntryLoader.toString()
-      + ';beforeEntryLoader();'
+    const internals = window.__boring_internals;
+
+    internals.containers = containers || [];
+    internals.modules = modules || {};
+    internals.decorators = decorators || {};
+
+    if (!internals.hot) {
+      internals.hot = {
+        subscribers: [],
+        subscribe: function(fn) {
+          this.subscribers.push(fn);
+        },
+        notify: function() {
+          this.subscribers.forEach(fn => {
+            console.log('notifying subscriber of a change');
+            fn();
+          });
+        },
+      };
+    } else {
+      setTimeout(() => {
+        // I know this seems jank but it's ONLY
+        // when we are in a partial state because HMR
+        internals.hot.notify();
+      }, 1);
+    }
+
+    if (module.hot) {
+      module.hot.accept(err => console.log('error reloading', err));
+    }
+
+  ` + mapDecorators(decorators)
     + containers.map(makeConainerCode).join('\n')
     + mapModules(modules);
 
