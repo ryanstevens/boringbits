@@ -61,14 +61,27 @@ export default function getEntryWrappers(reactRoot, containers = [], modules = {
   const afterFilename = reactRoot + '_afterEntry.js';
   const afterEntryFilePath = prefix + '/' + afterFilename;
 
-  const generatedCode = mapDecorators(decorators)
-                        + containers.map(makeConainerCode).join('\n')
-                        + mapModules(modules);
+  const code = `
+    // THIS IS A GENERATED FILE, PLEASE DO NOT MODIFY
+    import Loadable from 'react-loadable';
+    import * as React from 'react';
 
-  const code = beforeEntryLoader
-    .toString()
-    .replace( 'GENERATED_CODE', '\n' + generatedCode)
-    + ';beforeEntryLoader();';
+    const containers = {};
+    const modules = {};
+    const decorators = {};
+
+    if (!window.__boring_internals) {
+      window.__boring_internals = {
+        wutsthis: 'DO NOT LOOK HERE OR YOU ARE FIRED',
+      };
+    }
+
+    `
+    + mapDecorators(decorators)
+      + beforeEntryLoader.toString()
+      + ';beforeEntryLoader();'
+    + containers.map(makeConainerCode).join('\n')
+    + mapModules(modules);
 
   const babelResults = babel(code);
 
