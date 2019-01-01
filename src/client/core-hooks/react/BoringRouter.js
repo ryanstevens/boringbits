@@ -11,12 +11,12 @@ function getRootComponents() {
 }
 
 const loaderPromise = defer();
-let ran = false;
+let serverLoaded = false;
 
 let containers;
 function loadComponents() {
-  if (ran) return;
   if (isNode) {
+    if (serverLoaded) return;
     const rootContainers = getRootComponents().containers;
     containers = Object.keys(rootContainers).reduce((acc, containerName) => {
       const Component = rootContainers[containerName];
@@ -35,16 +35,12 @@ function loadComponents() {
         .keys(containers)
         .map(key => containers[key].loader)
     ).then(loaderPromise.resolve);
-
+    serverLoaded = true;
   } else {
     containers = window.__boring_internals.containers;
   }
-  ran = true;
 }
 
-@frontloadConnect(function() {
-  return loaderPromise;
-})
 class RouterSwitch extends React.Component {
 
   componentWillMount() {
@@ -52,6 +48,10 @@ class RouterSwitch extends React.Component {
   }
 
   render() {
+
+    if (!isNode) {
+      containers = window.__boring_internals.containers;
+    }
 
     const containerStack = Object.keys(containers).map(name => {
       return containers[name];
