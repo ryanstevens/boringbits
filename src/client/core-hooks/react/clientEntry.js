@@ -51,12 +51,7 @@ function renderRedux(App, reducers) {
     reducers = getRootComponents().reducers;
   }
 
-  // Object.keys(window.__boring_internals.containers).forEach(container => {
-  //   window.__boring_internals.containers[container].preload();
-  // });
-
   preloadReady().then((...args) => {
-    console.log('HYDRATING');
     const components = getAppComponents({
       App: App,
       reducers: reducers,
