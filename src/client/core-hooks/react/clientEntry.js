@@ -62,7 +62,6 @@ function renderRedux(App, reducers) {
 
     const Container = components.Container;
 
-    console.log('Rendering Root App');
     ReactDOM.hydrate(
       <Container />,
       document.querySelector('#root')
@@ -132,7 +131,6 @@ const toExport = {
 
 if (!isNode) {
   subscribeHotReload(function() {
-    console.log('updating root components');
     const components = getRootComponents();
     Object.keys(components).forEach(key => {
       toExport[key] = components[key];
