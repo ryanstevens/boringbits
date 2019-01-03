@@ -95,8 +95,7 @@ export default function getEntryWrappers(reactRoot, containers = [], modules = {
       };
     }
 
-    console.log('PARSING ROOT COMPONENTS ENTRY');
-    const internals = window.__boring_internals;
+    const internals = window.__boring_internals;con
 
     internals.containers = containers || [];
     internals.modules = modules || {};
@@ -110,7 +109,6 @@ export default function getEntryWrappers(reactRoot, containers = [], modules = {
         },
         notify: function() {
           this.subscribers.forEach(fn => {
-            console.log('notifying subscriber of a change');
             fn();
           });
         },
