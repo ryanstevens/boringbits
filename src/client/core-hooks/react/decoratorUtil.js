@@ -10,7 +10,7 @@ export function makeDecorator(Wrapper, options = {}) {
 
       render() {
         return (
-          <Wrapper>
+          <Wrapper targetProps={this.props} options={options}>
             <Target {...this.props} />
           </Wrapper>
         );
