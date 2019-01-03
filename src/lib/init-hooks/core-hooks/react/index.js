@@ -6,6 +6,7 @@ import dynamicComponents from './dynamicComponents';
 import fs from 'fs-extra';
 import {getNamespace} from 'boring-cls';
 import logger from 'boring-logger';
+import {makeDecorator} from '../../../../client/core-hooks/react/decoratorUtil';
 
 module.exports = function reactHook(BoringInjections) {
   const {
@@ -47,7 +48,12 @@ module.exports = function reactHook(BoringInjections) {
 
         // actually run `require` on decorators / containers
         const decorators = requireDirectory(reactHandlerPaths.app_dir, reactHandlerPaths.decoratorsPath);
-        reactHandlerPaths.decorators = reduceMods(decorators);
+        reactHandlerPaths.decorators = reduceMods(decorators.map(decorator => {
+          return {
+            ...decorator,
+            module: makeDecorator(decorator.module),
+          };
+        }));
 
         const containers = requireDirectory(reactHandlerPaths.app_dir, reactHandlerPaths.routerContainersPath);
         reactHandlerPaths.containers = reduceMods(containers);

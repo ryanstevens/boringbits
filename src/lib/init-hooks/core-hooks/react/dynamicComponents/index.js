@@ -35,15 +35,32 @@ function mapModules(modules) {
     `;
   }).join('\n');
 }
-
-
 function mapDecorators(decorators) {
 
   return decorators.map(decorator => {
     return `
       (function requireDecorator() {
         const requiredMod = require('${decorator.importPath}');
-        decorators['${decorator.moduleName}'] =  (requiredMod.default) ? requiredMod.default : requiredMod;
+        const Mod = (requiredMod.default) ? requiredMod.default : requiredMod;
+        __boring_internals.freshModules['${decorator.moduleName}'] = Mod;
+        /**
+        * The following code is in place only for local dev / HMR to work.
+        *
+        * Okay, this is a bit strange- the reason why we are wrapping "decorators"
+        * is because they are ultimately imported via boring and dynamically "glued"
+        * together with whomever needs HOC / decorators.  This means when a developer
+        * updates one of the source files HMR will not cause the render cycle to
+        * render the most up to date changes from these decorators beause the
+        * import / require depencancy tree is outside of the rest of the app.
+        **/
+        const WrappedModuleToDecorate = hoistNonReactStatic(class extends React.Component {
+          render() {
+            const FreshModule = __boring_internals.freshModules['${decorator.moduleName}'];
+            return <FreshModule {...this.props} />
+          }
+        }, Mod);
+        decorators['${decorator.moduleName}'] = makeDecorator(WrappedModuleToDecorate);
+
       })();
     `;
   }).join('\n');
@@ -64,6 +81,8 @@ export default function getEntryWrappers(reactRoot, containers = [], modules = {
     // THIS IS A GENERATED FILE, PLEASE DO NOT MODIFY
     import Loadable from 'react-loadable';
     import * as React from 'react';
+    import {makeDecorator} from '../../../../../../client/core-hooks/react/decoratorUtil';
+    import hoistNonReactStatic from 'hoist-non-react-statics';
 
     const containers = {};
     const modules = {};
@@ -72,9 +91,11 @@ export default function getEntryWrappers(reactRoot, containers = [], modules = {
     if (!window.__boring_internals) {
       window.__boring_internals = {
         wutsthis: 'DO NOT LOOK HERE OR YOU ARE FIRED',
+        freshModules: {},
       };
     }
 
+    console.log('PARSING ROOT COMPONENTS ENTRY');
     const internals = window.__boring_internals;
 
     internals.containers = containers || [];

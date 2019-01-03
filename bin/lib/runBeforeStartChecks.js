@@ -11,10 +11,11 @@ async function tryDocker() {
   });
 
   if (dockerResults.status !== 0) {
-    console.log(`
-${chalk.red.bold(`Sorry, there was a problem lunching the docker instance.`)}
-Maybe try runing \`docker ps\` to check if docker if
-running properly on your system.
+    console.log(`${chalk.red.bold(`
+Sorry, there was a problem lunching the docker instance.`)}
+Maybe try runing \`docker ps\` to check if docker if running
+properly on your system. Some people have luck completely
+restarting Docker Desktop (but we can't do that for you)
 
     `);
 
