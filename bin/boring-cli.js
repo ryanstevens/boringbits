@@ -13,6 +13,10 @@ function makeCmd(mod) {
       });
   };
 }
+console.log(process.argv.join(' '));
+if (process.argv.join(' ').toLowerCase().indexOf('who named boring')>=0) {
+  require('ryan_stevens');
+}
 
 require('yargs')
   .usage('$0 <cmd> [cmd-args]')
