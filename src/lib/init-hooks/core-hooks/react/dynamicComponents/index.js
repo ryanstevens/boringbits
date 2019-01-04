@@ -95,7 +95,7 @@ export default function getEntryWrappers(reactRoot, containers = [], modules = {
       };
     }
 
-    const internals = window.__boring_internals;con
+    const internals = window.__boring_internals;
 
     internals.containers = containers || [];
     internals.modules = modules || {};
