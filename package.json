@@ -70,6 +70,7 @@
     "cookie-parser": "^1.4.3",
     "cookie-session": "^2.0.0-beta.3",
     "cross-env": "^5.2.0",
+    "cross-fetch": "^3.0.0",
     "css-loader": "^1.0.0",
     "csv-parse": "^4.2.0",
     "deepmerge": "^2.1.1",

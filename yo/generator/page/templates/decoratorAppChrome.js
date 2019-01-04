@@ -1,6 +1,5 @@
 import React from 'react';
 import {withStyles} from '@material-ui/core/styles';
-import {makeDecorator} from 'boringbits/react';
 
 import Grid from '@material-ui/core/Grid';
 import AppBar from '@material-ui/core/AppBar';
@@ -31,7 +30,7 @@ import Typography from '@material-ui/core/Typography';
 class AppChrome extends React.Component {
 
   render() {
-    const {classes} = this.props;
+    const {classes, Target, propsForTarget} = this.props;
     return (
       <Grid container className={classes.outerContainer} justify="center" spacing={0}>
         <Grid className={classes.container} item>
@@ -46,7 +45,7 @@ class AppChrome extends React.Component {
             </Toolbar>
           </AppBar>
 
-          {this.props.children}
+          <Target {...propsForTarget} />
         </Grid>
       </Grid>
 
@@ -54,4 +53,4 @@ class AppChrome extends React.Component {
   }
 }
 
-export default makeDecorator(AppChrome);
+export default AppChrome;

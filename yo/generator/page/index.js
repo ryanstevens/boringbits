@@ -29,14 +29,14 @@ module.exports = class extends Generator {
       type: 'input',
       name: 'pageName',
       message: 'What is the name of the route you want to make',
-      default: 'home',
+      default: 'demo',
     });
 
     await this.processPrompt({
       type: 'input',
       name: 'path',
       message: 'What is the url path',
-      default: '/',
+      default: '/demo',
     });
 
     this.props.pageName = this.props.pageName.replace(/\s+/g, '-');
@@ -45,9 +45,12 @@ module.exports = class extends Generator {
     if (this.props.pageType === 'redux') {
       this.props.containers = [
         {
-          name: this.props.pageName + 'Container',
+          className: 'MessageContainer',
           path: this.props.path,
-          personName: 'Josh',
+        },
+        {
+          className: 'CatContainer',
+          path: this.props.path + '/cats',
         },
       ];
     }
@@ -75,11 +78,11 @@ module.exports = class extends Generator {
         this.props
       );
 
-      this.fs.copyTpl(
-        this.templatePath('reduxApp.js'),
-        this.destinationPath(`src/client/pages/${this.props.pageName}/App.js`),
-        this.props
-      );
+      // this.fs.copyTpl(
+      //   this.templatePath('reduxApp.js'),
+      //   this.destinationPath(`src/client/pages/${this.props.pageName}/App.js`),
+      //   this.props
+      // );
 
       this.fs.copyTpl(
         this.templatePath('reduxReducers.js'),
@@ -87,11 +90,19 @@ module.exports = class extends Generator {
         this.props
       );
 
+
+      this.fs.copyTpl(
+        this.templatePath('decoratorAppChrome.js'),
+        this.destinationPath(`src/client/pages/${this.props.pageName}/decorators/AppChrome.js`),
+        this.props
+      );
+
+
       this.props.containers.forEach(container => {
 
         this.fs.copyTpl(
-          this.templatePath('reduxContainer.js'),
-          this.destinationPath(`src/client/pages/${this.props.pageName}/containers/${container.name}.js`),
+          this.templatePath('containers/'+container.className + '.js'),
+          this.destinationPath(`src/client/pages/${this.props.pageName}/containers/${container.className}.js`),
           Object.assign({}, this.props, container),
         );
 
