@@ -5,6 +5,7 @@ module.exports = function(BoringInjections) {
 
   const {
     boring,
+    logger,
   } = BoringInjections;
 
   boring.before('add-hooks', function() {
@@ -16,10 +17,10 @@ module.exports = function(BoringInjections) {
 
           ns.bindEmitter(req);
           ns.bindEmitter(res);
-
           ns.run(() => {
             req.corrId = uuid.v4();
             ns.set('corrId', req.corrId);
+
             next();
           });
         });

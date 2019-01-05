@@ -16,7 +16,6 @@ function findByName(arr, name) {
 }
 
 function wipeInjectoreStore() {
-  debugger;
   const jectureStore = injecture.getInstanceByInterface('instanceStore');// require('injecture/injecture-store');
   const jectureKeys = Object.keys(jectureStore);
   jectureKeys.forEach(key => {

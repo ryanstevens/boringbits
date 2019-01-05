@@ -16,6 +16,7 @@ if (config.get('boring.babel.register_app') === true) {
 
 const Server = require('./lib/server');
 const injecture = require('injecture');
+const boringCls = require('boring-cls');
 
 module.exports = {
   Server,
@@ -23,4 +24,5 @@ module.exports = {
   config,
   logger,
   isNode,
+  ...boringCls,
 };

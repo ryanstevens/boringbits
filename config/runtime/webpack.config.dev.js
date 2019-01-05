@@ -10,6 +10,7 @@ const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
 const ProgressBarPlugin = require('progress-bar-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const ReactLoadablePlugin = require('react-loadable/webpack').ReactLoadablePlugin;
+const TimeFixPlugin = require('time-fix-plugin');
 
 
 // Webpack uses `publicPath` to determine where the app is being served from.
@@ -216,6 +217,7 @@ module.exports = {
     new ReactLoadablePlugin({
       filename: './dist/react-loadable.json',
     }),
+    new TimeFixPlugin(),
   ],
 
   optimization: {

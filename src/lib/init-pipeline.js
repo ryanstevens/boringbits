@@ -15,7 +15,6 @@ const appUseOverride = require('./server/appUseOverride');
 const injecture = require('injecture');
 const uuid = require('node-uuid');
 
-
 class InitPipeline extends EventEmitter {
 
   constructor() {
@@ -24,6 +23,8 @@ class InitPipeline extends EventEmitter {
 
     this.initNS = createNamespace('boring-init');
     this.requestNS = createNamespace('http-request');
+    this.createNamespace = createNamespace;
+    this.getNamespace = getNamespace;
 
     this.config = config;
     this.logger = logger;
@@ -86,6 +87,8 @@ class InitPipeline extends EventEmitter {
       logger,
       config,
       injecture,
+      getNamespace,
+      createNamespace,
     }, options);
 
     await this.initNS.runPromise(async () => {

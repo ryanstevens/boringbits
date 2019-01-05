@@ -113,6 +113,7 @@
     "style-loader": "^0.23.0",
     "terser-webpack-plugin": "^1.1.0",
     "through2": "^3.0.0",
+    "time-fix-plugin": "^2.0.5",
     "typescript": "^3.2.1",
     "understudy": "^4.1.0",
     "url-loader": "^1.1.1",

@@ -94,13 +94,17 @@ module.exports = function createWebpackStack(BoringInjections) {
         const webpack = require('webpack');
         const compiler = webpack(webpack_config);
 
-        resolve(compose([
+        const composedMiddleware = compose([
           webpackDevMiddleware(compiler, {
             serverSideRender: true,
             publicPath: '/',
           }),
           webpackHotMiddleware(compiler),
-        ]));
+        ]);
+
+        compiler.plugin('done', function(stats) {
+          resolve(composedMiddleware);
+        });
       } else resolve(passthrough);
     });
   });

@@ -81,11 +81,13 @@ module.exports = function reactHook(BoringInjections) {
     };
   };
 
-  boring.before('http::get', function(ctx) {
+  boring.before('http::get', function beforeGet(ctx) {
+
     if (ctx.get.reactEntry) {
       ctx.res.reactPaths = ctx.get.reactEntry[0];
       ctx.res.renderRedux = renderRedux;
       const reactNS = getNamespace('http-request');
+
       if (reactNS && reactNS.set) {
         try {
           reactNS.set('reactHandlerPaths', ctx.res.reactPaths);
