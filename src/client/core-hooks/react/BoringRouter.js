@@ -6,7 +6,7 @@ import getComponents from './getRootComponents';
 class RouterSwitch extends React.Component {
 
   componentWillMount() {
-    this.containers = getComponents();
+    this.containers = getComponents().containers;
   }
 
   render() {

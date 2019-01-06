@@ -7,6 +7,8 @@ import getAppComponents from './AppInitProxy';
 import Loadable from 'react-loadable';
 import {getBundles} from 'react-loadable/webpack';
 import {frontloadServerRender, Frontload} from 'react-frontload';
+import getRootComponents from './getNodeRootComponents';
+import logger from 'boring-logger';
 
 
 module.exports = function renderRedux(options = {layout: {clientConfig: {}, pageInjections: {}}}) {
@@ -15,10 +17,11 @@ module.exports = function renderRedux(options = {layout: {clientConfig: {}, page
   const req = res.req;
 
   const context = {};
-  const {reactPaths} = res;
 
-  const App = require(reactPaths.mainApp).default;
-  const reducers = require(reactPaths.reducers).default;
+  const rootComponents = getRootComponents();
+
+  const App = rootComponents.modules.mainApp;
+  const reducers = rootComponents.modules.reducers;
 
   const modules = [];
   const stats = require(process.cwd() + '/dist/react-loadable.json');

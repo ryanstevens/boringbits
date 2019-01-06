@@ -1,25 +1,21 @@
-import React from 'react';
 import isNode from 'detect-node';
-import defer from 'deferitize';
 
 function getRootComponents() {
   const rootPath = '../../../lib/init-hooks/core-hooks/react/getNodeRootComponents'; // this simply ensures the node side isn't webpacked bundled
   return require(rootPath)();
 }
 
-
-function loadComponents() {
-  let containers = {};
+export default function loadComponents() {
+  let components = {};
   if (isNode) {
-    containers = getRootComponents().containers;
+    components = getRootComponents();
   } else {
-    containers = window.__boring_internals.containers;
+    components = window.__boring_internals;
   }
 
-  return containers;
+  return {
+    containers: components.containers,
+    decorators: components.decorators,
+    ...components.modules,
+  };
 }
-
-
-export default function() {
-  return loadComponents();
-};

@@ -49,8 +49,13 @@ export default function getPaths(options = {}) {
 
   if (!fs.existsSync(options.app_dir +'/'+ reactHandlerPaths.mainApp)) {
     reactHandlerPaths.mainApp = __dirname + '/defaultRootAppProxy.js';
-    reactHandlerPaths.modulesToRequire.mainApp = reactHandlerPaths.mainApp;
   }
+  reactHandlerPaths.modulesToRequire.mainApp = reactHandlerPaths.mainApp;
+
+  if (!fs.existsSync(options.app_dir +'/'+ reactHandlerPaths.reducers)) {
+    reactHandlerPaths.reducers = __dirname + '/defaultReducersProxy.js';
+  }
+  reactHandlerPaths.modulesToRequire.reducers = reactHandlerPaths.reducers;
 
   // check to make sure entrypoint is real
   if (!fs.existsSync(entryPointPath + '.js') &&
@@ -61,8 +66,6 @@ export default function getPaths(options = {}) {
       canonicalPath: reactRoot,
       assetPath: __dirname + '/defaultEntrypointProxy.js',
     };
-    reactHandlerPaths.modulesToRequire.reducers = reactHandlerPaths.reducers;
-    reactHandlerPaths.modulesToRequire.mainApp = reactHandlerPaths.mainApp;
   }
 
   return reactHandlerPaths;

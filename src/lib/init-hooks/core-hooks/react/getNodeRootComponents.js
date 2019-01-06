@@ -4,11 +4,15 @@ import Loadable from 'react-loadable';
 import logger from 'boring-logger';
 
 
+function requireModule(importPath) {
+  const module = require(importPath);
+  return (module.default) ? module.default : module;
+}
+
 module.exports = function get() {
   const ns = getNamespace('http-request');
   const reactHandlerPaths = ns.get('reactHandlerPaths');
 
-  debugger;
   if (Object.keys(reactHandlerPaths.containers).length > 0 &&
     !reactHandlerPaths.containersLoaded) {
 
@@ -17,7 +21,7 @@ module.exports = function get() {
       const container = reactHandlerPaths.containers[containerName];
       // eslint-disable-next-line new-cap
       const lazyContainer = Loadable({
-        loader: () => Promise.resolve(require(container.importPath)),
+        loader: () => Promise.resolve(requireModule(container.importPath)),
         loading: () => <></>,
         modules: [container.importPath],
       });
@@ -30,5 +34,13 @@ module.exports = function get() {
     reactHandlerPaths.containersLoaded = Promise.all(promises);
   }
 
-  return reactHandlerPaths;
+  const modules = {};
+  Object.keys(reactHandlerPaths.modulesToRequire).forEach(moduleName => {
+    modules[moduleName] = requireModule(reactHandlerPaths.modulesToRequire[moduleName]);
+  });
+
+  return {
+    ...reactHandlerPaths,
+    modules,
+  };
 };

@@ -11,7 +11,7 @@ import isNode from 'detect-node';
 import * as decoratorUntil from './decoratorUtil';
 import {Frontload} from 'react-frontload';
 import {preloadReady} from 'react-loadable';
-
+import getRootComponents from './getRootComponents';
 
 function extractStateFromDOM() {
   const state = {
@@ -80,22 +80,22 @@ function renderRedux(App, reducers) {
  *
  * @return {object}
  */
-function getRootComponents() {
+// function getRootComponents() {
 
-  if (isNode) {
-    // putting the path prevents webpack from bundling getNodeRootComponents
-    const nodeRootComponents = '../../../lib/init-hooks/core-hooks/react/getNodeRootComponents';
-    const requiredComponents = require(nodeRootComponents)();
-    return requiredComponents;
-  } else {
-    __boring_internals.modules.App = __boring_internals.modules.mainApp;
-    return {
-      decorators: __boring_internals.decorators,
-      ...__boring_internals.modules,
-    };
-  }
+//   if (isNode) {
+//     // putting the path prevents webpack from bundling getNodeRootComponents
+//     const nodeRootComponents = '../../../lib/init-hooks/core-hooks/react/getNodeRootComponents';
+//     const requiredComponents = require(nodeRootComponents)();
+//     return requiredComponents;
+//   } else {
+//     __boring_internals.modules.App = __boring_internals.modules.mainApp;
+//     return {
+//       decorators: __boring_internals.decorators,
+//       ...__boring_internals.modules,
+//     };
+//   }
 
-};
+// };
 
 function subscribeHotReload(fn) {
 
@@ -130,14 +130,14 @@ const toExport = {
   ...decoratorUntil,
 };
 
-if (!isNode) {
-  subscribeHotReload(function() {
-    const components = getRootComponents();
-    Object.keys(components).forEach(key => {
-      toExport[key] = components[key];
-    });
-  });
-}
+// if (!isNode) {
+//   subscribeHotReload(function() {
+//     const components = getRootComponents();
+//     Object.keys(components).forEach(key => {
+//       toExport[key] = components[key];
+//     });
+//   });
+// }
 
 toExport['react-redux'] = ReactRedux;
 toExport['react-dom'] = ReactDOM;
