@@ -73,29 +73,6 @@ function renderRedux(App, reducers) {
   });
 }
 
-/**
- * This is pure sugar / convience
- * to abstract pulling modules
- * from __boring_internals;
- *
- * @return {object}
- */
-// function getRootComponents() {
-
-//   if (isNode) {
-//     // putting the path prevents webpack from bundling getNodeRootComponents
-//     const nodeRootComponents = '../../../lib/init-hooks/core-hooks/react/getNodeRootComponents';
-//     const requiredComponents = require(nodeRootComponents)();
-//     return requiredComponents;
-//   } else {
-//     __boring_internals.modules.App = __boring_internals.modules.mainApp;
-//     return {
-//       decorators: __boring_internals.decorators,
-//       ...__boring_internals.modules,
-//     };
-//   }
-
-// };
 
 function subscribeHotReload(fn) {
 
@@ -130,14 +107,6 @@ const toExport = {
   ...decoratorUntil,
 };
 
-// if (!isNode) {
-//   subscribeHotReload(function() {
-//     const components = getRootComponents();
-//     Object.keys(components).forEach(key => {
-//       toExport[key] = components[key];
-//     });
-//   });
-// }
 
 toExport['react-redux'] = ReactRedux;
 toExport['react-dom'] = ReactDOM;
