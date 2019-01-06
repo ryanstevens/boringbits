@@ -10,7 +10,7 @@ module.exports = {
     base_app_path: 'src',
   },
   server: {
-    disable_cache: false,
+    disable_cache: true,
   },
   logUserAgent: false,
 };

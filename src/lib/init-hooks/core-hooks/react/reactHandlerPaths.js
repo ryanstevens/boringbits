@@ -39,6 +39,8 @@ export default function getPaths(options = {}) {
     routerContainersPath: options.baseAppPath + '/' + options.routeContainersDirectory,
     decoratorsPath: options.baseAppPath + '/' + options.decoratorDirectory,
 
+    decorators: {},
+    containers: {},
     ...options,
   };
 

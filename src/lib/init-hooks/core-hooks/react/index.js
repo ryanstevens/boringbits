@@ -3,10 +3,9 @@ import decorators from '../../../decorators';
 import getReactHandlerPaths from './reactHandlerPaths';
 import renderRedux from './renderRedux';
 import dynamicComponents from './dynamicComponents';
-import fs from 'fs-extra';
 import {getNamespace} from 'boring-cls';
 import logger from 'boring-logger';
-import {makeDecorator} from '../../../../client/core-hooks/react/decoratorUtil';
+import requireHandlerPaths from './requireHandlerPaths';
 
 module.exports = function reactHook(BoringInjections) {
   const {
@@ -41,28 +40,17 @@ module.exports = function reactHook(BoringInjections) {
       let afterEntry;
 
       const reactHandlerPaths = getReactHandlerPaths(options);
-
       const reactNS = getNamespace('http-request');
       reactNS.run(function() {
+
         reactNS.set('reactHandlerPaths', reactHandlerPaths);
-
-        // actually run `require` on decorators / containers
-        const decorators = requireDirectory(reactHandlerPaths.app_dir, reactHandlerPaths.decoratorsPath);
-        reactHandlerPaths.decorators = reduceMods(decorators.map(decorator => {
-          return {
-            ...decorator,
-            module: makeDecorator(decorator.module),
-          };
-        }));
-
-        const containers = requireDirectory(reactHandlerPaths.app_dir, reactHandlerPaths.routerContainersPath);
-        reactHandlerPaths.containers = reduceMods(containers);
+        requireHandlerPaths(reactHandlerPaths);
 
         [beforeEntry, afterEntry] = dynamicComponents(
           reactHandlerPaths.reactRoot,
-          containers,
+          reactHandlerPaths.containers,
           reactHandlerPaths.modulesToRequire,
-          decorators
+          reactHandlerPaths.decorators
         );
 
       });
@@ -90,7 +78,20 @@ module.exports = function reactHook(BoringInjections) {
 
       if (reactNS && reactNS.set) {
         try {
-          reactNS.set('reactHandlerPaths', ctx.res.reactPaths);
+          /**
+           * IMPORTANT, a fresh shallow clone is made
+           * for every request so people can feel free
+           * to assume this object is unique per request
+           */
+          reactNS.set('reactHandlerPaths', {
+            ...ctx.res.reactPaths,
+            containers: {
+              ...ctx.res.reactPaths.containers,
+            },
+            decorators: {
+              ...ctx.res.reactPaths.decorators,
+            },
+          });
         } catch (e) {
           logger.trace(e, 'problem setting reactHandlerPaths');
         }
@@ -107,34 +108,3 @@ module.exports = function reactHook(BoringInjections) {
 
   return {name: 'react'};
 };
-
-function reduceMods(mods) {
-  return mods.reduce((acc, cur) => {
-    cur.module.importPath = cur.importPath;
-    acc[cur.moduleName] = cur.module;
-    return acc;
-  }, {});
-}
-
-function requireDirectory(appDir, directoryPath) {
-  const dirToRead = appDir +'/'+ directoryPath;
-  try {
-    if (!fs.existsSync(dirToRead)) return [];
-    return fs.readdirSync(dirToRead).map(function(file) {
-      if (file.endsWith('.map')) return null;
-      const fileParts = file.split('.');
-      if (fileParts.length > 1) fileParts.pop();
-      const moduleName = fileParts.join('.'); // don't worry about what type of extension
-      const mod = require(dirToRead + '/' + moduleName);
-      return {
-        moduleName,
-        module: (mod.default) ? mod.default : mod,
-        importPath: directoryPath + '/' + moduleName,
-      };
-    }).filter(Boolean);
-
-  } catch (e) {
-    logger.error(e, 'Problem requiring directory');
-    return [];
-  }
-}

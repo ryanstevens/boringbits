@@ -124,10 +124,12 @@ function wrapHandler(boring, route, endpoint, methods, method) {
 
     if (config.get('boring.server.disable_cache', false) === true) {
       Object.keys(require.cache).forEach(key => {
+        const lowerKey = key.toLowerCase();
         // clearling cache from just /src
         // ensures this is not ran in production
         // and only on our webapp
-        if (key.indexOf(process.cwd() + '/src') === 0) {
+        if (lowerKey.indexOf(process.cwd().toLowerCase() + '/src') === 0 ||
+          lowerKey.indexOf('requirehandlerpaths') >=0) {
           delete require.cache[key];
         }
       });

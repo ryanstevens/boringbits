@@ -19,6 +19,7 @@ module.exports = function renderRedux(options = {layout: {clientConfig: {}, page
 
   const App = require(reactPaths.mainApp).default;
   const reducers = require(reactPaths.reducers).default;
+
   const modules = [];
   const stats = require(process.cwd() + '/dist/react-loadable.json');
 
@@ -50,6 +51,14 @@ module.exports = function renderRedux(options = {layout: {clientConfig: {}, page
   let getStyleSheets;
   let store;
 
+  /**
+   * frontloadServerRender seems to be getting
+   * the job done, but let's not become too reliant
+   * upon this module as it's not documented super
+   * well and doesn't have a huge amount of adoption.
+   *
+   * TODO: swap out or replace with own impl
+   */
   return frontloadServerRender((dryRun) => {
 
     const components = getAppComponents({

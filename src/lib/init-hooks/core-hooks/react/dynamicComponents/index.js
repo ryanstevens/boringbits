@@ -3,25 +3,30 @@ import * as fs from 'fs';
 import babel from 'babelCompiler';
 import logger from 'boring-logger';
 
-function makeConainerCode({module, moduleName, importPath} = container) {
+function mapContainerCode(containers) {
 
-  return `
-  (function() {
+  return Object.keys(containers).map(moduleName => {
+    const module = containers[moduleName];
+    const {importPath, path} = module;
+    return `
+    (function() {
 
-    const loadableModule = Loadable({
-      loader: () => import('${importPath}'),
-      loading: function Loading() {
-        return null;
-      },
-    });
-    loadableModule.path = '${module.path}';
-    loadableModule.importPath = '${importPath}';
+      const loadableModule = Loadable({
+        loader: () => import('${importPath}'),
+        loading: function Loading() {
+          return null;
+        },
+      });
+      loadableModule.path = '${path}';
+      loadableModule.importPath = '${importPath}';
 
-    containers['${moduleName}'] = loadableModule;
+      containers['${moduleName}'] = loadableModule;
 
-  })();
+    })();
 
-  `;
+    `;
+  }).join('\n');
+
 }
 
 function mapModules(modules) {
@@ -35,38 +40,44 @@ function mapModules(modules) {
     `;
   }).join('\n');
 }
-function mapDecorators(decorators) {
 
-  return decorators.map(decorator => {
+// eslint-disable-next-line valid-jsdoc
+/**
+* The following code is in place only for local dev / HMR to work.
+*
+* Okay, this is a bit strange- the reason why we are wrapping "decorators"
+* is because they are ultimately imported via boring and dynamically "glued"
+* together with whomever needs HOC / decorators.  This means when a developer
+* updates one of the source files HMR will not cause the render cycle to
+* render the most up to date changes from these decorators beause the
+* import / require depencancy tree is outside of the rest of the app.
+**/
+function mapDecoratorCode(decorators) {
+
+  return Object.keys(decorators).map(moduleName => {
+    const module = decorators[moduleName];
+    const {importPath} = module;
     return `
-      (function requireDecorator() {
-        const requiredMod = require('${decorator.importPath}');
-        const Mod = (requiredMod.default) ? requiredMod.default : requiredMod;
-        __boring_internals.freshModules['${decorator.moduleName}'] = Mod;
-        /**
-        * The following code is in place only for local dev / HMR to work.
-        *
-        * Okay, this is a bit strange- the reason why we are wrapping "decorators"
-        * is because they are ultimately imported via boring and dynamically "glued"
-        * together with whomever needs HOC / decorators.  This means when a developer
-        * updates one of the source files HMR will not cause the render cycle to
-        * render the most up to date changes from these decorators beause the
-        * import / require depencancy tree is outside of the rest of the app.
-        **/
-        const WrappedModuleToDecorate = hoistNonReactStatic(class extends React.Component {
-          render() {
-            const FreshModule = __boring_internals.freshModules['${decorator.moduleName}'];
-            return <FreshModule {...this.props} />
-          }
-        }, Mod);
-        decorators['${decorator.moduleName}'] = makeDecorator(WrappedModuleToDecorate);
+    (function requireDecorator() {
+      const requiredMod = require('${importPath}');
+      const Mod = (requiredMod.default) ? requiredMod.default : requiredMod;
+      __boring_internals.freshModules['${moduleName}'] = Mod;
 
-      })();
+      const WrappedModuleToDecorate = hoistNonReactStatic(class extends React.Component {
+        render() {
+          const FreshModule = __boring_internals.freshModules['${moduleName}'];
+          return <FreshModule {...this.props} />
+        }
+      }, Mod);
+      decorators['${moduleName}'] = makeDecorator(WrappedModuleToDecorate);
+
+    })();
     `;
   }).join('\n');
+
 }
 
-export default function getEntryWrappers(reactRoot, containers = [], modules = {}, decorators = []) {
+export default function getEntryWrappers(reactRoot, containers = {}, modules = {}, decorators = {}) {
 
 
   const prefix = __dirname + '/dist';
@@ -99,7 +110,7 @@ export default function getEntryWrappers(reactRoot, containers = [], modules = {
 
     internals.containers = containers || [];
     internals.modules = modules || {};
-    internals.decorators = decorators || {};
+    internals.decorators = decorators || [];
 
     if (!internals.hot) {
       internals.hot = {
@@ -125,8 +136,8 @@ export default function getEntryWrappers(reactRoot, containers = [], modules = {
       module.hot.accept(err => console.log('error reloading', err));
     }
 
-  ` + mapDecorators(decorators)
-    + containers.map(makeConainerCode).join('\n')
+  ` + mapDecoratorCode(decorators)
+    + mapContainerCode(containers)
     + mapModules(modules);
 
   const babelResults = babel(code);
