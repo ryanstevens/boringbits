@@ -68,9 +68,7 @@ function renderRedux(App, reducers) {
     );
   });
 
-  return new Promise((resolve, reject) => {
-    resolve();
-  });
+  return Promise.resolve();
 }
 
 

@@ -1,6 +1,5 @@
 import logger from 'boring-logger';
 import fs from 'fs-extra';
-import {makeDecorator} from '../../../../client/core-hooks/react/decoratorUtil';
 
 function reduceMods(mods) {
   return mods.reduce((acc, cur) => {
@@ -37,13 +36,10 @@ module.exports = function setHandlerPaths(reactHandlerPaths) {
 
   // actually run `require` on decorators / containers
   const decorators = requireDirectory(reactHandlerPaths.app_dir, reactHandlerPaths.decoratorsPath);
-  reactHandlerPaths.decorators = reduceMods(decorators.map(decorator => {
-    return {
-      ...decorator,
-      module: makeDecorator(decorator.module),
-    };
-  }));
+  reactHandlerPaths.decorators = reduceMods(decorators);
 
+  // it's important reactHandlerPaths.decorators is set BEFORE
+  // containers are required because many containers use decorators
   const containers = requireDirectory(reactHandlerPaths.app_dir, reactHandlerPaths.routerContainersPath);
   reactHandlerPaths.containers = reduceMods(containers);
 

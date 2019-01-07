@@ -4,7 +4,8 @@ const autoprefixer = require('autoprefixer');
 const path = require('path');
 const fs = require('fs');
 const webpack = require('webpack');
-const paths = require('./paths')
+const paths = require('./paths');
+const ManifestPlugin = require('webpack-manifest-plugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
 const ProgressBarPlugin = require('progress-bar-webpack-plugin');
@@ -202,7 +203,9 @@ module.exports = {
     ],
   },
   plugins: [
-
+    new ManifestPlugin({
+      fileName: 'asset-manifest.json',
+    }),
     new webpack.HotModuleReplacementPlugin({
       multiStep: true
     }),
