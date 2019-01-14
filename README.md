@@ -4,17 +4,17 @@ A web framework that is crazy opininated, taking as many boilerplate decisions a
 
 ### Features
 * Express based universal server side rendering
-  * Preconfigured react, redux boilerplate on both server and client
+  * Preconfigured `react (v16.3)`, `redux (v4.0.1)` boilerplate on both server and client
   * Predefined folder structure so you don't have to overthink code organization
-* Zero configuration of `react router`, simply make a new container file
+* Zero configuration of `react router (v4.3.1)`, simply make a new container file
 * HMR on both client and server (dev mode only)
-* All projects ship with babel / webpack preconfigured
+* All projects ship with `babel (v7)` / `webpack (v4.27)` preconfigured
   * ES7 decorator support on by default
   * TypeScript enabled, but mix and match ES6/7 with TS nbd
 * Built in generators to get you scaffolded up and going __fast__
-* Route based code splitting
-* Component based code splitting _with_ dynamic lazy imports
-* Ships with build in HA Proxy in a docker container to simulate load balance environment, and do 
+* Automatic route based code splitting
+* Automatic component based code splitting _with_ dynamic lazy imports + SSR
+* Ships with build in HA Proxy in a docker container to simulate load balanced SSL based environment over a real domain
 * Uses battle harded server node.js best pracitces suitable to go straight into production taking care of enterprise concerns
   * Implements bunyan logging
   * Implements correlationID pattern, drops a `corrId` on every log line
