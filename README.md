@@ -1,4 +1,4 @@
-# boring
+# boringbits
 
 A web framework that is crazy opininated, taking as many boilerplate decisions away from you as a programmer (some will love, some will hate and we feel that is okay).  React based, universial SSR rendering by default, takes care of webpack and bablfying your code base out of the box.
 
