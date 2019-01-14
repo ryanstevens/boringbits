@@ -6,60 +6,11 @@ This is heavily inspired by [CRA](https://github.com/facebook/create-react-app) 
 
 ## Get Started
 
-#### Add boringbits to your project
+The best way to get started from scratch is to simply use the `create-boring-app` cli.  The following command will create a new directoring `my-new-app`, npm install `boring` and it's dependencies, generate / scaffold a basic app for you, then finally boot up your app server. 
+
 ```bash
-npm install boringbits
+npx create-boring-app my-new-app
 ```
 
-#### Add a server file in `src/server/routers/home`
-```JavaScript
-module.exports = function setupRoute(boringApp) {
+`boring` support HMR so once you have your app running, simply change your react files found in `src/client/pages/demo` and see your changes reflect immediately in your browser.  `boring` also does universal rendering by default, yet does similar server side HMR techniques so if you do a hard refresh your SSR and hydrated client will always be in sync and reflect the same DOM.  
 
-  // destructure decorators
-  const {
-    endpoint,
-    get,
-    reactEntry } = boringApp.decorators.router;
-
-  @endpoint()
-  class Home {
-
-
-    @get('/')
-    @reactEntry('home')
-    page(req, res) {
-      res.renderRedux();
-    }
-
-  }
-
-}
-
-```
-
-
-#### Add a clientside file `src/client/pages/home/entrypoint.js`
-```JavaScript
-import { renderRedux } from 'boringbits/client';
-
-const rootReducer = {};
-
-renderRedux((
-  <div>hello, I am a boring app</div>
-), rootReducer);
-
-if (module.hot)  module.hot.accept((err) => console.log("error reloading", err));
-```
-
-#### Start the server
-```JavaScript
-
-const Server = require('boringbits').Server;
-const boring = new Server();
-
-boring.start()
-  .then(finalConfig => {
-    console.log('Webpack config used', finalConfig);
-  })
-
-```
