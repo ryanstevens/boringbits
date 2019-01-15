@@ -36,8 +36,8 @@ module.exports = function reactHook(BoringInjections) {
         options.reactRoot = field.toLowerCase();
       }
 
-      let beforeEntry;
-      let afterEntry;
+      let beforeEntry = '';
+      let afterEntry = '';
 
       const reactHandlerPaths = getReactHandlerPaths(options);
       const reactNS = getNamespace('http-request');

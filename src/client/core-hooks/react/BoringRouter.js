@@ -1,6 +1,5 @@
 import React from 'react';
 import {Route, Switch} from 'react-router-dom';
-import {frontloadConnect} from 'react-frontload';
 import getComponents from './getRootComponents';
 
 class RouterSwitch extends React.Component {

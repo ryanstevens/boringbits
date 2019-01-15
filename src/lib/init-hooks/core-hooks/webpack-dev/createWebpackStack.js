@@ -4,10 +4,12 @@ const logger = require('boring-logger');
 const pathitize = require('./pathitize');
 const webpackDevMiddleware = require('webpack-dev-middleware');
 const webpackHotMiddleware = require('webpack-hot-middleware');
+const nodenopack = require('nodenopack');
 
-function passthrough(req, res, next) {
-  next();
+if (!config.get('boring.useWebpackDevServer')) {
+  nodenopack.registerWebpackStats(require(process.cwd() + '/build/webpackStats.json'));
 }
+
 
 function deferMiddleware(middlewarePromise) {
   let queuing = true;
@@ -100,12 +102,23 @@ module.exports = function createWebpackStack(BoringInjections) {
             publicPath: '/',
           }),
           webpackHotMiddleware(compiler),
+          function(req, res, next) {
+            // TODO: this has some tight coupling here,
+            // in the future we should decouple these two
+            nodenopack.registerWebpackStats(res.locals.webpackStats.toJson());
+            next();
+          },
         ]);
 
         compiler.plugin('done', function(stats) {
           resolve(composedMiddleware);
         });
-      } else resolve(passthrough);
+      } else {
+        // passthrough in production
+        resolve(function(req, res, next) {
+          next();
+        });
+      }
     });
   });
 

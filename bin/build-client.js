@@ -107,6 +107,8 @@ module.exports = function(argv) {
         }
 
         console.log('File sizes after gzip:\n');
+
+        fs.writeFileSync(process.cwd()+ '/build/webpackStats.json', JSON.stringify(stats.toJson(), null, 2));
         printFileSizesAfterBuild(
           stats,
           previousFileSizes,

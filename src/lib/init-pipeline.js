@@ -1,5 +1,7 @@
 import {getNamespace, createNamespace} from 'boring-cls';
 
+const nodenopack = require('nodenopack');
+
 const config = require('boring-config');
 const express = require('express');
 const initRouters = require('./init-routers');
