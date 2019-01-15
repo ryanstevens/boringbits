@@ -5,9 +5,15 @@ const pathitize = require('./pathitize');
 const webpackDevMiddleware = require('webpack-dev-middleware');
 const webpackHotMiddleware = require('webpack-hot-middleware');
 const nodenopack = require('nodenopack');
+const fs = require('fs-extra');
 
 if (!config.get('boring.useWebpackDevServer')) {
-  nodenopack.registerWebpackStats(require(process.cwd() + '/build/webpackStats.json'));
+  const statsJsonPath = process.cwd() + '/build/webpackStats.json';
+  let stats = {
+    modules: [],
+  };
+  if (fs.existsSync(statsJsonPath)) stats = require(statsJsonPath);
+  nodenopack.registerWebpackStats(stats);
 }
 
 
