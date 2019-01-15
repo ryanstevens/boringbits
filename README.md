@@ -54,6 +54,6 @@ npm run build
 
 # you do not need to set the NODE_ENV on the command line,
 # it is better simply to have this set as an env var for that user.
-# The only requirement is the value is `production`
+# The only requirement is the value needs to be set to `production`
 NODE_ENV=production npm start
 ```
