@@ -11,12 +11,12 @@ The following lists the technical features boring provides, as well as upcoming 
   - [x] Create entire working site (mostly for example purposes)
   - [x] Add new lazy loaded screen
 - [x] Build in MaterialUI support
+- [x] Import css and images in client and SSR
 
 
 ### TODO's
 - [ ] Universal logging / configuration
 - [ ] css hash naming, maybe https://github.com/faceyspacey/extract-css-chunks-webpack-plugin
-- [ ] import css files in node that don't blow up (maybe wepback node)
 - [ ] Ipmlement react helmet
 - [ ] Built in tutorial / walkthrough
 - [ ] full integration tests that use generators and run end to end

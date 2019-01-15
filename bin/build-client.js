@@ -18,7 +18,7 @@ const paths = require('../dist/node_modules/paths');
 const formatWebpackMessages = require('react-dev-utils/formatWebpackMessages');
 const FileSizeReporter = require('react-dev-utils/FileSizeReporter');
 const printBuildError = require('react-dev-utils/printBuildError');
-const initPipline = require('../dist/lib/prod-webpack-build');
+const initPipeline = require('../dist/lib/prod-webpack-build');
 
 const measureFileSizesBeforeBuild =
   FileSizeReporter.measureFileSizesBeforeBuild;
@@ -32,7 +32,7 @@ const WARN_AFTER_CHUNK_GZIP_SIZE = 1024 * 1024;
 async function build(previousFileSizes) {
   console.log('Creating an optimized production build...');
 
-  const pipelineResult = await initPipline.start();
+  const pipelineResult = await initPipeline.start();
 
   console.log('Running webpack with the following entries', pipelineResult.webpack_config.entry);
 
