@@ -45,3 +45,15 @@ npx create-boring-app my-new-app
 
 If you need to stop your server and start it again, make sure you are in your applications directory and simply `npm start`
 
+## Running in Production 
+
+Boring needs to be built via webpack, as well as the node code needs to be babeled.  
+
+```bash
+npm run build
+
+# you do not need to set the NODE_ENV on the command line,
+# it is better simply to have this set as an env var for that user.
+# The only requirement is the value is `production`
+NODE_ENV=production npm start
+```
