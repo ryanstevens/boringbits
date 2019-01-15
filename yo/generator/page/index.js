@@ -1,6 +1,34 @@
+/* eslint-disable no-invalid-this */
 'use strict';
 const Generator = require('yeoman-generator');
 const chalk = require('chalk');
+
+const containerGenerator = {
+  BaseContainer: async function(container, fileName) {
+    if (!fileName) fileName = container.className + '.js';
+
+    this.fs.copyTpl(
+      this.templatePath('containers/'+container.className + '.js'),
+      this.destinationPath(`src/client/pages/${this.props.pageName}/containers/${fileName}`),
+      Object.assign({}, this.props, container),
+    );
+  },
+  CatContainer: async function(container) {
+    containerGenerator.BaseContainer.call(this, container, `CatContainer/index.js`);
+
+    ['cat1', 'cat2', 'cat3', 'cat4'].forEach(fileName => {
+      this.fs.copy(
+        this.templatePath(`containers/${fileName}.jpg`),
+        this.destinationPath(`src/client/pages/${this.props.pageName}/containers/CatContainer/${fileName}.jpg`)
+      );
+    });
+
+  },
+  MessageContainer: async function(container) {
+    containerGenerator.BaseContainer.call(this, container);
+  },
+};
+
 
 module.exports = class extends Generator {
 
@@ -100,11 +128,7 @@ module.exports = class extends Generator {
 
       this.props.containers.forEach(container => {
 
-        this.fs.copyTpl(
-          this.templatePath('containers/'+container.className + '.js'),
-          this.destinationPath(`src/client/pages/${this.props.pageName}/containers/${container.className}.js`),
-          Object.assign({}, this.props, container),
-        );
+        containerGenerator[container.className].call(this, container);
 
       });
     }
