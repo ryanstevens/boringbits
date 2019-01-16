@@ -1,6 +1,6 @@
 {
   "name": "boringbits",
-  "version": "3.11.1",
+  "version": "3.11.2",
   "description": "Frameworks should be boring, applications they build should be exciting",
   "main": "dist/boring.js",
   "scripts": {
@@ -95,9 +95,9 @@
     "postcss-flexbugs-fixes": "^4.1.0",
     "postcss-loader": "^3.0.0",
     "progress-bar-webpack-plugin": "^1.11.0",
-    "react": "^16.7.0",
+    "react": "^16.8.0-alpha.1",
     "react-dev-utils": "^5.0.2",
-    "react-dom": "^16.7.0",
+    "react-dom": "^16.8.0-alpha.1",
     "react-frontload": "^1.0.3",
     "react-hot-loader": "^4.3.6",
     "react-jss": "^8.6.1",
