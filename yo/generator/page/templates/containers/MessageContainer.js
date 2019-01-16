@@ -6,6 +6,8 @@ import {withStyles} from '@material-ui/core/styles';
 import { getRootComponents } from 'boringbits/react';
 import fetch from 'cross-fetch';
 import { push } from 'connected-react-router'
+import Typography from '@material-ui/core/Typography';
+
 
 const {
   AppChrome
@@ -16,6 +18,7 @@ const {
 @connect(
   state => ({
     msg: state.message.msg,
+    color: state.message.color,
   }),
   dispatch => ({
     update: (greeting) => update(greeting, dispatch),
@@ -28,6 +31,14 @@ const {
   },
   navButton: {
     marginTop: '20px',
+  },
+  sphere: {
+    display: 'inline-flex',
+    background: 'black',
+    borderRadius: '100%',
+    height: '20px',
+    width: '20px',
+    margin: '0',
   }
 }))
 class <%= className %> extends React.Component {
@@ -35,15 +46,28 @@ class <%= className %> extends React.Component {
   static path = '<%= path %>';
 
   componentDidMount() {
-    this.props.update('this message is rendered client side');
+    setTimeout(() => {
+      this.props.update('this message is rendered client side');
+    }, 2000);
   }
 
   render() {
     const classes = this.props.classes;
+    const color = this.props.color;
+
     return (
       <Grid container className={classes.container}>
-        <Grid item xs={12}>
-          {this.props.msg}
+        <Grid item xs={6}>
+          <Grid container direction="row" alignItems="center">
+            <Grid item xs={2}>
+              <figure className={classes.sphere} style={{background: `radial-gradient(circle at 7px 7px, ${color}, #000)`}}></figure>
+            </Grid>
+            <Grid item xs={10}>
+              <Typography variant="subtitle1" gutterBottom>
+                {this.props.msg}
+              </Typography>
+            </Grid>
+          </Grid>
         </Grid>
         <Grid item xs={12} className={classes.navButton}>
           <Button color="primary" onClick={() => this.props.nav('/demo/cats')} variant="contained" size="large">See Cats</Button>
@@ -55,6 +79,14 @@ class <%= className %> extends React.Component {
 
 function update(greeting, dispatch) {
 
+  dispatch({
+    type: 'updateMsg',
+    data: {
+      msg: 'fetching updated msg from server',
+      color: 'yellow',
+    }
+  })
+
   fetch('<%= path %>/data.json', {
     method: 'POST',
     body: JSON.stringify({greeting}),
@@ -62,7 +94,7 @@ function update(greeting, dispatch) {
   }).then(response => response.json())
     .then(data => dispatch({
       type: 'updateMsg',
-      msg: data.msg
+      data
     }))
     .catch(function(err) {
       console.log('Fetch Error :{', err);

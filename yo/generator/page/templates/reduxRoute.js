@@ -21,7 +21,8 @@ module.exports = function setupRoute(/* dependencies from boring */ boring) {
       logger.info('Severing JSON for <%= pageName %>, artificially delaying response 1500 ms');
       setTimeout(() => {
         res.json({
-          msg: 'hello world, ' + req.body.greeting
+          msg: 'hello world, ' + req.body.greeting,
+          color: 'green',
         });
       }, 1500);
     }
@@ -29,7 +30,16 @@ module.exports = function setupRoute(/* dependencies from boring */ boring) {
     @get('<%= path %>*')
     @reactEntry('<%= pageName %>')
     serve_<%= pageName %>_get(req, res) {
-      res.renderRedux();
+      res.renderRedux({
+        components: {
+          preloadedState: {
+            message: {
+              msg: 'Message set by the server',
+              color: 'orange',
+            }
+          }
+        }
+      });
     }
   }
 

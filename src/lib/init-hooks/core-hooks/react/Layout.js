@@ -60,10 +60,10 @@ module.exports = class HTML extends React.Component {
 
           </div>
 
+          <script dangerouslySetInnerHTML={{__html: reduxHtml}}></script>
           {
             pageInjections.bodyEndScripts.map((scriptObj) => <script key={scriptObj.src} {...scriptObj} />)
           }
-          <script dangerouslySetInnerHTML={{__html: reduxHtml}}></script>
         </body>
       </html>
     );

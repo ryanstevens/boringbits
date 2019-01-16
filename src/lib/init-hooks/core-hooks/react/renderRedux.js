@@ -11,7 +11,7 @@ import getRootComponents from './getNodeRootComponents';
 import logger from 'boring-logger';
 
 
-module.exports = function renderRedux(options = {layout: {clientConfig: {}, pageInjections: {}}}) {
+module.exports = function renderRedux(options = {components: {}, layout: {clientConfig: {}, pageInjections: {}}}) {
 
   const res = this;
   const req = res.req;
@@ -53,6 +53,7 @@ module.exports = function renderRedux(options = {layout: {clientConfig: {}, page
 
   let getStyleSheets;
   let store;
+  const componentOptions = options.components || {};
 
   /**
    * frontloadServerRender seems to be getting
@@ -68,6 +69,7 @@ module.exports = function renderRedux(options = {layout: {clientConfig: {}, page
       App,
       Router,
       reducers,
+      ...componentOptions,
     });
 
     if (!dryRun) {

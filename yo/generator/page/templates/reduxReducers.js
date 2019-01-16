@@ -1,10 +1,11 @@
 // probably import reducers from other places here
 
 // feel free to change / delete this
-function messageReducer(state = {msg: 'Hello, this is the initial message.  We are now making an ajax call to get an updated message'}, action) {
+function messageReducer(state = {msg: 'THIS SHOULD NEVER BE VISIBLE', color: 'red'}, action) {
   if (action.type === 'updateMsg') {
     return {
-      msg: action.msg,
+      ...state,
+      ...action.data,
     };
   }
   return state;
