@@ -27,7 +27,7 @@ A web framework that is crazy opininated, making as many boilerplate decisions f
 
 ## Get Started
 
-The best way to get started from scratch is to simply use the `create-boring-app` cli <sub><sup>  __[...learn more](https://github.com/ryanstevens/boringbits/tree/master/yo)__</sup></sub>
+The best way to get started from scratch is to simply use the `create-boring-app` cli <sub><sup>  __[[learn more]](https://github.com/ryanstevens/boringbits/tree/master/yo)__</sup></sub>
 
 ```bash
 npx create-boring-app my-new-app
