@@ -5,7 +5,10 @@ const cls = require('boring-cls');
 
 cls.createNamespace('http-request');
 
-describe.only('React Tests', function reactTests() {
+describe('React Tests', function reactTests() {
+
+  // eslint-disable-next-line no-invalid-this
+  this.timeout(4000);
 
   let reactHook;
   beforeEach(function() {
