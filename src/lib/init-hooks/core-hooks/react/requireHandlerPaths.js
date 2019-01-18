@@ -1,5 +1,5 @@
-import logger from 'boring-logger';
-import fs from 'fs-extra';
+
+import requireDirectory from './requireDirectory';
 
 function reduceMods(mods) {
   return mods.reduce((acc, cur) => {
@@ -9,34 +9,13 @@ function reduceMods(mods) {
   }, {});
 }
 
-function requireDirectory(appDir, directoryPath) {
-  const dirToRead = appDir +'/'+ directoryPath;
-  try {
-    if (!fs.existsSync(dirToRead)) return [];
-    return fs.readdirSync(dirToRead).map(function(file) {
-      if (file.endsWith('.map')) return null;
-      const fileParts = file.split('.');
-      if (fileParts.length > 1) fileParts.pop();
-      const moduleName = fileParts.join('.'); // don't worry about what type of extension
-      const mod = require(dirToRead + '/' + moduleName);
-      return {
-        moduleName,
-        module: (mod.default) ? mod.default : mod,
-        importPath: directoryPath + '/' + moduleName,
-      };
-    }).filter(Boolean);
-
-  } catch (e) {
-    logger.error(e, 'Problem requiring directory');
-    return [];
-  }
-}
-
 module.exports = function setHandlerPaths(reactHandlerPaths) {
 
   // actually run `require` on decorators / containers
-  const decorators = requireDirectory(reactHandlerPaths.app_dir, reactHandlerPaths.decoratorsPath);
-  reactHandlerPaths.decorators = reduceMods(decorators);
+  reactHandlerPaths.decorators = {
+    ...reduceMods(requireDirectory(null, __dirname + '/../../../../client/core-hooks/react/decorators')),
+    ...reduceMods(requireDirectory(reactHandlerPaths.app_dir, reactHandlerPaths.decoratorsPath)),
+  };
 
   // it's important reactHandlerPaths.decorators is set BEFORE
   // containers are required because many containers use decorators

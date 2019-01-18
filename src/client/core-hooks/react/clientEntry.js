@@ -101,6 +101,7 @@ const toExport = {
   BoringRouter: BoringRouter,
   MagicallyDeliciousRouter: BoringRouter,
   getRootComponents,
+  getComponents: getRootComponents, // alias, I think we should remove getRootComponents in @v4
   subscribeHotReload,
   ...decoratorUntil,
 };

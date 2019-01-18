@@ -3,22 +3,18 @@ import React from 'react';
 import {withStyles} from '@material-ui/core/styles';
 import {connect} from 'react-redux';
 import {Grid, Button} from '@material-ui/core';
-import { getRootComponents } from 'boringbits/react';
-import { push } from 'connected-react-router'
+import { getComponents } from 'boringbits/react';
 
+const decorators = getComponents().decorators;
 
 const {
-  AppChrome
-} = getRootComponents().decorators;
+  AppChrome,
+  withNav,
+} = decorators
 
 
 @AppChrome
-@connect(
-  null,
-  dispatch => ({
-    nav: (page) => dispatch(push(page)),
-  })
-)
+@withNav
 @withStyles(theme => ({
   container: {
     margin: '30px',
@@ -61,7 +57,7 @@ class <%= className %> extends React.Component {
           }
         </Grid>
         <Grid item xs={12} className={classes.navButton}>
-          <Button color="primary" onClick={() => this.props.nav('/demo')} variant="contained" size="large">See Message</Button>
+          <Button color="primary" onClick={() => this.props.navPush('/demo')} variant="contained" size="large">See Message</Button>
         </Grid>
       </Grid>
     )

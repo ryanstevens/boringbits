@@ -10,6 +10,17 @@ function requireModule(importPath) {
   return (module.default) ? module.default : module;
 }
 
+function makeDecorators(decorators) {
+  return Object.keys(decorators).reduce(function(importedDecorators, name) {
+    const decorator = decorators[name];
+    const importPath = decorator.importPath;
+    const newDecorator = makeDecorator(requireModule(importPath));
+    newDecorator.importPath = importPath;
+    importedDecorators[name] = newDecorator;
+    return importedDecorators;
+  }, {});
+}
+
 module.exports = function get() {
   const ns = getNamespace('http-request');
   const reactHandlerPaths = ns.get('reactHandlerPaths');
@@ -35,12 +46,10 @@ module.exports = function get() {
     reactHandlerPaths.containersLoaded = Promise.all(promises);
   }
 
-  Object.keys(reactHandlerPaths.decorators).forEach(decoratorName => {
-    const decorator = reactHandlerPaths.decorators[decoratorName];
-    const newDecorator = makeDecorator(requireModule(decorator.importPath));
-    newDecorator.importPath = decorator.importPath;
-    reactHandlerPaths.decorators[decoratorName] = newDecorator;
-  });
+  if (!reactHandlerPaths.wrappedDecorators) {
+    reactHandlerPaths.decorators = makeDecorators(reactHandlerPaths.decorators);
+    reactHandlerPaths.wrappedDecorators = true;
+  }
 
   const modules = {};
   Object.keys(reactHandlerPaths.modulesToRequire).forEach(moduleName => {

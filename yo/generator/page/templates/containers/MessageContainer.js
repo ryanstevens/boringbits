@@ -3,18 +3,20 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {Grid, Button} from '@material-ui/core';
 import {withStyles} from '@material-ui/core/styles';
-import { getRootComponents } from 'boringbits/react';
+import { getComponents } from 'boringbits/react';
 import fetch from 'cross-fetch';
-import { push } from 'connected-react-router'
 import Typography from '@material-ui/core/Typography';
 
 
-const {
-  AppChrome
-} = getRootComponents().decorators;
+const decorators = getComponents().decorators;
 
+const {
+  AppChrome,
+  withNav,
+} = decorators
 
 @AppChrome
+@withNav
 @connect(
   state => ({
     msg: state.message.msg,
@@ -22,7 +24,6 @@ const {
   }),
   dispatch => ({
     update: (greeting) => update(greeting, dispatch),
-    nav: (page) => dispatch(push(page)),
   })
 )
 @withStyles(theme => ({
@@ -34,7 +35,6 @@ const {
   },
   sphere: {
     display: 'inline-flex',
-    background: 'black',
     borderRadius: '100%',
     height: '20px',
     width: '20px',
@@ -59,10 +59,10 @@ class <%= className %> extends React.Component {
       <Grid container className={classes.container}>
         <Grid item xs={6}>
           <Grid container direction="row" alignItems="center">
-            <Grid item xs={2}>
+            <Grid item xs={1}>
               <figure className={classes.sphere} style={{background: `radial-gradient(circle at 7px 7px, ${color}, #000)`}}></figure>
             </Grid>
-            <Grid item xs={10}>
+            <Grid item xs={5}>
               <Typography variant="subtitle1" gutterBottom>
                 {this.props.msg}
               </Typography>
@@ -70,7 +70,7 @@ class <%= className %> extends React.Component {
           </Grid>
         </Grid>
         <Grid item xs={12} className={classes.navButton}>
-          <Button color="primary" onClick={() => this.props.nav('/demo/cats')} variant="contained" size="large">See Cats</Button>
+          <Button color="primary" onClick={() => this.props.navPush('/demo/cats')} variant="contained" size="large">See Cats</Button>
         </Grid>
       </Grid>
     )
