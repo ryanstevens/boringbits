@@ -5,7 +5,7 @@ const cls = require('boring-cls');
 
 cls.createNamespace('http-request');
 
-describe('React Tests', function reactTests() {
+describe.only('React Tests', function reactTests() {
 
   let reactHook;
   beforeEach(function() {
