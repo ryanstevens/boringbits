@@ -1,6 +1,6 @@
 # boringbits
 
-A web framework that is crazy opininated, making as many boilerplate decisions for you so you can focus on your application (some will love, some will hate and we feel that is okay).  React based, universial SSR rendering by default, takes care of webpack and bablfying your code base out of the box.  A core design principle of `boringbits` is a concept of [progressive decomposition](https://github.com/ryanstevens/boringbits/blob/master/docs/design-decisions.md), which is the ability to break down boring magic over time and replace it with your own magic.
+A web framework that is crazy opininated, making as many boilerplate decisions for you so you can focus on your application (some will love, some will hate and we feel that is okay).  React based, universial SSR rendering by default, takes care of webpack and bablfying your code base out of the box.  A core design principle of `boringbits` is a concept of [progressive decomposition](https://github.com/ryanstevens/boringbits/blob/master/docs/design-decisions.md#progressive-decomposition), which is the ability to break down boring magic over time and replace it with your own magic.
 
 ### Features
 * Express based universal server side rendering
