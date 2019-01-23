@@ -17,5 +17,8 @@ module.exports = {
     node_target: '10.9.0',
     register_app: false,
   },
+  build: {
+    staticgen: false,
+  },
 };
 

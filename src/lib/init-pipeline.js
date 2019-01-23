@@ -84,14 +84,15 @@ class InitPipeline extends EventEmitter {
 
   async build(options) {
 
-    const injections = Object.assign({}, {
+    const injections = {
       boring: this,
       logger,
       config,
       injecture,
       getNamespace,
       createNamespace,
-    }, options);
+      ...options,
+    };
 
     await this.initNS.runPromise(async () => {
       this.initNS.set('corrId', uuid.v4());
@@ -99,6 +100,8 @@ class InitPipeline extends EventEmitter {
       const modules = await this.perform('init-modules', injections, async () => {
         return await initModules(injections);
       });
+
+      injections.modules = modules;
 
       const hooks = await this.perform('init-hooks', injections, async () => {
         return await initHooks(injections);

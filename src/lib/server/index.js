@@ -18,14 +18,14 @@ class BoringServer extends InitPipeline {
     const webpackConfig = config.get('boring.isDevelopment', true) ?
       paths.boring_webpack_dev_config : paths.boring_webpack_prod_config;
 
-    const injections = await this.build(Object.assign({}, {
+    const injections = await this.build({
+      port: process.env.PORT || config.get('boring.app.port'),
       webpack_config: require(webpackConfig),
-    }, options));
-
-    const port = process.env.PORT || config.get('boring.app.port');
-    injections.port = port;
+      ...options,
+    });
 
     return await this.perform('listen', injections, async () => {
+      const port = injections.port;
       await startExpress(this.app, port);
       logger.info('Listening on port ' + port);
 
