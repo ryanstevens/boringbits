@@ -8,7 +8,7 @@ const nodenopack = require('nodenopack');
 const fs = require('fs-extra');
 
 if (!config.get('boring.useWebpackDevServer')) {
-  const statsJsonPath = process.cwd() + '/build/webpackStats.json';
+  const statsJsonPath = process.cwd() + '/dist/webpackStats.json';
   let stats = {
     modules: [],
   };
