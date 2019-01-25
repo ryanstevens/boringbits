@@ -1,6 +1,15 @@
 const assert = require('assert');
-const proxyquire = require('proxyquire');
-const logger = require('boring-logger');
+
+function express() {
+  return {
+    listen: ((port, fn) => fn()),
+    use: () => {},
+    get: () => {},
+    post: () => {},
+    set: () => {},
+    disable: () => {},
+  };
+}
 
 describe('Boring Server', function() {
 
@@ -8,20 +17,7 @@ describe('Boring Server', function() {
   this.timeout(20000);
   let Server;
   beforeEach(() => {
-    const init = proxyquire('../../init-pipeline', {
-      express: function appToReturn() {
-        return {
-          listen: ((port, fn) => fn()),
-          use: () => {},
-          get: () => {},
-          post: () => {},
-          set: () => {},
-          disable: () => {},
-        };
-      },
-    });
-
-    Server = proxyquire('../index', {'../init-pipeline': init});
+    Server = require('../index');
   });
 
   afterEach(() => {
@@ -33,7 +29,7 @@ describe('Boring Server', function() {
 
   it('start can take an options callback', async function() {
 
-    const server = new Server();
+    const server = new Server({app: express()});
     server.before('listen', async function(bootOptions) {
       assert.ok(bootOptions.webpack_config, 'should have access to webpack in before hook');
       bootOptions.mutateMe = 'ryan';
@@ -50,17 +46,27 @@ describe('Boring Server', function() {
   it('can override startExpress as an option', async () => {
 
     const weirdPort = 8873322;
+    let listenResolved = false;
     let portToListen;
     const server = new Server();
+
+    server.listen.then((val) => {
+      listenResolved = val;
+    });
+
+    assert.ok(!listenResolved);
 
     const finalConfig = await server.start({
       startExpress: (app, port) => {
         portToListen = port;
+        return Promise.resolve({beep: 'boop'});
       },
       port: weirdPort,
     });
-
+    assert.ok(finalConfig.webpack_config);
+    assert.equal(listenResolved.beep, 'boop', 'should be resolved by now with the value returned from startExpress');
     assert.equal(portToListen, weirdPort);
+
 
   });
 

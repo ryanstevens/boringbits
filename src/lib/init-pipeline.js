@@ -19,22 +19,31 @@ const uuid = require('node-uuid');
 
 class InitPipeline extends EventEmitter {
 
-  constructor() {
+  constructor(args = {}) {
     super({wildcard: true});
     Understudy.call(this);
 
-    this.initNS = createNamespace('boring-init');
-    this.requestNS = createNamespace('http-request');
+    const options = {
+      initNS: createNamespace('boring-init'),
+      requestNS: createNamespace('http-request'),
+      middleware: {},
+      app: express(),
+      ...args,
+    };
+
+    this.initNS = options.initNS;
+    this.requestNS = options.requestNS;
+
+    // these are exposed purely for convenience to callers
     this.createNamespace = createNamespace;
     this.getNamespace = getNamespace;
-
     this.config = config;
     this.logger = logger;
     this.paths = paths;
 
-    this.middleware = {};
+    this.middleware = options.middleware;
     this.hooks = {};
-    this.app = express();
+    this.app = options.app;
     this.decorators = decorators;
 
     this.app.oldUse = this.app.use;
