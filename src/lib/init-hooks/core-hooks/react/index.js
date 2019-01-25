@@ -6,11 +6,11 @@ import dynamicComponents from './dynamicComponents';
 import {getNamespace} from 'boring-cls';
 import logger from 'boring-logger';
 import requireHandlerPaths from './requireHandlerPaths';
+import config from 'boring-config';
 
 module.exports = function reactHook(BoringInjections) {
   const {
     boring,
-    config,
   } = BoringInjections;
 
   const isDevelopment = config.get('boring.isDevelopment', false);
