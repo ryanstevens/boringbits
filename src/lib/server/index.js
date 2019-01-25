@@ -20,7 +20,7 @@ class BoringServer extends InitPipeline {
     // but make an instance if it isn't
     if (!args.app) args.app = express();
     const listen = deferitize();
-    const queuedRequests = [];
+    let queuedRequests = [];
 
     args.app.use(function requestQueuer(req, res, next) {
       if (!queuedRequests) return next();
