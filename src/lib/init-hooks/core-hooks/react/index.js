@@ -10,7 +10,10 @@ import requireHandlerPaths from './requireHandlerPaths';
 module.exports = function reactHook(BoringInjections) {
   const {
     boring,
+    config,
   } = BoringInjections;
+
+  const isDevelopment = config.get('boring.isDevelopment', false);
 
   decorators.router.createEndpointDecorator('reactEntry', 'get');
 
@@ -46,12 +49,15 @@ module.exports = function reactHook(BoringInjections) {
         reactNS.set('reactHandlerPaths', reactHandlerPaths);
         requireHandlerPaths(reactHandlerPaths);
 
-        [beforeEntry, afterEntry] = dynamicComponents(
-          reactHandlerPaths.reactRoot,
-          reactHandlerPaths.containers,
-          reactHandlerPaths.modulesToRequire,
-          reactHandlerPaths.decorators
-        );
+
+        if (isDevelopment) {
+          [beforeEntry, afterEntry] = dynamicComponents(
+            reactHandlerPaths.reactRoot,
+            reactHandlerPaths.containers,
+            reactHandlerPaths.modulesToRequire,
+            reactHandlerPaths.decorators
+          );
+        }
 
       });
 
