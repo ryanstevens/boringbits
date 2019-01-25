@@ -24,6 +24,13 @@ describe('Boring Server', function() {
     Server = proxyquire('../index', {'../init-pipeline': init});
   });
 
+  afterEach(() => {
+    const injecture = require('injecture');
+    const clear = require('injecture/clear');
+    clear();
+    injecture.selectors = {};
+  });
+
   it('start can take an options callback', async function() {
 
     const server = new Server();
@@ -37,6 +44,23 @@ describe('Boring Server', function() {
     assert.ok(finalConfig.boring.app, 'should have access to express');
     assert.ok(finalConfig.mutateMe, 'ryan', 'before hook did not run');
     assert.ok(finalConfig.webpack_config, 'There should be a webpack object');
+
+  });
+
+  it('can override startExpress as an option', async () => {
+
+    const weirdPort = 8873322;
+    let portToListen;
+    const server = new Server();
+
+    const finalConfig = await server.start({
+      startExpress: (app, port) => {
+        portToListen = port;
+      },
+      port: weirdPort,
+    });
+
+    assert.equal(portToListen, weirdPort);
 
   });
 

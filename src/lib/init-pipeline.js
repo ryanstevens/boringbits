@@ -83,7 +83,6 @@ class InitPipeline extends EventEmitter {
   }
 
   async build(options) {
-
     const injections = {
       boring: this,
       logger,

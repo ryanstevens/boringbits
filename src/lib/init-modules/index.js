@@ -38,7 +38,6 @@ module.exports = async function initModules(BoringInjections) {
     return acc;
   }, []);
 
-
   return await Promise.all(uniqueArray.map(file => {
     logger.info('Registering managed module: ' + file);
     return require(file)(BoringInjections);
