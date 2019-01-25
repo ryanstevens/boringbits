@@ -15,6 +15,7 @@ module.exports = async function() {
       'build-node': 'npx boring build-node',
       'build-client': 'npx boring build-client',
       'build-static': 'npx boring build-static',
+      'deploy': 'npx boring deploy',
       'tsc': 'npx boring type-check',
       'type-check': 'npm run tsc',
       'up': 'npx boring up',

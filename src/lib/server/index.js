@@ -73,11 +73,4 @@ class BoringServer extends InitPipeline {
   }
 }
 
-// function inspect() {
-//   console.log(process._getActiveHandles());
-//   setTimeout(inspect, 10000);
-// }
-// inspect();
-
-
 module.exports = BoringServer;
