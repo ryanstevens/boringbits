@@ -13,6 +13,10 @@ async function startExpress(app, port) {
   return await app.listen(port);
 }
 
+async function noopListen(app, port) {
+  return {};
+}
+
 class BoringServer extends InitPipeline {
 
   constructor(args={}) {
@@ -54,7 +58,7 @@ class BoringServer extends InitPipeline {
     const injections = await this.build({
       port: process.env.PORT || config.get('boring.app.port'),
       webpack_config: require(webpackConfig),
-      startExpress,
+      startExpress: config.get('boring.express.noopListen', false) ? noopListen : startExpress,
       ...options,
     });
 
