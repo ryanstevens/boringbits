@@ -19,6 +19,8 @@ module.exports = async function(args) {
       cwd: process.cwd(),
     });
 
+    return Promise.resolve();
+
   } catch (e) {
     console.error('There was a problem the boring command', e);
     return Promise.reject({status: 1});

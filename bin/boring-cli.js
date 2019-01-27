@@ -5,7 +5,7 @@ function makeCmd(mod) {
   return function exec(argv) {
     ran = true;
     require('./' + mod)(argv)
-      .then((result = {status: 1}) => {
+      .then((result = {status: 0}) => {
         process.exit(result.status);
       })
       .catch(e => {
