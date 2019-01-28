@@ -16,13 +16,15 @@ module.exports = function getLambda() {
       require(process.cwd() + '/dist/server/app');
 
       const servers = injecture.allInstances('BoringServer');
+
       if (servers.length !== 1) {
-        console.error('Did not find only one boring server');
+        console.error('!!!!!!   Did not find only one boring server, instead found ' + servers.length);
         return;
       }
 
+      const app = servers[0].app;
       awsServerlessExpress.proxy(
-        awsServerlessExpress.createServer(servers.pop().app, null, binaryMimeTypes),
+        awsServerlessExpress.createServer(app, null, binaryMimeTypes),
         event,
         context
       );

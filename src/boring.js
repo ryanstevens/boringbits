@@ -3,7 +3,6 @@ const config = require('boring-config');
 const logger = require('boring-logger');
 const nodeAppPath = require('app-module-path');
 const isNode = require('detect-node');
-const getLambda = require('./boring_lambda');
 
 const isDevelopment = config.get('boring.isDevelopment', true);
 
@@ -24,6 +23,14 @@ module.exports = {
   config,
   logger,
   isNode,
-  getLambda,
+  getLambda: function getLambda(...args) {
+    // this seems a little weird to require this inline,
+    // but boring_lambda requires the apps server/app
+    // which subsequently requires boringbits.
+    // This ensures we don't get a weird situation
+    // where boringbits requires a module which requires
+    // boringbits.
+    require('./boring_lambda')(...args);
+  },
   ...boringCls,
 };
