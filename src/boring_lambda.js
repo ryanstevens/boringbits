@@ -13,6 +13,8 @@ module.exports = function getLambda() {
   return {
     serveBoringApp: function serveBoringApp(event, context) {
 
+      require(process.cwd() + '/dist/server/app');
+
       const servers = injecture.allInstances('BoringServer');
       if (servers.length !== 1) {
         console.error('Did not find only one boring server');
