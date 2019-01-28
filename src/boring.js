@@ -3,7 +3,7 @@ const config = require('boring-config');
 const logger = require('boring-logger');
 const nodeAppPath = require('app-module-path');
 const isNode = require('detect-node');
-
+const getLambda = require('./boring_lambda');
 
 const isDevelopment = config.get('boring.isDevelopment', true);
 
@@ -24,5 +24,6 @@ module.exports = {
   config,
   logger,
   isNode,
+  getLambda,
   ...boringCls,
 };

@@ -1,4 +1,6 @@
 const assert = require('assert');
+const proxyquire = require('proxyquire').noPreserveCache();
+const injecture = require('injecture');
 
 function express() {
   return {
@@ -17,7 +19,7 @@ describe('Boring Server', function() {
   this.timeout(20000);
   let Server;
   beforeEach(() => {
-    Server = require('../index');
+    Server = proxyquire('../index', {});
   });
 
   afterEach(() => {
@@ -68,6 +70,20 @@ describe('Boring Server', function() {
     assert.equal(portToListen, weirdPort);
 
 
+  });
+
+  it('will be able to ask injecture how many servers were created', async () => {
+    assert.equal(injecture.allInstances('BoringServer').length, 0);
+    const instance1 = new Server();
+    assert.equal(injecture.allInstances('BoringServer').length, 1);
+
+    const instance2 = new Server();
+    assert.equal(injecture.allInstances('BoringServer').length, 2);
+
+    const instance3 = new Server();
+    assert.equal(injecture.allInstances('BoringServer').length, 3);
+
+    assert.deepEqual([instance1, instance2, instance3], injecture.allInstances('BoringServer'));
   });
 
 });

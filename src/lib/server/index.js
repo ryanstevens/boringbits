@@ -7,6 +7,7 @@ const util = require('util');
 const InitPipeline = require('../init-pipeline');
 const deferitize = require('deferitize');
 const express = require('express');
+const injecture = require('injecture');
 
 async function startExpress(app, port) {
   app.listen = util.promisify(app.listen);
@@ -16,6 +17,12 @@ async function startExpress(app, port) {
 async function noopListen(app, port) {
   return {};
 }
+
+injecture.register('BoringServer', function passthroughFactory(server) {
+  return server;
+}, {
+  mapInstances: true,
+});
 
 class BoringServer extends InitPipeline {
 
@@ -42,6 +49,7 @@ class BoringServer extends InitPipeline {
     });
 
     super(args);
+    injecture.get('BoringServer', this);
 
 
     // this feels a little redundant to the `this.perform('listen')`
