@@ -30,7 +30,7 @@ module.exports = {
     // This ensures we don't get a weird situation
     // where boringbits requires a module which requires
     // boringbits.
-    require('./boring_lambda')(...args);
+    return require('./boring_lambda')(...args);
   },
   ...boringCls,
 };
