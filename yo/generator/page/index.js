@@ -41,6 +41,10 @@ module.exports = class extends Generator {
 
   async prompting() {
 
+    if (!(this.props.scope === 'project' || this.props.scope === 'component')) {
+      return;
+    }
+
     console.log('\n\n****************************');
     await this.processPrompt({
       type: 'list',

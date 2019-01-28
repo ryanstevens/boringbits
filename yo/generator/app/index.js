@@ -30,6 +30,7 @@ module.exports = class extends Generator {
 
     this.composeWith(require.resolve('../server'), options);
     this.composeWith(require.resolve('../page'), options);
+    this.composeWith(require.resolve('../deploy'), options);
   }
 
   async prompting() {
@@ -53,10 +54,17 @@ ${chalk.yellow(`************************************************************`)}
       name: 'scope',
       message: 'What do you want to generate?',
       choices: [
-        {name: 'Scaffold an entire boring app', value: 'all'},
+        {name: 'Scaffold an entire boring app', value: 'project'},
         {name: 'Add a component', value: 'component'},
+        {name: 'Make boring app deployable', value: 'deploy'},
       ],
     });
+
+    try {
+      this.props.packageJSON = require(process.cwd() + '/package.json');
+    } catch (e) {
+      this.props.packageJSON = {};
+    }
 
   }
 

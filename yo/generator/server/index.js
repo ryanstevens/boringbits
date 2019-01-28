@@ -1,6 +1,5 @@
 'use strict';
 const Generator = require('yeoman-generator');
-const chalk = require('chalk');
 const copyConfigs = require('./copyConfigs');
 const makeApp = require('./makeApp');
 
@@ -16,7 +15,7 @@ module.exports = class extends Generator {
 
   async prompting() {
 
-    if (this.props.scope === 'all') {
+    if (this.props.scope === 'project') {
       await this.processPrompt({
         type: 'input',
         name: 'projectName',
@@ -31,7 +30,7 @@ module.exports = class extends Generator {
   }
 
   async writing() {
-    if (this.props.scope === 'all') {
+    if (this.props.scope === 'project') {
       await copyConfigs.call(this);
       await makeApp.call(this);
     }

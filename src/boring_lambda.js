@@ -2,7 +2,6 @@
 
 const app = require('./startServer');
 const awsServerlessExpress = require('aws-serverless-express');
-const injecture = require('injecture');
 
 const binaryMimeTypes = [
   'image/jpeg',
