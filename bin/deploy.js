@@ -1,5 +1,6 @@
 const config = require('../config/runtime/boring-config');
 const childProcess = require('child_process');
+const fs = require('fs');
 
 module.exports = async function(args) {
   try {
@@ -13,6 +14,13 @@ module.exports = async function(args) {
       stdio: [process.stdin, process.stdout, process.stderr],
       cwd: process.cwd(),
     });
+
+    if (!fs.existsSync(process.cwd() + '/serverless.yml') || !fs.existsSync(process.cwd() + '/handler.js')) {
+      childProcess.spawnSync('npx', ['boringbits', 'yo', '--props', '{"scope": "deploy", "deployment": "Lambda", "scripts": []}'], {
+        stdio: [process.stdin, process.stdout, process.stderr],
+        cwd: process.cwd(),
+      });
+    }
 
     childProcess.spawnSync('npx', ['serverless', 'deploy'], {
       stdio: [process.stdin, process.stdout, process.stderr],

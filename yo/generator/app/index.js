@@ -5,9 +5,19 @@ const childProcess = require('child_process');
 
 module.exports = class extends Generator {
   initializing() {
+    this.args = JSON.parse(this.options.args);
+
+    let ininitalProps = this.args.props || {};
+    if (typeof ininitalProps === 'string') {
+      try {
+        ininitalProps = JSON.parse(ininitalProps);
+      } catch (e) {
+        console.log('ERROR parsing cli args ' + ininitalProps);
+      }
+    }
 
     const options = {
-      props: {},
+      props: ininitalProps,
       processPrompt,
     };
 
@@ -15,13 +25,17 @@ module.exports = class extends Generator {
     const prompt = this.prompt.bind(this);
 
     async function processPrompt(promptObj, context, propToMerge) {
-      const answers = await prompt(promptObj);
 
       if (!context) {
         context = options;
       }
       if (!propToMerge) propToMerge = 'props';
 
+      if (context[propToMerge][promptObj.name]) {
+        return context[propToMerge][promptObj.name];
+      }
+
+      const answers = await prompt(promptObj);
       Object.assign(context[propToMerge], answers);
       return context[propToMerge];
     }
