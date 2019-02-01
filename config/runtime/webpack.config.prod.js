@@ -140,14 +140,14 @@ module.exports = {
             },
           },
           {
-            test: /\.css$/,
+            test: /\.(sa|sc|c)ss$/,
             use: [
               require.resolve('style-loader'),
               MiniCssExtractPlugin.loader,
               {
                 loader: require.resolve('css-loader'),
                 options: {
-                  importLoaders: 1,
+                  importLoaders: 2,
                 },
               },
               {
@@ -159,17 +159,12 @@ module.exports = {
                   plugins: () => [
                     require('postcss-flexbugs-fixes'),
                     autoprefixer({
-                      browsers: [
-                        '>1%',
-                        'last 4 versions',
-                        'Firefox ESR',
-                        'not ie < 11', // React doesn't support IE8 anyway
-                      ],
                       flexbox: 'no-2009',
                     }),
                   ],
                 },
               },
+              require.resolve('sass-loader'),
             ],
           },
           {

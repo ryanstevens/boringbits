@@ -39,9 +39,10 @@ module.exports = function renderRedux(options = {components: {}, layout: {client
     );
   }
 
-  const layout = options.layout || {
+  const layout = {
     clientConfig: {},
     pageInjections: {},
+    ...options.layout,
   };
 
   if (!layout.pageInjections.bodyEndScripts) {
@@ -50,6 +51,9 @@ module.exports = function renderRedux(options = {components: {}, layout: {client
   if (!layout.pageInjections.headLinks) {
     layout.pageInjections.headLinks = [];
   }
+
+  layout.pageInjections.headLinks.push('https://fonts.googleapis.com/css?family=Roboto:300,400,500');
+  layout.pageInjections.headLinks.push('https://fonts.googleapis.com/icon?family=Material+Icons');
 
   let getStyleSheets;
   let store;
@@ -84,7 +88,7 @@ module.exports = function renderRedux(options = {components: {}, layout: {client
     const bundles = getBundles(stats, modules);
 
     bundles
-      .filter(bundle => bundle.file.endsWith('.js'))
+      .filter(bundle => bundle && bundle.file.endsWith('.js'))
       .map(bundle => '/' +bundle.file)
       .forEach(file => {
         if (layout.pageInjections.bodyEndScripts.indexOf(file) < 0) {
@@ -93,7 +97,7 @@ module.exports = function renderRedux(options = {components: {}, layout: {client
       });
 
     bundles
-      .filter(bundle => bundle.file.endsWith('.css'))
+      .filter(bundle => bundle && bundle.file.endsWith('.css'))
       .map(bundle => '/' +bundle.file)
       .forEach(file => {
         if (layout.pageInjections.headLinks.indexOf(file) < 0) {
@@ -105,10 +109,10 @@ module.exports = function renderRedux(options = {components: {}, layout: {client
       <Layout
         inlineCSS={getStyleSheets()}
         locals={res.locals}
-        client_config={layout.clientConfig}
-        pageInjections={layout.pageInjections}
         containerHTML={containerHTML}
-        redux_state={store.getState()}>
+        redux_state={store.getState()}
+        {...layout}
+      >
       </Layout>
     ));
 

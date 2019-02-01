@@ -4,7 +4,7 @@ import requireInject from 'require-inject-all';
 import logger from 'boring-logger';
 import injecture from 'injecture';
 import endpoint_transformer from './transform-annotation';
-import config from 'boring-config';
+import {clearRequireCache} from './requireCacheHandler';
 
 const compose = require('compose-middleware').compose;
 
@@ -122,19 +122,7 @@ function wrapHandler(boring, route, endpoint, methods, method) {
   const handler = methods[method].handler;
   methods[method].handler = function wrappedHandler(req, res, next) {
 
-    if (config.get('boring.server.disable_cache', false) === true) {
-      Object.keys(require.cache).forEach(key => {
-        const lowerKey = key.toLowerCase();
-        // clearling cache from just /src
-        // ensures this is not ran in production
-        // and only on our webapp
-        if (lowerKey.indexOf(process.cwd().toLowerCase() + '/src') === 0 ||
-          lowerKey.indexOf('requirehandlerpaths') >=0) {
-          delete require.cache[key];
-        }
-      });
-    }
-
+    clearRequireCache();
 
     const url = (req) ? req.path : '';
     const ctx = {

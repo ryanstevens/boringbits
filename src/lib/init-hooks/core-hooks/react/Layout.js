@@ -4,22 +4,36 @@ import ReactDOMServer from 'react-dom/server';
 
 module.exports = class HTML extends React.Component {
   render() {
+
+    const pageInjections = {
+      headLinks: [],
+      headScripts: [],
+      bodyEndScripts: [],
+      inlineHeadScripts: [],
+      ...this.props.pageInjections,
+    };
+
+
     const reduxHtml = `window.__PRELOADED_STATE__=${JSON.stringify(this.props.redux_state).replace(/</g, '\\u003c')}`;
 
     const appVars = `
       window.app_vars = {
         server_load_time: ${(new Date().getTime())},
         client_load_start : (new Date()).getTime(),
-        config: ${JSON.stringify(this.props.client_config || {})},
+        config: ${JSON.stringify(this.props.clientConfig || {})},
         loggedIn: ${this.props.locals.loggedIn}
       }
-    `;
 
-    const pageInjections = Object.assign({
-      headLinks: [],
-      headScripts: [],
-      bodyEndScripts: [],
-    }, this.props.pageInjections);
+      ${pageInjections.inlineHeadScripts.map(script => `
+      try {
+        (function() {
+          ${script}
+        })();
+      } catch(e) {
+        console.log('error running inline script');
+      }
+      `).join(' ')}
+    `;
 
     pageInjections.headLinks = pageInjections.headLinks.concat(this.props.locals.pageInjections.headLinks || []);
     pageInjections.headScripts = pageInjections.headScripts.concat(this.props.locals.pageInjections.headScripts || []);
@@ -37,13 +51,14 @@ module.exports = class HTML extends React.Component {
       return (typeof script === 'string') ? {src: script} : script;
     });
 
+
     return (
-      <html style={{height: '100%'}}>
+      <html style={{backgroundColor: '#F5F5F5'}}>
         <head>
           <meta charSet="utf-8" />
+
           <script dangerouslySetInnerHTML={{__html: appVars}}></script>
-          <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" />
-          <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+
           <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"></meta>
 
           {
