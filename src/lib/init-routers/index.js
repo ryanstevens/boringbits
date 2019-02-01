@@ -4,7 +4,7 @@ import requireInject from 'require-inject-all';
 import logger from 'boring-logger';
 import injecture from 'injecture';
 import endpoint_transformer from './transform-annotation';
-import {clearRequireCache} from './requireCacheHandler';
+import './requireCacheHandler';
 
 const compose = require('compose-middleware').compose;
 
@@ -121,8 +121,6 @@ function wrapHandler(boring, route, endpoint, methods, method) {
 
   const handler = methods[method].handler;
   methods[method].handler = function wrappedHandler(req, res, next) {
-
-    clearRequireCache();
 
     const url = (req) ? req.path : '';
     const ctx = {
