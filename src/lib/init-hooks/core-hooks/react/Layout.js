@@ -53,7 +53,7 @@ module.exports = class HTML extends React.Component {
 
 
     return (
-      <html style={{backgroundColor: '#F5F5F5'}}>
+      <html style={{height: '100%'}}>
         <head>
           <meta charSet="utf-8" />
 

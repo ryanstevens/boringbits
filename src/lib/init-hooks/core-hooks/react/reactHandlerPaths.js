@@ -20,6 +20,7 @@ export default function getPaths(options = {}) {
     decoratorDirectory: config.get('boring.react.decoratorDirectory', 'decorators'),
     // not quite sure if we are gonna require this for people.
     mainAppFile: config.get('boring.react.mainApp', 'App.js'),
+    routerFile: config.get('boring.react.router', 'Router.js'),
     reducersFile: config.get('boring.react.reducers', 'reducers'),
     ...options,
   };
@@ -32,6 +33,7 @@ export default function getPaths(options = {}) {
     // react / redux conventions
     entrypoint: options.baseAppPath + '/' + options.entrypointFile,
     mainApp: options.baseAppPath + '/'+ options.mainAppFile,
+    Router: options.baseAppPath + '/'+ options.routerFile,
     reducers: options.baseAppPath + '/'+ options.reducersFile,
     // this one is a little special, we want to
     // make sure it's relative to the app_dir
@@ -56,6 +58,11 @@ export default function getPaths(options = {}) {
     reactHandlerPaths.reducers = __dirname + '/defaultReducersProxy.js';
   }
   reactHandlerPaths.modulesToRequire.reducers = reactHandlerPaths.reducers;
+
+  if (!fs.existsSync(options.app_dir +'/'+ reactHandlerPaths.Router)) {
+    reactHandlerPaths.Router = __dirname + '/defaultRouterProxy.js';
+  }
+  reactHandlerPaths.modulesToRequire.Router = reactHandlerPaths.Router;
 
   // check to make sure entrypoint is real
   if (!fs.existsSync(entryPointPath + '.js') &&

@@ -3,7 +3,6 @@ import React from 'react';
 import * as Redux from 'redux';
 import * as ReactRedux from 'react-redux';
 import injecture from 'injecture';
-import {ConnectedRouter} from 'connected-react-router';
 import createBrowserHistory from 'history/createBrowserHistory';
 import getAppComponents from './AppInit';
 import BoringRouter from './BoringRouter';
@@ -12,6 +11,8 @@ import * as decoratorUntil from './decoratorUtil';
 import {Frontload} from 'react-frontload';
 import {preloadReady} from 'react-loadable';
 import getRootComponents from './getRootComponents';
+// import {ConnectedRouter} from 'connected-react-router';
+
 
 function extractStateFromDOM() {
   const state = {
@@ -31,19 +32,11 @@ function extractStateFromDOM() {
   return state;
 }
 
-function renderRedux(App, reducers) {
+function renderRedux(App, reducers, Router) {
 
-  const history = createBrowserHistory();
-  function Router(props) {
-    return (
-      <ConnectedRouter history={history}>
-        <Frontload isServer={false}>
-          {props.children}
-        </Frontload>
-      </ConnectedRouter>
-    );
+  if (!Router) {
+    Router = getRootComponents().Router;
   }
-
   if (!App) {
     App = getRootComponents().mainApp;
   }
@@ -51,12 +44,24 @@ function renderRedux(App, reducers) {
     reducers = getRootComponents().reducers;
   }
 
+  const history = createBrowserHistory();
+
+  function RouterWrapper(props) {
+    return (
+      <Router history={history} {...props}>
+        <Frontload isServer={false}>
+          {props.children}
+        </Frontload>
+      </Router>
+    );
+  }
+
   preloadReady().then((...args) => {
     const components = getAppComponents({
       App: App,
       reducers: reducers,
       history: history,
-      Router: Router,
+      Router: RouterWrapper,
       ...extractStateFromDOM(),
     });
 
