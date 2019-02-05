@@ -9,7 +9,6 @@ module.exports = function boringInection(boring) {
 
   return serveStatic(path.join(process.cwd(), 'build'), {
     redirect: false,
-    index: true,
     cacheControl: true,
     dotfiles: 'ignore',
     etag: false,
