@@ -154,7 +154,9 @@ module.exports = {
               require.resolve('style-loader'),
               {
                 loader: require.resolve('css-loader'),
-                options: { importLoaders: 2 },
+                options: {
+                  importLoaders: 2,
+                },
 
               },
               {
@@ -207,7 +209,7 @@ module.exports = {
       fileName: 'asset-manifest.json',
     }),
     new webpack.HotModuleReplacementPlugin({
-      multiStep: true
+      multiStep: true,
     }),
     // Watcher doesn't work well if you mistype casing in a path so we use
     // a plugin that prints an error when you attempt to do this.

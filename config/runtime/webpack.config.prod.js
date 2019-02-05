@@ -4,14 +4,13 @@ const path = require('path');
 const webpack = require('webpack');
 const ManifestPlugin = require('webpack-manifest-plugin');
 const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
-const paths = require('./paths')
+const paths = require('./paths');
 const autoprefixer = require('autoprefixer');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const fs = require('fs');
 const ProgressBarPlugin = require('progress-bar-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const os = require('os');
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const ReactLoadablePlugin = require('react-loadable/webpack').ReactLoadablePlugin;
 
 

@@ -7,6 +7,8 @@ import {get} from 'request';
 import {promisify} from 'util';
 import paths from 'paths';
 import {normalize} from 'path';
+import {writeFileSync} from 'fs';
+import {createJson} from './makeModulesJson';
 
 const emitter = new Emitter({wildcard: true});
 const request = promisify(get);
@@ -50,6 +52,9 @@ module.exports = function reactHook(BoringInjections) {
         routePaths.reduce((acc, pathObj) => acc.concat(pathObj.paths), [])
           .map(savePage.bind(null, BoringInjections.port))
       );
+
+      writeFileSync(process.cwd() + '/dist/required-modules.json',
+        JSON.stringify(createJson(Object.keys(require.cache)), null, 2));
 
       process.exit(0);
     });

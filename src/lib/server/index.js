@@ -60,12 +60,14 @@ class BoringServer extends InitPipeline {
 
   async start(options) {
 
+    // eslint-disable-next-line camelcase
     const webpackConfig = config.get('boring.isDevelopment', true) ?
-      paths.boring_webpack_dev_config : paths.boring_webpack_prod_config;
+      require(paths.boring_webpack_dev_config) : {}; // non dev runtimes do not need webpack config
 
     const injections = await this.build({
       port: process.env.PORT || config.get('boring.app.port'),
-      webpack_config: require(webpackConfig),
+      webpackConfig,
+      webpack_config: webpackConfig, // TODO depricate snake case name of webpackConfig on v4
       startExpress: config.get('boring.express.noopListen', false) ? noopListen : startExpress,
       ...options,
     });

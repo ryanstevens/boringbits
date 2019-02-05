@@ -13,10 +13,10 @@ module.exports = function setupRoute(/* dependencies from boring */ boring) {
     reactEntry,
   } = decorators.router;
 
-  @router()
+  @router('<%= path %>')
   class <%= className %>Router {
 
-    @post('<%= path %>/data.json')
+    @post('/data.json')
     serve_<%= pageName %>_data(req, res) {
       logger.info('Severing JSON for <%= pageName %>, artificially delaying response 1500 ms');
       setTimeout(() => {
@@ -27,7 +27,7 @@ module.exports = function setupRoute(/* dependencies from boring */ boring) {
       }, 1500);
     }
 
-    @get('<%= path %>*')
+    @get('*')
     @reactEntry('<%= pageName %>')
     serve_<%= pageName %>_get(req, res) {
       res.renderRedux({
