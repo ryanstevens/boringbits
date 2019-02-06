@@ -65,6 +65,7 @@
     "case-sensitive-paths-webpack-plugin": "^2.1.2",
     "cls-hooked": "^4.2.2",
     "compose-middleware": "^5.0.0",
+    "compression": "^1.7.3",
     "config": "^2.0.1",
     "connected-react-router": "^5.0.1",
     "continuation-local-storage": "^3.2.1",

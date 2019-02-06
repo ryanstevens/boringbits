@@ -7,7 +7,7 @@ const bodyParser = require('body-parser');
 module.exports = function boringInection(boring) {
 
   boring.before('init-routers', function() {
-    boring.app.use(boring.middleware.parsers);
+    boring.app.use('parsers', boring.middleware.parsers);
   });
 
   return compose([

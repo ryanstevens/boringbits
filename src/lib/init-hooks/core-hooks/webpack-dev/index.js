@@ -5,7 +5,11 @@ module.exports = function webpackHook(BoringInjections) {
   const {boring} = BoringInjections;
 
   boring.before('init-routers', function beforeInitRouters() {
-    boring.app.use(createWebpackStack(BoringInjections));
+    boring.after('app.use', function(ctx) {
+      if (ctx.name === 'compression') {
+        boring.app.use('webpack', createWebpackStack(BoringInjections));
+      }
+    });
 
     // let everything else keep booting up, we will
     // queue until webpackStack resolves
