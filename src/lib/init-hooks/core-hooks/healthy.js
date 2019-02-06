@@ -46,10 +46,15 @@ module.exports = function(BoringInjections) {
   const requestData = {
     total: {
       cnt: 0,
+      current: 0,
     },
   };
 
   const requestHealth = new HealthModel(requestData);
+
+  function decrementCurrentReq() {
+    requestData.total.current--;
+  }
 
   healthCheck.addChildCheck('memory', memoryHealth);
   healthCheck.addChildCheck('requests', requestHealth);
@@ -61,6 +66,19 @@ module.exports = function(BoringInjections) {
         const healthyMiddleware = healthCheck.createMiddleware();
         function healthyMiddlewareCntWrapper(req, res, next) {
           requestData.total.cnt++;
+          requestData.total.current++;
+
+          const _end = res.end;
+          let ended;
+          res.end = function end(chunk, encoding) {
+            if (ended) {
+              return false;
+            }
+
+            requestData.total.current--;
+            ended = true;
+            return _end.call(this, chunk, encoding);
+          };
           healthyMiddleware(req, res, next);
         }
         boring.app.use('healthy', healthyMiddlewareCntWrapper);

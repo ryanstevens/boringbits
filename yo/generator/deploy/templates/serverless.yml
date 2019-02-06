@@ -21,10 +21,11 @@ provider:
 
 functions:
   serveBoringApp:
+    timeout: 900  # this is the max lambda timeout, which will work if it's triggeed by a ALB.  API gateway requests clamp to 30 seconds
     handler: handler.serveBoringApp
     events:
       - http: ANY /
       - http: 'ANY {proxy+}'
     environment:
       NODE_ENV: production
-      boring_express_noopListen: true
+      boring_express_noopListen: true # this tells express not to call app.listen

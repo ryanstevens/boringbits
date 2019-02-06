@@ -35,6 +35,23 @@ module.exports = function(BoringInjections) {
           if (config.get('boring.logUserAgent', true)) {
             objToLog.userAgent = req.headers['user-agent'];
           }
+          const _end = res.end;
+          let ended;
+          const hrstart = process.hrtime();
+
+          res.end = function end(chunk, encoding) {
+            if (ended) {
+              return false;
+            }
+
+            const hrend = process.hrtime(hrstart);
+            logger[logLevel]({
+              ...objToLog,
+              respTime: Math.round((hrend[0] * 1000) + hrend[1] / 1000000),
+            }, 'http-request-end');
+            ended = true;
+            return _end.call(this, chunk, encoding);
+          };
 
           logger[logLevel](objToLog, 'http-request');
           next();

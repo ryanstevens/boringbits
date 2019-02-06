@@ -13,4 +13,5 @@ module.exports = {
     disable_cache: true,
   },
   logUserAgent: false,
+  disableDiagnostics: false,
 };
