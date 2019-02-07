@@ -18,6 +18,7 @@ if (config.get('boring.server.disable_cache', false) === true) {
           };
 
           fs.watch(key, {}, function() {
+            console.log('resetting', key);
             delete require.cache[key];
           });
         }
