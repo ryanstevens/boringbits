@@ -90,6 +90,8 @@
     "immutable": "^4.0.0-rc.12",
     "injecture": "^1.4.0",
     "inquirer": "^6.2.1",
+    "lodash.debounce": "^4.0.8",
+    "lodash.throttle": "^4.1.1",
     "mini-css-extract-plugin": "^0.4.2",
     "moment": "^2.22.2",
     "ncp": "^2.0.0",
