@@ -40,7 +40,6 @@ module.exports = async function initModules(BoringInjections) {
 
   return await Promise.all(uniqueArray.map(file => {
     logger.info('Registering managed module: ' + file);
-    debugger;
     const moduleExport = require(file);
     const fn = moduleExport.default ? moduleExport.default : moduleExport;
     return fn(BoringInjections);

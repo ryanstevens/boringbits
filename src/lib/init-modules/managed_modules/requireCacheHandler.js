@@ -82,6 +82,6 @@ if (config.get('boring.server.disable_cache', false) === true) {
   })();
 }
 
-export default function() {
-
+export default function(BoringInjections) {
+  BoringInjections.moduleGraph = moduleGraph;
 };

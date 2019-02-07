@@ -1,10 +1,10 @@
+import decorators from '../../decorators';
 
 module.exports = function({boring} = BoringInjections) {
 
   const {
     logger,
     config,
-    decorators,
   } = boring;
 
   const {

@@ -1,5 +1,5 @@
-const staticInjectionMiddleware = require('./staticInjectionMiddleware');
-const createWebpackStack = require('./createWebpackStack');
+import staticInjectionMiddleware from './staticInjectionMiddleware';
+import createWebpackStack, {webpackDone} from './createWebpackStack';
 
 module.exports = function webpackHook(BoringInjections) {
   const {boring} = BoringInjections;
@@ -10,6 +10,8 @@ module.exports = function webpackHook(BoringInjections) {
         boring.app.use('webpack', createWebpackStack(BoringInjections));
       }
     });
+
+    BoringInjections.webpackDone = webpackDone;
 
     // let everything else keep booting up, we will
     // queue until webpackStack resolves
