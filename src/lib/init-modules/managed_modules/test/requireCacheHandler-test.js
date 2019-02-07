@@ -1,7 +1,7 @@
 const moduleGraph = require('../requireCacheHandler').moduleGraph;
 const assert = require('assert');
 
-describe.only('requireCacheHandler', function() {
+describe('requireCacheHandler', function() {
 
   it('has a filled cache', done => {
 

@@ -10,6 +10,9 @@ module.exports = {
     bar: 'overriden',
     baz: 'meep',
   },
+  server: {
+    buildModuleGraph: true,
+  },
   boring: {
     paths: {
       base_app_path: 'src',

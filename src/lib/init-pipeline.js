@@ -1,6 +1,5 @@
 import {getNamespace, createNamespace} from 'boring-cls';
 
-const nodenopack = require('nodenopack');
 
 const config = require('boring-config');
 const express = require('express');
@@ -108,6 +107,9 @@ class InitPipeline extends EventEmitter {
       const modules = await this.perform('init-modules', injections, async () => {
         return await initModules(injections);
       });
+
+      const nodenopack = require('nodenopack');
+
 
       injections.modules = modules;
 

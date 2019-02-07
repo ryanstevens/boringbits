@@ -11,6 +11,7 @@ module.exports = {
   },
   server: {
     disable_cache: true,
+    buildModuleGraph: true,
   },
   logUserAgent: false,
   disableDiagnostics: false,

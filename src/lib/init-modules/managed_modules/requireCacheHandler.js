@@ -6,6 +6,8 @@ import logger from 'boring-logger';
 import debounce from 'lodash.debounce';
 
 export const moduleGraph = {};
+const timeoutBackoff = [1, 1, 1, 2, 2, 2, 2, 2, 5, 5, 5];
+
 
 function moduleCache(id) {
   const ext = extname(id);
@@ -26,20 +28,23 @@ const originalRequire = Module.prototype.require;
 const comboCache = {};
 Module.prototype.require = function(...args) {
 
-  const requiredMod = args[0];
-  const callerLine = new Error('').stack.split('\n')[3];
-  const callerId = callerLine.split(':').shift().split('(').pop().split('at ').pop();
-  const callerParts = callerId.split('/');
-  callerParts.pop();
-  const callerDir = callerParts.join('/');
-  const moduleId = requiredMod.indexOf('/') === -1 ? requiredMod :
-    requiredMod.charAt(0) === '/' ? requiredMod : normalize(callerDir + '/' + requiredMod);
+  if (config.get('boring.server.buildModuleGraph', false) === true) {
+    const requiredMod = args[0];
+    const callerLine = new Error('').stack.split('\n')[3];
+    const callerId = callerLine.split(':').shift().split('(').pop().split('at ').pop();
+    const callerParts = callerId.split('/');
+    callerParts.pop();
+    const callerDir = callerParts.join('/');
+    const moduleId = requiredMod.indexOf('/') === -1 ? requiredMod :
+      requiredMod.charAt(0) === '/' ? requiredMod : normalize(callerDir + '/' + requiredMod);
 
-  const comboKey = moduleId + '::' + callerId;
-  if (!comboCache[comboKey]) {
-    moduleCache(moduleId).dependants.push(moduleCache(callerId));
-    comboCache[comboKey] = true;
+    const comboKey = moduleId + '::' + callerId;
+    if (!comboCache[comboKey]) {
+      moduleCache(moduleId).dependants.push(moduleCache(callerId));
+      comboCache[comboKey] = true;
+    }
   }
+
   return originalRequire.apply(this, args);
 };
 
@@ -54,7 +59,6 @@ function deleteRequireCache(key) {
   });
 }
 
-const timeoutBackoff = [1, 1, 1, 2, 2, 2, 2, 2, 5, 5, 5];
 
 if (config.get('boring.server.disable_cache', false) === true) {
   (function check() {
@@ -77,3 +81,7 @@ if (config.get('boring.server.disable_cache', false) === true) {
     setTimeout(check, timeoutBackoff.shift());
   })();
 }
+
+export default function() {
+
+};

@@ -36,11 +36,14 @@ module.exports = async function initModules(BoringInjections) {
     // dedupe
     if (acc.indexOf(item)<0) acc.push(item);
     return acc;
-  }, []);
+  }, []).filter(file => file.indexOf('/test/') < 0);
 
   return await Promise.all(uniqueArray.map(file => {
     logger.info('Registering managed module: ' + file);
-    return require(file)(BoringInjections);
+    debugger;
+    const moduleExport = require(file);
+    const fn = moduleExport.default ? moduleExport.default : moduleExport;
+    return fn(BoringInjections);
   }));
 
 };
