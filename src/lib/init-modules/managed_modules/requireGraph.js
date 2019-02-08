@@ -29,7 +29,6 @@ function moduleCache(id) {
 
 const originalRequire = Module.prototype.require;
 const comboCache = {};
-global.comboCache = comboCache;
 Module.prototype.require = function(...args) {
 
   if (config.get('boring.server.buildModuleGraph', false) === true) {
