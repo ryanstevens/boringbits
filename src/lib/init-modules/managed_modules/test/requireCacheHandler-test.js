@@ -1,15 +1,15 @@
-const moduleGraph = require('../requireCacheHandler').moduleGraph;
+const moduleGraph = require('../requireGraph').moduleGraph;
 const assert = require('assert');
 
-describe('requireCacheHandler', function() {
+describe('requireGraph', function() {
 
   it('has a filled cache', done => {
 
     assert(Object.keys(moduleGraph).length > 0);
 
     assert(Object.keys(moduleGraph).reduce((total, key) => {
-      return moduleGraph[key].dependants.length + total;
-    }, 0) > 0, 'Each key should have a dependants array');
+      return moduleGraph[key].requiredBy.length + total;
+    }, 0) > 0, 'Each key should have a requiredBy array');
 
     done();
   });
@@ -17,14 +17,16 @@ describe('requireCacheHandler', function() {
   it('cache will increase when require is called', async () => {
 
     const numKeys = Object.keys(moduleGraph).length;
-    assert(moduleGraph[__dirname + '/test-mods/foo'] === undefined);
+    const dirname = __dirname.replace('boring/src', 'boring/dist');
+    assert(moduleGraph[dirname + '/test-mods/foo'] === undefined);
     require('./test-mods/bar');
     // console.log(Object.keys(moduleGraph).sort());
-    assert.equal((numKeys + 2), Object.keys(moduleGraph).length);
-    assert(moduleGraph[__dirname + '/test-mods/foo'].dependants.length == 1);
+    assert.equal((numKeys + 3), Object.keys(moduleGraph).length);
+    assert.equal(moduleGraph[dirname + '/test-mods/foo'].requiredBy.length, 1);
+    assert.equal(moduleGraph[dirname + '/test-mods/bar'].dependencies.length, 2);
     assert.deepEqual(
-      moduleGraph[__dirname + '/test-mods/foo'].dependants[0],
-      moduleGraph[__dirname + '/test-mods/bar']
+      moduleGraph[dirname + '/test-mods/foo'].requiredBy[0],
+      moduleGraph[dirname + '/test-mods/bar']
     );
 
   });

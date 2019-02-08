@@ -17,8 +17,11 @@ function moduleCache(id) {
   }
   if (!moduleGraph[id]) {
     moduleGraph[id] = {
-      dependants: [],
+      id,
+      requiredBy: [],
+      dependencies: [],
       watcher: null,
+      stacks: [],
     };
   }
   return moduleGraph[id];
@@ -26,12 +29,26 @@ function moduleCache(id) {
 
 const originalRequire = Module.prototype.require;
 const comboCache = {};
+global.comboCache = comboCache;
 Module.prototype.require = function(...args) {
 
   if (config.get('boring.server.buildModuleGraph', false) === true) {
     const requiredMod = args[0];
-    const callerLine = new Error('').stack.split('\n')[3];
-    const callerId = callerLine.split(':').shift().split('(').pop().split('at ').pop();
+    const stack = new Error('').stack.split('\n');
+    let stackPos = 3;
+    for (let i=0; i<stack.length; i++) {
+      const frame = stack[i];
+      if (frame.indexOf('internal/modules/cjs/helpers.js') > 0) {
+        stackPos = i+1;
+        break;
+      }
+    }
+    const callerLine = stack[stackPos];
+    // the replace at the end of this is a P weird,
+    // the reason we have to manually fudge with this
+    // frame location is because source maps mess
+    // with it.
+    const callerId = callerLine.split(':').shift().split('(').pop().split('at ').pop().replace('boring/src', 'boring/dist');
     const callerParts = callerId.split('/');
     callerParts.pop();
     const callerDir = callerParts.join('/');
@@ -39,24 +56,35 @@ Module.prototype.require = function(...args) {
       requiredMod.charAt(0) === '/' ? requiredMod : normalize(callerDir + '/' + requiredMod);
 
     const comboKey = moduleId + '::' + callerId;
+
+
     if (!comboCache[comboKey]) {
-      moduleCache(moduleId).dependants.push(moduleCache(callerId));
-      comboCache[comboKey] = true;
+      const requiredModule = moduleCache(moduleId);
+      const requiredByModule = moduleCache(callerId);
+      requiredByModule.dependencies.push(requiredModule);
+      requiredModule.requiredBy.push(requiredByModule);
+      comboCache[comboKey] = stack;
     }
   }
 
   return originalRequire.apply(this, args);
 };
 
-function deleteRequireCache(key) {
+function deleteRequireCache(key, evictUp = true) {
   if (!key) return;
 
   logger.debug('deleting require cache key ' + key);
   delete require.cache[key];
   const moduleMeta = moduleCache(key);
-  moduleMeta.dependants.forEach(dependant => {
-    deleteRequireCache(dependant.cacheKey);
-  });
+  if (evictUp) {
+    moduleMeta.requiredBy.forEach(dependant => {
+      deleteRequireCache(dependant.cacheKey, evictUp);
+    });
+  } else if (evictUp === false) {
+    moduleMeta.dependencies.forEach(dependant => {
+      deleteRequireCache(dependant.cacheKey, evictUp);
+    });
+  }
 }
 
 
@@ -72,7 +100,7 @@ if (config.get('boring.server.disable_cache', false) === true) {
         moduleMeta.cacheKey = key;
         if (!moduleMeta.watcher) {
           moduleMeta.watcher = fs.watch(key, {}, debounce(function() {
-            deleteRequireCache(key);
+            deleteRequireCache(key, true);
           }), 300, {leading: true});
         }
       }
@@ -82,6 +110,14 @@ if (config.get('boring.server.disable_cache', false) === true) {
   })();
 }
 
+export function clearRequireCache(id) {
+  deleteRequireCache(id, false);
+}
+
 export default function(BoringInjections) {
   BoringInjections.moduleGraph = moduleGraph;
+
+  return {
+    clearRequireCache,
+  };
 };

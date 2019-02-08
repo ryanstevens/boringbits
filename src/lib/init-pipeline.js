@@ -108,9 +108,6 @@ class InitPipeline extends EventEmitter {
         return await initModules(injections);
       });
 
-      const nodenopack = require('nodenopack');
-
-
       injections.modules = modules;
 
       const hooks = await this.perform('init-hooks', injections, async () => {

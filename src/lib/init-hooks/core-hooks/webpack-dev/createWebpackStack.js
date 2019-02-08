@@ -19,7 +19,7 @@ function deferMiddleware(middlewarePromise) {
   };
 }
 
-export const webpackComplete = deferitize();
+export const webpackDone = deferitize();
 export default function createWebpackStack(BoringInjections) {
 
   const {
@@ -119,15 +119,15 @@ export default function createWebpackStack(BoringInjections) {
       ]);
 
       compiler.plugin('done', function(stats) {
-        webpackComplete.resolve(composedMiddleware);
+        webpackDone.resolve(composedMiddleware);
       });
     } else {
       // passthrough in production
-      webpackComplete.resolve((req, res, next) => next());
+      webpackDone.resolve((req, res, next) => next());
     }
 
-    return webpackComplete;
+    return Promise.resolve();
   });
 
-  return deferMiddleware(webpackComplete);
+  return deferMiddleware(webpackDone);
 };

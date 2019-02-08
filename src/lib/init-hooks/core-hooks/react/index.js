@@ -8,7 +8,11 @@ import logger from 'boring-logger';
 import requireHandlerPaths from './requireHandlerPaths';
 import config from 'boring-config';
 
+
 module.exports = function reactHook(BoringInjections) {
+
+  require('nodenopack');
+
   const {
     boring,
   } = BoringInjections;
@@ -49,7 +53,6 @@ module.exports = function reactHook(BoringInjections) {
         reactNS.set('reactHandlerPaths', reactHandlerPaths);
         requireHandlerPaths(reactHandlerPaths);
 
-
         if (isDevelopment) {
           [beforeEntry, afterEntry] = dynamicComponents(
             reactHandlerPaths.reactRoot,
@@ -74,6 +77,13 @@ module.exports = function reactHook(BoringInjections) {
       );
     };
   };
+
+  boring.after('add-routers', function({routers}) {
+    BoringInjections.webpackDone.then(() => {
+      BoringInjections.modules.requireGraph.clearRequireCache(__dirname + '/requireDirectory.js');
+    });
+  });
+
 
   boring.before('http::get', function beforeGet(ctx) {
 

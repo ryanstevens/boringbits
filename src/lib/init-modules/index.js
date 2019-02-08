@@ -4,6 +4,7 @@ import requireInject from 'require-inject-all';
 
 import {promisify} from 'util';
 import glob from 'glob';
+import {basename, extname} from 'path';
 
 const syncGlob = promisify(glob);
 
@@ -38,11 +39,32 @@ module.exports = async function initModules(BoringInjections) {
     return acc;
   }, []).filter(file => file.indexOf('/test/') < 0);
 
-  return await Promise.all(uniqueArray.map(file => {
+  const modulesArr = await Promise.all(uniqueArray.map(file => {
     logger.info('Registering managed module: ' + file);
     const moduleExport = require(file);
+    const name = basename(file, extname(file));
     const fn = moduleExport.default ? moduleExport.default : moduleExport;
-    return fn(BoringInjections);
+    return new Promise((resolve, reject) => {
+      const ret = fn(BoringInjections);
+      if (ret instanceof Promise) {
+        ret.then((fromPromise) => {
+          resolve({
+            name,
+            val: fromPromise,
+          });
+        }).catch(reject);
+      } else {
+        resolve({
+          name,
+          val: ret,
+        });
+      }
+    });
   }));
+
+  return modulesArr.reduce((acc, mod) => {
+    acc[mod.name] = mod.val;
+    return acc;
+  }, {});
 
 };
