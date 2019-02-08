@@ -46,8 +46,10 @@ Module.prototype.require = function(...args) {
     // the replace at the end of this is a P weird,
     // the reason we have to manually fudge with this
     // frame location is because source maps mess
-    // with it.
-    const callerId = callerLine.split(':').shift().split('(').pop().split('at ').pop().replace('boring/src', 'boring/dist');
+    // with it. Also, I'm the worst at regex so I
+    // didn't even try, but someone please make
+    // this a proper regex - RCS
+    const callerId = callerLine.split(':').shift().split('(').pop().split('at ').pop().replace('boring/src', 'boring/dist').replace('boringbits/src', 'boringbits/dist');
     const callerParts = callerId.split('/');
     callerParts.pop();
     const callerDir = callerParts.join('/');
