@@ -3,6 +3,7 @@ const checkProxy = require('./checkProxy.js');
 const inquirer = require('inquirer');
 const chalk = require('chalk');
 const childProcess = require('child_process');
+const config = require('../../config/runtime/boring-config');
 
 async function tryDocker() {
   const dockerResults = childProcess.spawnSync('npx', ['boring', 'up'], {
@@ -38,6 +39,11 @@ restarting Docker Desktop (but we can't do that for you)
 }
 
 module.exports = async function runChecks() {
+
+  if (config.get('boring.skip_startup_checks', false) === true) {
+    return;
+  }
+
   const status = await checkProxy();
   console.log(status);
 

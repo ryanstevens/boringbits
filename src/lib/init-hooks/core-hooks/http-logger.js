@@ -22,6 +22,7 @@ module.exports = function(BoringInjections) {
                             ext.endsWith('js') ||
                             ext.endsWith('ico') ||
                             ext.endsWith('css') ||
+                            ext.endsWith('svg') ||
                             ext.endsWith('jpg') ||
                             ext.endsWith('jpeg') ||
                             ext.endsWith('png') ||

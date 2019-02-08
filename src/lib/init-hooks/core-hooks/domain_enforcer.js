@@ -7,7 +7,7 @@ module.exports = function domainEnforcer(BoringInjections) {
 
   const subdomain = boring.config.get('boring.default_subdomain', 'www');
 
-  if (subdomain && subdomain !== 'false') {
+  if (subdomain && subdomain !== false) {
     boring.before('add-routers', function() {
       boring.app.use('redirector', function(req, res, next) {
 
