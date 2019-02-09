@@ -120,6 +120,7 @@
     "sass-loader": "^7.1.0",
     "serve-static": "^1.13.2",
     "serverless": "^1.36.3",
+    "slash": "^2.0.0",
     "split2": "^3.1.0",
     "style-loader": "^0.23.0",
     "terser": "3.11.0",
