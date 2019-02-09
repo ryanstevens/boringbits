@@ -2,6 +2,7 @@
 import * as fs from 'fs';
 import babel from 'babelCompiler';
 import logger from 'boring-logger';
+import normalize from 'normalize-path';
 
 function mapContainerCode(containers) {
 
@@ -12,13 +13,13 @@ function mapContainerCode(containers) {
     (function() {
 
       const loadableModule = Loadable({
-        loader: () => import('${importPath}'),
+        loader: () => import('${normalize(importPath)}'),
         loading: function Loading() {
           return null;
         },
       });
       loadableModule.path = '${path}';
-      loadableModule.importPath = '${importPath}';
+      loadableModule.importPath = '${normalize(importPath)}';
 
       containers['${moduleName}'] = loadableModule;
 
@@ -34,7 +35,7 @@ function mapModules(modules) {
   return Object.keys(modules).map(moduleName => {
     return `
       (function requireModule() {
-        const requiredMod = require('${modules[moduleName]}');
+        const requiredMod = require('${normalize(modules[moduleName])}');
         modules['${moduleName}'] =  (requiredMod.default) ? requiredMod.default : requiredMod;
       })();
     `;
@@ -59,7 +60,7 @@ function mapDecoratorCode(decorators) {
     const {importPath} = module;
     return `
     (function requireDecorator() {
-      const requiredMod = require('${importPath}');
+      const requiredMod = require('${normalize(importPath)}');
       const Mod = (requiredMod.default) ? requiredMod.default : requiredMod;
       __boring_internals.freshModules['${moduleName}'] = Mod;
 
