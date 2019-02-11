@@ -9,6 +9,11 @@ function makeCmd(mod) {
         process.exit(result.status);
       })
       .catch(e => {
+        console.log(`
+
+Problem with boring command ${mod}
+
+`, e || '');
         process.exit(1);
       });
   };

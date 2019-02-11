@@ -11,7 +11,7 @@ module.exports = async function() {
     },
     scripts: {
       'start': 'npx boring start',
-      'build': 'npm run build-node && npm run build-client',
+      'build': 'npx boring build',
       'build-node': 'npx boring build-node',
       'build-client': 'npx boring build-client',
       'build-static': 'npx boring build-static',
@@ -49,6 +49,13 @@ module.exports = async function() {
     );
   }
 
+  if (!fs.existsSync(this.destinationPath('.gitignore'))) {
+    this.fs.copyTpl(
+      this.templatePath('config/.gitignore'),
+      this.destinationPath('.gitignore'),
+      this.options.props
+    );
+  }
 
   if (!fs.existsSync(this.destinationPath('.tsconfig.json'))) {
     this.fs.copyTpl(

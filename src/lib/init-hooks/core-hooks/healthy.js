@@ -1,6 +1,7 @@
 const healthy = require('healthy');
 const os = require('os');
 const moment = require('moment');
+const fs = require('fs');
 
 module.exports = function(BoringInjections) {
 
@@ -10,12 +11,16 @@ module.exports = function(BoringInjections) {
 
   const {HealthCheck, HealthModel} = healthy;
 
+  const buildStatsJson = process.cwd() + '/build/build-stats.json';
+  const buildStats = fs.existsSync(buildStatsJson) ? require(buildStatsJson) : {};
+
   const healthCheck = new HealthCheck({
     baseRoute: '__health',
   }, {
     started: new Date(),
     hostname: os.hostname(),
     pid: process.pid,
+    ...buildStats,
   });
 
   healthCheck.model.serialize = function() {

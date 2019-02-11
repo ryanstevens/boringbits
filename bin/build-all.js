@@ -1,33 +1,50 @@
-const config = require('../config/runtime/boring-config');
 const childProcess = require('child_process');
 const fs = require('fs');
-const promisify = require('util').promisify;
-const ncp = promisify(require('ncp'));
-const rimraf = promisify(require('rimraf'));
-const mkdirp = promisify(require('mkdirp'));
+
+async function runCmds(cmds) {
+  if (cmds.length === 0) return Promise.resolve();
+  const cmd = cmds.shift();
+  const result = childProcess.spawnSync('npx', ['boringbits', cmd], {
+    stdio: [process.stdin, process.stdout, process.stderr],
+    cwd: process.cwd(),
+  });
+
+  if (result.status > 0) {
+    return Promise.reject({
+      cmd,
+      ...result,
+    });
+  } else return runCmds(cmds);
+}
+
+async function getGitCommitHash() {
+  try {
+    const results = childProcess.spawnSync('git', ['rev-parse', 'HEAD'], {
+      cwd: process.cwd(),
+    });
+
+    return results.output.toString().split(',')[1].substring(0, 7);
+  } catch (e) {
+    return 'unknown';
+  }
+}
 
 module.exports = async function(args) {
   try {
 
-    childProcess.spawnSync('npx', ['boringbits', 'build-node'], {
-      stdio: [process.stdin, process.stdout, process.stderr],
-      cwd: process.cwd(),
-    });
+    await runCmds(['build-node', 'build-client', 'build-static']);
 
-    childProcess.spawnSync('npx', ['boringbits', 'build-client'], {
-      stdio: [process.stdin, process.stdout, process.stderr],
-      cwd: process.cwd(),
-    });
-
-    childProcess.spawnSync('npx', ['boringbits', 'build-static'], {
-      stdio: [process.stdin, process.stdout, process.stderr],
-      cwd: process.cwd(),
-    });
+    fs.writeFileSync(process.cwd() + '/build/build-stats.json', JSON.stringify({
+      build: {
+        hash: await getGitCommitHash(),
+        time: (new Date()),
+      },
+    }, null, 4));
 
     return Promise.resolve();
 
   } catch (e) {
     console.error('There was a problem the boring command', e);
-    return Promise.reject({status: 1});
+    return Promise.reject();
   }
 };
