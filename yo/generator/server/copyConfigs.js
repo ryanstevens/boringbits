@@ -51,7 +51,7 @@ module.exports = async function() {
 
   if (!fs.existsSync(this.destinationPath('.gitignore'))) {
     this.fs.copyTpl(
-      this.templatePath('config/.gitignore'),
+      this.templatePath('config/.gitignore.save'),
       this.destinationPath('.gitignore'),
       this.options.props
     );
