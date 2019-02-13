@@ -72,5 +72,8 @@ async function createDeployable(deployDir) {
 
   fs.copyFileSync(process.cwd() + '/handler.js', deployDir + '/handler.js');
   fs.copyFileSync(process.cwd() + '/serverless.yml', deployDir + '/serverless.yml');
+  if (fs.existsSync(process.cwd() + '/.env')) {
+    fs.copyFileSync(process.cwd() + '/.env', deployDir + '/.env');
+  }
 
 }
