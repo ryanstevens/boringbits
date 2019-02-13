@@ -14,12 +14,13 @@ const get = config.get;
 const has = config.has;
 
 config.get = function configGetShadowed(key, defaultVal) {
-  if (key in process.env) return process.env[key];
+  let retVal = defaultVal;
   const flattendKey = key.split('.').join('_');
-  if (flattendKey in process.env) return process.env[flattendKey];
 
-  if (!config.has(key)) return defaultVal; // this will simply be undefined if no param is passed
-  const retVal = get.call(config, key);
+  if (key in process.env) retVal = process.env[key];
+  else if (flattendKey in process.env) retVal = process.env[flattendKey];
+  else if (config.has(key)) retVal = get.call(config, key);
+
   if (typeof retVal === 'string') {
     if (retVal === 'true') return true;
     else if (retVal === 'false') return false;
