@@ -1,8 +1,7 @@
 import {getNamespace} from 'boring-cls';
 import React from 'react';
 import Loadable from 'react-loadable';
-import logger from 'boring-logger';
-import {makeDecorator} from '../../../../client/core-hooks/react/decoratorUtil';
+import makeDecorator from '../../../../client/core-hooks/react/proxyGlobalDecorator';
 
 
 function requireModule(importPath) {
@@ -14,7 +13,8 @@ function makeDecorators(decorators) {
   return Object.keys(decorators).reduce(function(importedDecorators, name) {
     const decorator = decorators[name];
     const importPath = decorator.importPath;
-    const newDecorator = makeDecorator(requireModule(importPath));
+
+    const newDecorator = makeDecorator(requireModule(importPath), importPath);
     newDecorator.importPath = importPath;
     importedDecorators[name] = newDecorator;
     return importedDecorators;
@@ -31,6 +31,7 @@ module.exports = function get() {
     const promises = [];
     Object.keys(reactHandlerPaths.containers).forEach(containerName => {
       const container = reactHandlerPaths.containers[containerName];
+
       // eslint-disable-next-line new-cap
       const lazyContainer = Loadable({
         loader: () => Promise.resolve(requireModule(container.importPath)),
@@ -46,10 +47,7 @@ module.exports = function get() {
     reactHandlerPaths.containersLoaded = Promise.all(promises);
   }
 
-  if (!reactHandlerPaths.wrappedDecorators) {
-    reactHandlerPaths.decorators = makeDecorators(reactHandlerPaths.decorators);
-    reactHandlerPaths.wrappedDecorators = true;
-  }
+  reactHandlerPaths.decorators = makeDecorators(reactHandlerPaths.decorators);
 
   const modules = {};
   Object.keys(reactHandlerPaths.modulesToRequire).forEach(moduleName => {

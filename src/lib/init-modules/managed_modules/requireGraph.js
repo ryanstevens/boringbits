@@ -74,7 +74,7 @@ Module.prototype.require = function(...args) {
 function deleteRequireCache(key, evictUp = true) {
   if (!key) return;
 
-  logger.debug('deleting require cache key ' + key);
+  logger.trace('deleting require cache key ' + key);
   delete require.cache[key];
   const moduleMeta = moduleCache(key);
   if (evictUp) {
@@ -88,6 +88,7 @@ function deleteRequireCache(key, evictUp = true) {
   }
 }
 
+const boringKeys = {};
 
 if (config.get('boring.server.disable_cache', false) === true) {
   (function check() {

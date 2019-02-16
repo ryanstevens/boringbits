@@ -50,8 +50,8 @@ function mapModules(modules) {
 * is because they are ultimately imported via boring and dynamically "glued"
 * together with whomever needs HOC / decorators.  This means when a developer
 * updates one of the source files HMR will not cause the render cycle to
-* render the most up to date changes from these decorators beause the
-* import / require depencancy tree is outside of the rest of the app.
+* render the most up to date changes from these decorators because the
+* import / require dependancy tree is outside of the rest of the app.
 **/
 function mapDecoratorCode(decorators) {
 
