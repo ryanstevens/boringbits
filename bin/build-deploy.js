@@ -1,10 +1,4 @@
-const config = require('../config/runtime/boring-config');
 const childProcess = require('child_process');
-const fs = require('fs');
-const promisify = require('util').promisify;
-const ncp = promisify(require('ncp'));
-const rimraf = promisify(require('rimraf'));
-const mkdirp = promisify(require('mkdirp'));
 
 module.exports = async function(args) {
   try {

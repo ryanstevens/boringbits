@@ -8,7 +8,6 @@ import Loadable from 'react-loadable';
 import {getBundles} from 'react-loadable/webpack';
 import {frontloadServerRender, Frontload} from 'react-frontload';
 import getRootComponents from './getNodeRootComponents';
-import logger from 'boring-logger';
 
 
 module.exports = function renderRedux(options = {components: {}, layout: {clientConfig: {}, pageInjections: {}}}) {
@@ -20,7 +19,16 @@ module.exports = function renderRedux(options = {components: {}, layout: {client
 
   const rootComponents = getRootComponents();
 
-  const App = rootComponents.modules.mainApp;
+  const MainApp = rootComponents.modules.mainApp;
+  const appTheme = rootComponents.modules.appTheme;
+  const appDecorator = rootComponents.modules.appDecorator;
+
+  const App = appDecorator(function AppWrapper() {
+    return (
+      <MainApp theme={appTheme()} />
+    );
+  });
+
   const reducers = rootComponents.modules.reducers;
 
   const modules = [];

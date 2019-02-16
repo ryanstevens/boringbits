@@ -34,16 +34,6 @@ function extractStateFromDOM() {
 
 function renderRedux(App, reducers, Router) {
 
-  if (!Router) {
-    Router = getRootComponents().Router;
-  }
-  if (!App) {
-    App = getRootComponents().mainApp;
-  }
-  if (!reducers) {
-    reducers = getRootComponents().reducers;
-  }
-
   const history = createBrowserHistory();
 
   function RouterWrapper(props) {

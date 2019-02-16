@@ -20,6 +20,8 @@ export default function getPaths(options = {}) {
     decoratorDirectory: config.get('boring.react.decoratorDirectory', 'decorators'),
     // not quite sure if we are gonna require this for people.
     mainAppFile: config.get('boring.react.mainApp', 'App.js'),
+    appThemeFile: config.get('boring.react.appTheme', 'AppTheme.js'),
+    appDecoratorFile: config.get('boring.react.appDecorator', 'AppDecorator.js'),
     routerFile: config.get('boring.react.router', 'Router.js'),
     reducersFile: config.get('boring.react.reducers', 'reducers'),
     ...options,
@@ -33,6 +35,8 @@ export default function getPaths(options = {}) {
     // react / redux conventions
     entrypoint: options.baseAppPath + '/' + options.entrypointFile,
     mainApp: options.baseAppPath + '/'+ options.mainAppFile,
+    appTheme: options.baseAppPath + '/'+ options.appThemeFile,
+    appDecorator: options.baseAppPath + '/'+ options.appDecoratorFile,
     Router: options.baseAppPath + '/'+ options.routerFile,
     reducers: options.baseAppPath + '/'+ options.reducersFile,
     // this one is a little special, we want to
@@ -53,6 +57,16 @@ export default function getPaths(options = {}) {
     reactHandlerPaths.mainApp = __dirname + '/defaultRootAppProxy.js';
   }
   reactHandlerPaths.modulesToRequire.mainApp = reactHandlerPaths.mainApp;
+
+  if (!fs.existsSync(options.app_dir +'/'+ reactHandlerPaths.appTheme)) {
+    reactHandlerPaths.appTheme = __dirname + '/defaultRootAppThemeProxy.js';
+  }
+  reactHandlerPaths.modulesToRequire.appTheme = reactHandlerPaths.appTheme;
+
+  if (!fs.existsSync(options.app_dir +'/'+ reactHandlerPaths.appDecorator)) {
+    reactHandlerPaths.appDecorator = __dirname + '/defaultRootAppDecoratorProxy.js';
+  }
+  reactHandlerPaths.modulesToRequire.appDecorator = reactHandlerPaths.appDecorator;
 
   if (!fs.existsSync(options.app_dir +'/'+ reactHandlerPaths.reducers)) {
     reactHandlerPaths.reducers = __dirname + '/defaultReducersProxy.js';

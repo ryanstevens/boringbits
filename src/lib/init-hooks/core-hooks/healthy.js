@@ -20,6 +20,7 @@ module.exports = function(BoringInjections) {
     started: new Date(),
     hostname: os.hostname(),
     pid: process.pid,
+    env: process.env.NODE_ENV || '-',
     ...buildStats,
   });
 

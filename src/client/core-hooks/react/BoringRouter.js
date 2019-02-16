@@ -14,6 +14,10 @@ class RouterSwitch extends React.Component {
       return this.containers[name];
     }).filter(container => container.path)
       .sort((containerA, containerB) => {
+
+        if (containerA.path.split('/').length<containerB.path.split('/').length) return 1;
+        if (containerA.path.split('/').length>containerB.path.split('/').length) return -1;
+
         if (containerA.path.length<containerB.path.length) return 1;
         if (containerA.path.length>containerB.path.length) return -1;
         return 0;

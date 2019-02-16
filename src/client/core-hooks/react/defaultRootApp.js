@@ -10,25 +10,11 @@ import {
 } from '@material-ui/core/styles';
 
 
-// Create a theme instance.
-const theme = createMuiTheme({
-  typography: {
-    useNextVariants: true,
-    // Use the system font instead of the default Roboto font.
-    fontFamily: [
-      'Roboto',
-      '"Helvetica Neue"',
-    ].join(','),
-  },
-});
-
 @withStyles(theme => ({
   outerContainer: {
     flexGrow: 1,
     height: '100%',
     overflowY: 'auto',
-  },
-  container: {
     width: '100%',
   },
 }))
@@ -38,18 +24,21 @@ class RootApp extends React.Component {
     const {classes} = this.props;
     return (
       <Grid container className={classes.outerContainer} justify="center" spacing={0}>
-        <MagicallyDeliciousRouter>
-        </MagicallyDeliciousRouter>
+        <MagicallyDeliciousRouter />
       </Grid>
-
     );
   }
 }
 
-export default () => {
+export default (props={theme: {}}) => {
+
+  // Create a theme instance.
+  const theme = createMuiTheme(props.theme || {});
+
   return (
     <MuiThemeProvider theme={theme} sheetsManager={new Map()}>
       <RootApp />
     </MuiThemeProvider>
   );
+
 };
