@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 import config from 'boring-config';
 import fs from 'fs';
 import Module from 'module';
@@ -53,8 +54,11 @@ Module.prototype.require = function(...args) {
     const callerParts = callerId.split('/');
     callerParts.pop();
     const callerDir = callerParts.join('/');
-    const moduleId = requiredMod.indexOf('/') === -1 ? requiredMod :
-      requiredMod.charAt(0) === '/' ? requiredMod : normalize(callerDir + '/' + requiredMod);
+
+    const moduleId = requiredMod.indexOf('modules/') === 0 ? process.cwd() + '/src/' + requiredMod :
+                     requiredMod.indexOf('/') === -1 ? requiredMod :
+                     requiredMod.charAt(0) === '/' ? requiredMod :
+                        normalize(callerDir + '/' + requiredMod);
 
     const comboKey = moduleId + '::' + callerId;
 
