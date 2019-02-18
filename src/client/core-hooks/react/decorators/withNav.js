@@ -12,15 +12,15 @@ import {push} from 'connected-react-router';
 )
 class WithNav extends React.Component {
 
-  render() {
-    const {Target, propsForTarget} = this.props;
-    const WrappedTarget = withRouter(Target);
-    return (
-      <>
-        <WrappedTarget {...propsForTarget} navPush={this.props.navPush} />
-      </>
+  componentWillMount() {
+    const Target = this.props.Target;
+    this.WrappedTarget = withRouter(Target);
+  }
 
-    );
+  render() {
+    const {propsForTarget} = this.props;
+    const WrappedTarget = this.WrappedTarget;
+    return <WrappedTarget {...propsForTarget} navPush={this.props.navPush} />;
   }
 }
 

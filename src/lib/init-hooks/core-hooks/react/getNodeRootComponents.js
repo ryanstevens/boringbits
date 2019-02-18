@@ -9,6 +9,7 @@ function requireModule(importPath) {
   return (module.default) ? module.default : module;
 }
 
+
 function makeDecorators(decorators) {
   return Object.keys(decorators).reduce(function(importedDecorators, name) {
     const decorator = decorators[name];

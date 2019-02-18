@@ -3,9 +3,7 @@ import hoistNonReactStatic from 'hoist-non-react-statics';
 
 
 export function makeDecorator(Wrapper, options = {renderTarget: true}) {
-
   return function decoratorProxy(Target) {
-
     const NewTarget = hoistNonReactStatic(class extends React.Component {
       render() {
         return (
