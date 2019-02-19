@@ -15,4 +15,12 @@ module.exports = {
   },
   logUserAgent: false,
   disableDiagnostics: false,
+  docker: {
+    infrastructure: {
+      haproxy: true,
+      mysql: false,
+      dynamodb: false,
+      redis: false,
+    },
+  },
 };

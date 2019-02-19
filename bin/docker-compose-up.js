@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+const config = require('../config/runtime/boring-config');
 const fsExtra = require('fs-extra');
 const path = require('path');
 const paths = require('../dist/node_modules/paths');
@@ -8,7 +9,16 @@ async function build() {
 
   fsExtra.emptyDirSync(paths.app_dist);
 
-  return childProcess.spawnSync('docker-compose', ['up', '-d', 'haproxy'],
+  console.log(process.cwd(), config.get('test'));
+  const dockerConfig = config.get('boring.docker.infrastructure');
+
+  const servers = Object.keys(dockerConfig).filter(key => dockerConfig[key] === true);
+
+  const args = ['up', '-d'];
+  servers.forEach(server => args.push(server));
+
+  console.log('docker-compose ' + args.join(' '));
+  return childProcess.spawnSync('docker-compose', args,
     {
       stdio: [process.stdin, process.stdout, process.stderr],
       cwd: path.normalize(__dirname + '/..'),

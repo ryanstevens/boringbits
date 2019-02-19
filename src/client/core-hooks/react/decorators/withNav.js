@@ -20,7 +20,7 @@ class WithNav extends React.Component {
   render() {
     const {propsForTarget} = this.props;
     const WrappedTarget = this.WrappedTarget;
-    return <WrappedTarget {...propsForTarget} navPush={this.props.navPush} />;
+    return <WrappedTarget {...propsForTarget} navPush={this.props.navPush} nav={this.props.navPush} />;
   }
 }
 
