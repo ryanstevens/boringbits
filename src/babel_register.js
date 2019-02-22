@@ -1,6 +1,5 @@
 
 require('@babel/register')({
-  // ignore: [],
   'presets': [
     ['@babel/preset-env', {
       'targets': {
@@ -18,5 +17,6 @@ require('@babel/register')({
     }],
     ['@babel/plugin-proposal-class-properties'],
     ['@babel/plugin-syntax-dynamic-import'],
+    ['react-loadable/babel'],
   ],
 });
