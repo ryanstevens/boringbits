@@ -1,7 +1,6 @@
 const childProcess = require('child_process');
 
 async function test(argv) {
-  console.log(argv, argv.argv, process.argv);
 
   const args = [
     'jest',
