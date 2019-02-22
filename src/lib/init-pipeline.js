@@ -14,7 +14,7 @@ const Understudy = require('boring-understudy');
 const decorators = require('./decorators');
 const appUseOverride = require('./server/appUseOverride');
 const injecture = require('injecture');
-const uuid = require('node-uuid');
+const uuid = require('uuid');
 
 class InitPipeline extends EventEmitter {
 
