@@ -23,21 +23,21 @@ module.exports = async function initModules(BoringInjections) {
 
 
   const results = await Promise.all([paths.boring_app_dir, paths.app_dir].map(path => {
-    return syncGlob('**/managed_modules/**/*.js', {cwd: path}).then(files => {
+    return syncGlob('**/managed_modules/**/*.{js,ts}', {cwd: path}).then(files => {
       return files.map(file => {
         return path + '/' + file;
       });
     });
   }));
 
-  const uniqueArray = results.reduce((acc, arr) => {
-    // combine arrays
-    return acc.concat(arr);
-  }, []).reduce(function(acc, item) {
-    // dedupe
-    if (acc.indexOf(item)<0) acc.push(item);
-    return acc;
-  }, []).filter(file => file.indexOf('/test/') < 0);
+  const uniqueArray = results.reduce((acc, arr) => acc.concat(arr), [])
+    .reduce(function(acc, item) {
+      // dedupe
+      if (acc.indexOf(item)<0) acc.push(item);
+      return acc;
+    }, [])
+    .filter(file => file.indexOf('/test/') < 0)
+    .filter(file => file.indexOf('/__test__/') < 0);
 
   const modulesArr = await Promise.all(uniqueArray.map(file => {
     logger.info('Registering managed module: ' + file);
