@@ -28,6 +28,8 @@ require('yargs')
   .command('start', 'Run your boring application', makeCmd('start'))
   .command('debug', 'Debug your boring application', makeCmd('debug'))
   .command('jest', 'run jest to test', makeCmd('jest'))
+  .command('jest-debug', 'run jest to test with --inspect-brk', makeCmd('jest-debug'))
+
   .command('type-check', 'Runs tsc against your projects TypeScript', makeCmd('boring-tsc'))
   .command('tsc', '(Alias for type-check)', makeCmd('boring-tsc'))
   .command('build-client', 'Run webpack on your project\'s web client', makeCmd('build-client'))
