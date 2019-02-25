@@ -19,6 +19,8 @@ describe('Boring Server', function() {
   this.timeout(20000);
   let Server;
   beforeEach(() => {
+    const clear = require('injecture/clear');
+    clear();
     Server = proxyquire('../index', {});
   });
 
