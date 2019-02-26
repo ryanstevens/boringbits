@@ -1,6 +1,6 @@
 {
   "name": "boringbits",
-  "version": "3.28.10",
+  "version": "3.28.14",
   "description": "Frameworks should be boring, applications they build should be exciting",
   "main": "dist/boring.js",
   "scripts": {
@@ -52,6 +52,7 @@
     "@material-ui/icons": "^3.0.1",
     "@types/history": "^4.7.2",
     "@types/node": "^10.12.12",
+    "acorn": "6.1.0",
     "app-module-path": "^2.2.0",
     "async": "^2.6.1",
     "autoprefixer": "^9.1.5",
