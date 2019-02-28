@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "noEmit": true,
+    "baseUrl": "./src",
+    "target": "esnext",     
+    "sourceMap": true,   
+    "module": "commonjs",  
+    "declaration": true,   
+    "noImplicitAny": false,
+    "allowJs": true,
+    "experimentalDecorators": true,
+    "jsx": "react"
+  },
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "name": "devportal",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/server/app.js",
+  "scripts": {
+    "test": "../bin/boring-cli.js jest",
+    "start": "../bin/boring-cli.js start",
+    "build": "../bin/boring-cli.js build",
+    "build-node": "../bin/boring-cli.js build-node",
+    "build-client": "../bin/boring-cli.js build-client",
+    "build-static": "../bin/boring-cli.js build-static",
+    "test-watch": "../bin/boring-cli.js jest --watch",
+    "deploy": "../bin/boring-cli.js deploy",
+    "tsc": "../bin/boring-cli.js type-check",
+    "type-check": "run tsc",
+    "up": "../bin/boring-cli.js up",
+    "down": "../bin/boring-cli.js down",
+    "debug": "../bin/boring-cli.js debug",
+    "generate": "../bin/boring-cli.js generate"
+  },
+  "author": "ryan_stevens",
+  "license": "MIT",
+  "dependencies": {
+    "boringbits": "^3.29.0"
+  }
+}
