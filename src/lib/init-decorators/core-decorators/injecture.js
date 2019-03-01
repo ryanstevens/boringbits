@@ -16,6 +16,6 @@ module.exports = function(BoringInjections) {
   };
 
   return {
-    register
-  }
+    register,
+  };
 };

@@ -1,7 +1,7 @@
 
 import paths from 'paths';
 import requireInject from 'require-inject-all';
-import * as baseDecorators from '../decorators'
+import * as baseDecorators from '../decorators';
 
 // eslint-disable-next-line valid-jsdoc
 module.exports = async function initDecorators(BoringInjections) {

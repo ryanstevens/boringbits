@@ -1,6 +1,6 @@
 {
   "name": "boringbits",
-  "version": "3.29.0",
+  "version": "3.30.0",
   "description": "Frameworks should be boring, applications they build should be exciting",
   "main": "dist/boring.js",
   "scripts": {
