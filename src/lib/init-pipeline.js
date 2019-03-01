@@ -8,6 +8,7 @@ const logger = require('boring-logger');
 const initMiddleware = require('./init-middleware');
 const initHooks = require('./init-hooks');
 const initModules = require('./init-modules');
+const initDecorators = require('./init-decorators');
 const EventEmitter = require('eventemitter2');
 const paths = require('paths');
 const Understudy = require('boring-understudy');
@@ -93,6 +94,7 @@ class InitPipeline extends EventEmitter {
   async build(options) {
     const injections = {
       boring: this,
+      ...this, // TODO: remove this on v4, this was mixed in to keep things backwards compat.
       logger,
       config,
       injecture,
@@ -103,6 +105,13 @@ class InitPipeline extends EventEmitter {
 
     await this.initNS.runPromise(async () => {
       this.initNS.set('corrId', uuid.v4());
+
+
+      // const decorators = await this.perform('init-decorators', injections, async () => {
+      //   return await initDecorators(injections);
+      // });
+
+      // injections.decorators = decorators;
 
       const modules = await this.perform('init-modules', injections, async () => {
         return await initModules(injections);

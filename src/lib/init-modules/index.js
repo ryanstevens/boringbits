@@ -1,6 +1,5 @@
 
 import paths from 'paths';
-import requireInject from 'require-inject-all';
 
 import {promisify} from 'util';
 import glob from 'glob';

@@ -51,10 +51,12 @@ module.exports = {
   server_routers: getAppDirPath('boring.paths.server_routers', '/server/routers'),
   server_middleware: getAppDirPath('boring.paths.server_middleware', '/server/middleware'),
   server_hooks: getAppDirPath('boring.paths.server_hooks', '/server/hooks'),
+  server_decorators: getAppDirPath('boring.paths.server_decorators', '/server/decorators'),
 
   boring_routers: getBoringAppPath('boring.paths.boring_routers', `/lib/init-routers/core-routers`),
   boring_middleware: getBoringAppPath('boring.paths.boring_middleware', `/lib/init-middleware/core-middleware`),
   boring_hooks: getBoringAppPath('boring.paths.boring_hooks', `/lib/init-hooks/core-hooks`),
+  boring_decorators: getBoringAppPath('boring.paths.boring_decorators', `/lib/init-decorators/core-decorators`),
 
   boring_webpack_dev_config: getBoringPath('boring.paths.boring_webpack_dev_config', '/config/runtime/webpack.config.dev.js'),
   boring_webpack_prod_config: getBoringPath('boring.paths.boring_webpack_prod_config', '/config/runtime/webpack.config.prod.js'),

@@ -4,11 +4,8 @@ import requireInject from 'require-inject-all';
 
 module.exports = async function initMiddleware(BoringInjections) {
 
-  const {
-    boring,
-  } = BoringInjections;
 
-  const moduleData = await requireInject([paths.boring_middleware, paths.server_middleware], boring);
+  const moduleData = await requireInject([paths.boring_middleware, paths.server_middleware], BoringInjections);
 
   return Object.keys(moduleData).reduce(function(prev, key) {
     const middlewareExport = moduleData[key];
