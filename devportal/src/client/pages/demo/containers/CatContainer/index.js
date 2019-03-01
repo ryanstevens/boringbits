@@ -31,7 +31,7 @@ const {
 }))
 class CatContainer extends React.Component {
 
-  static path = '/demo/cats';
+  static path = '/__boring/cats';
 
   componentWillMount() {
     this.setState({

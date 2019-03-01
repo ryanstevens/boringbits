@@ -18,6 +18,31 @@ const TimeFixPlugin = require('time-fix-plugin');
 // In development, we always serve from the root. This makes config easier.
 const publicPath = '/';
 
+const plugins = [
+  new ManifestPlugin({
+    fileName: 'asset-manifest.json',
+  }),
+  new webpack.HotModuleReplacementPlugin({
+    multiStep: true,
+  }),
+  // Watcher doesn't work well if you mistype casing in a path so we use
+  // a plugin that prints an error when you attempt to do this.
+  // See https://github.com/facebookincubator/create-react-app/issues/240
+  new CaseSensitivePathsPlugin(),
+  new ProgressBarPlugin(),
+  new ReactLoadablePlugin({
+    filename: './dist/react-loadable.json',
+  }),
+  new TimeFixPlugin(),
+];
+
+if (!process.env.skip_bundle_analyzer) {
+  plugins.push(
+    new BundleAnalyzerPlugin({
+      openAnalyzer: false,
+    })
+  );
+}
 
 // This is the development configuration.
 // It is focused on developer experience and fast rebuilds.
@@ -204,26 +229,7 @@ module.exports = {
       // Make sure to add the new loader(s) before the "file" loader.
     ],
   },
-  plugins: [
-    new ManifestPlugin({
-      fileName: 'asset-manifest.json',
-    }),
-    new webpack.HotModuleReplacementPlugin({
-      multiStep: true,
-    }),
-    // Watcher doesn't work well if you mistype casing in a path so we use
-    // a plugin that prints an error when you attempt to do this.
-    // See https://github.com/facebookincubator/create-react-app/issues/240
-    new CaseSensitivePathsPlugin(),
-    new ProgressBarPlugin(),
-    new BundleAnalyzerPlugin({
-      openAnalyzer: false,
-    }),
-    new ReactLoadablePlugin({
-      filename: './dist/react-loadable.json',
-    }),
-    new TimeFixPlugin(),
-  ],
+  plugins,
 
   optimization: {
     runtimeChunk: false,

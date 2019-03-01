@@ -13,7 +13,7 @@ module.exports = function setupRoute(/* dependencies from boring */ boring) {
     reactEntry,
   } = decorators.router;
 
-  @router('/demo')
+  @router('/__boring')
   class DemoRouter {
 
     @post('/data.json')

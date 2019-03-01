@@ -43,7 +43,7 @@ const {
 }))
 class MessageContainer extends React.Component {
 
-  static path = '/demo';
+  static path = '/__boring';
 
   componentDidMount() {
     setTimeout(() => {
@@ -87,7 +87,7 @@ function update(greeting, dispatch) {
     }
   })
 
-  fetch('/demo/data.json', {
+  fetch('/__boring/data.json', {
     method: 'POST',
     body: JSON.stringify({greeting}),
     headers: {'Content-Type': 'application/json; charset=utf-8'},
