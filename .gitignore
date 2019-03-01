@@ -63,7 +63,7 @@ scratch.js
 
 devportal/dist
 devportal/build
-!devportal/node_modules/
+devportal/node_modules
 yo/node_modules
 yeoman-generator/node_modules
 devportal/node_modules/.cache

@@ -1,6 +1,6 @@
 {
   "name": "boringbits",
-  "version": "3.30.0",
+  "version": "3.30.1",
   "description": "Frameworks should be boring, applications they build should be exciting",
   "main": "dist/boring.js",
   "scripts": {
@@ -14,6 +14,8 @@
     "build-client": "rm -rf dist/client && babel --no-babelrc src/client -d dist/client --extensions=.ts,.tsx,.js,.jsx --source-maps --copy-files --presets=./src/build/wrapped-babel-env-client,@babel/preset-typescript,@babel/preset-react --plugins=@babel/plugin-proposal-object-rest-spread,./src/build/wrapped-babel-plugin-proposal-decorators,@babel/plugin-proposal-class-properties,@babel/plugin-syntax-dynamic-import",
     "build": "npm run clean && babel src -d dist --extensions \".ts,.tsx,.js,.jsx\" --source-maps --copy-files && npm run build-client",
     "prepublishOnly": "npm run build && npm run test-dist && npm run lint",
+    "linkDevportal": "cd devportal && rm -rf node_modules && ln -s ../node_modules node_modules",
+    "prepublishDevportal": "npm run linkDevportal && cd devportal && npm run build && rm -rf node_modules",
     "lint": "npx eslint ./src ./bin"
   },
   "bin": {
