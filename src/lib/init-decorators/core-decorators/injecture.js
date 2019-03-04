@@ -1,21 +1,36 @@
 import injecture from 'injecture';
+import { makeClassDecorator } from '../../decorators';
 
 module.exports = function(BoringInjections) {
 
-  function register(name, registerOptions) {
-
+  const register = makeClassDecorator(function(target, name, registerOptions) {
     if (typeof name === 'object' && !registerOptions) {
       registerOptions = name;
+      name = null;
     }
 
-    return function(target) {
+    injecture.registerClassByKey(name || target.name, target, registerOptions);
 
-      injecture.registerClassByKey(name || target.name, target, registerOptions);
-      return target;
-    };
-  };
+    return target;
+  });
+
+  const registerSingleton = makeClassDecorator(function(target, name, registerOptions) {
+    if (typeof name === 'object' && !registerOptions) {
+      registerOptions = name;
+      name = null;
+    }
+
+    if (!registerOptions) registerOptions = {};
+    injecture.registerClassByKey(name || target.name, target, {
+      ...registerOptions,
+      singleton: true
+    });
+
+    return target;
+  });
 
   return {
     register,
+    registerSingleton
   };
 };

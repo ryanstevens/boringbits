@@ -83,7 +83,10 @@ function addToProps(proto, val) {
   return newMetadata;
 }
 
-
+/**
+ * TODO: make this work for POST's and to be put on the 
+ * @router level, just just on @get
+ */
 toExport.middleware = function middleware(middleware) {
   if (typeof middleware === 'string') middleware = [middleware];
 

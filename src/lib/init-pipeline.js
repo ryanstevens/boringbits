@@ -107,11 +107,11 @@ class InitPipeline extends EventEmitter {
       this.initNS.set('corrId', uuid.v4());
 
 
-      // const decorators = await this.perform('init-decorators', injections, async () => {
-      //   return await initDecorators(injections);
-      // });
+      const decorators = await this.perform('init-decorators', injections, async () => {
+        return await initDecorators(injections);
+      });
 
-      // injections.decorators = decorators;
+      injections.decorators = decorators;
 
       const modules = await this.perform('init-modules', injections, async () => {
         return await initModules(injections);
