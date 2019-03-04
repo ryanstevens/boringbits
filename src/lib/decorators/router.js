@@ -83,8 +83,9 @@ function addToProps(proto, val) {
   return newMetadata;
 }
 
+// eslint-disable-next-line valid-jsdoc
 /**
- * TODO: make this work for POST's and to be put on the 
+ * TODO: make this work for POST's and to be put on the
  * @router level, just just on @get
  */
 toExport.middleware = function middleware(middleware) {

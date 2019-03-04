@@ -1,5 +1,5 @@
 import injecture from 'injecture';
-import { makeClassDecorator } from '../../decorators';
+import {makeClassDecorator} from '../../decorators';
 
 module.exports = function(BoringInjections) {
 
@@ -23,7 +23,7 @@ module.exports = function(BoringInjections) {
     if (!registerOptions) registerOptions = {};
     injecture.registerClassByKey(name || target.name, target, {
       ...registerOptions,
-      singleton: true
+      singleton: true,
     });
 
     return target;
@@ -31,6 +31,6 @@ module.exports = function(BoringInjections) {
 
   return {
     register,
-    registerSingleton
+    registerSingleton,
   };
 };

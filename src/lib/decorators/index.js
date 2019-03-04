@@ -18,18 +18,17 @@ function makeClassDecorator(classDecorator) {
       return classDecorator(...args);
     }
 
-    // this assumes they used the decorator and did not want to pass any 
+    // this assumes they used the decorator and did not want to pass any
     // arguments to it
     if (args.length === 1 && typeof args[0] === 'function') {
       const target = args.shift();
       return classDecoratorWrapper(target);
-    }
-    else return classDecoratorWrapper;
-  }; 
+    } else return classDecoratorWrapper;
+  };
 }
 
 module.exports = {
   router: router.default,
   subscribeDecorators,
-  makeClassDecorator
+  makeClassDecorator,
 };
