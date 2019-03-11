@@ -69,7 +69,7 @@ module.exports = class HTML extends React.Component {
             pageInjections.headLinks.map((linkObj) => <link key={linkObj.href} {...linkObj} />)
           }
         </head>
-        <body style={{height: '100%', padding: '0px', margin: '0px'}}>
+        <body style={{padding: '0px', margin: '0px'}}>
           <style dangerouslySetInnerHTML={{__html: this.props.inlineCSS}} id="jss-server-side"></style>
           <div style={{width: '100%', height: '100%'}} id="root" dangerouslySetInnerHTML={{__html: this.props.containerHTML}}>
 
