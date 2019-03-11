@@ -8,7 +8,7 @@ import {routerMiddleware, connectRouter} from 'connected-react-router';
 import isNode from 'detect-node';
 import thunk from 'redux-thunk';
 import {Map} from 'immutable';
-
+import {Helmet} from "react-helmet";
 
 export default function getAppComponents(dependencies) {
 
@@ -82,7 +82,13 @@ export default function getAppComponents(dependencies) {
       <Provider store={store}>
         <Router>
           <JssProvider registry={sheetsRegistry} generateClassName={generateClassName}>
-            <App />
+            <>
+              <Helmet>
+                <title>My Title 123</title>
+                <meta name="description" content="Helmet application" />
+              </Helmet>
+              <App />
+            </>
           </JssProvider>
         </Router>
       </Provider>

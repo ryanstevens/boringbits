@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 /**
  * This is HEAVILY inspired by the patterns found
  * in the paths module ejected from react-scripts (CRA)
@@ -6,12 +7,12 @@
 const config = require('./boring-config');
 const path = require('path');
 
-const proj_dir = path.normalize(config.get('boring.paths.proj_dir', process.cwd()))
-const base_app_path_key = 'boring.paths.base_app_path'
+const proj_dir = path.normalize(config.get('boring.paths.proj_dir', process.cwd()));
+const base_app_path_key = 'boring.paths.base_app_path';
 
-const base_app_path = path.normalize(config.get(base_app_path_key, 'dist'))
-const boring_dir = path.normalize(__dirname + '/../../')
-const boring_app_path = path.normalize(config.get('boring.paths.boring_app_path', 'dist'))
+const base_app_path = path.normalize(config.get(base_app_path_key, 'dist'));
+const boring_dir = path.normalize(__dirname + '/../../');
+const boring_app_path = path.normalize(config.get('boring.paths.boring_app_path', 'dist'));
 
 
 function getProjPath(key, defaultVal) {
@@ -19,7 +20,7 @@ function getProjPath(key, defaultVal) {
 }
 
 function getAppDirPath(key, defaultVal) {
-  return path.normalize(getProjPath(base_app_path_key, base_app_path) + '/'+ config.get(key , defaultVal));
+  return path.normalize(getProjPath(base_app_path_key, base_app_path) + '/'+ config.get(key, defaultVal));
 }
 
 function getBoringPath(key, defaultVal) {
@@ -27,10 +28,8 @@ function getBoringPath(key, defaultVal) {
 }
 
 function getBoringAppPath(key, defaultVal) {
-  return path.normalize(boring_dir + '/' + boring_app_path  + config.get(key, defaultVal));
+  return path.normalize(boring_dir + '/' + boring_app_path + config.get(key, defaultVal));
 }
-
-
 
 module.exports = {
 
@@ -61,5 +60,5 @@ module.exports = {
   boring_webpack_dev_config: getBoringPath('boring.paths.boring_webpack_dev_config', '/config/runtime/webpack.config.dev.js'),
   boring_webpack_prod_config: getBoringPath('boring.paths.boring_webpack_prod_config', '/config/runtime/webpack.config.prod.js'),
 
-  asset_manifest: getProjPath('boring.paths.asset_manifest', '/build/asset-manifest.json')
-}
+  asset_manifest: getProjPath('boring.paths.asset_manifest', '/build/asset-manifest.json'),
+};

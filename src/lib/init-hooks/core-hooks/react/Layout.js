@@ -1,6 +1,4 @@
 import React from 'react';
-import ReactDOMServer from 'react-dom/server';
-
 
 module.exports = class HTML extends React.Component {
   render() {
@@ -51,9 +49,31 @@ module.exports = class HTML extends React.Component {
       return (typeof script === 'string') ? {src: script} : script;
     });
 
+    const styles = this.props.styles || {};
+
+    const htmlStyle = {
+      minHeight: '100%',
+      padding: '0px',
+      margin: '0px',
+      overflow: 'auto',
+      ...(styles.html || {}),
+    };
+
+    const bodyStyle = {
+      minHeight: '100vh',
+      padding: '0px',
+      margin: '0px',
+      ...(styles.body || {}),
+    };
+
+    const rootStyle = {
+      height: '100%',
+      width: '100%',
+      ...(styles.root || {}),
+    };
 
     return (
-      <html style={{height: '100%'}}>
+      <html style={htmlStyle}>
         <head>
           <meta charSet="utf-8" />
 
@@ -69,9 +89,9 @@ module.exports = class HTML extends React.Component {
             pageInjections.headLinks.map((linkObj) => <link key={linkObj.href} {...linkObj} />)
           }
         </head>
-        <body style={{padding: '0px', margin: '0px'}}>
+        <body style={bodyStyle}>
           <style dangerouslySetInnerHTML={{__html: this.props.inlineCSS}} id="jss-server-side"></style>
-          <div style={{width: '100%', height: '100%'}} id="root" dangerouslySetInnerHTML={{__html: this.props.containerHTML}}>
+          <div style={rootStyle} id="root" dangerouslySetInnerHTML={{__html: this.props.containerHTML}}>
 
           </div>
 

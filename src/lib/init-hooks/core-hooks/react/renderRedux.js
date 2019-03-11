@@ -8,6 +8,7 @@ import Loadable from 'react-loadable';
 import {getBundles} from 'react-loadable/webpack';
 import {frontloadServerRender, Frontload} from 'react-frontload';
 import getRootComponents from './getNodeRootComponents';
+import {Helmet} from 'react-helmet';
 
 
 module.exports = function renderRedux(options = {components: {}, layout: {clientConfig: {}, pageInjections: {}}}) {
@@ -92,8 +93,8 @@ module.exports = function renderRedux(options = {components: {}, layout: {client
     return ReactDOMServer.renderToString(<components.Container />);
   }).then((containerHTML) => {
 
-    // const containerHTML = ReactDOMServer.renderToString(<Container />);
     const bundles = getBundles(stats, modules);
+    const helmet = Helmet.renderStatic();
 
     bundles
       .filter(bundle => bundle && bundle.file.endsWith('.js'))
@@ -117,6 +118,7 @@ module.exports = function renderRedux(options = {components: {}, layout: {client
       <Layout
         inlineCSS={getStyleSheets()}
         locals={res.locals}
+        helmet={helmet}
         containerHTML={containerHTML}
         redux_state={store.getState()}
         {...layout}
