@@ -8,7 +8,7 @@ import {routerMiddleware, connectRouter} from 'connected-react-router';
 import isNode from 'detect-node';
 import thunk from 'redux-thunk';
 import {Map} from 'immutable';
-import {Helmet} from "react-helmet";
+import {Helmet} from './ReactHelmet';
 
 export default function getAppComponents(dependencies) {
 
@@ -84,8 +84,8 @@ export default function getAppComponents(dependencies) {
           <JssProvider registry={sheetsRegistry} generateClassName={generateClassName}>
             <>
               <Helmet>
-                <title>My Title 123</title>
-                <meta name="description" content="Helmet application" />
+                <meta charSet="utf-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"></meta>
               </Helmet>
               <App />
             </>

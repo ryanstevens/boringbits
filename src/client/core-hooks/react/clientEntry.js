@@ -11,8 +11,7 @@ import * as decoratorUntil from './decoratorUtil';
 import {Frontload} from 'react-frontload';
 import {preloadReady} from 'react-loadable';
 import getRootComponents from './getRootComponents';
-// import {ConnectedRouter} from 'connected-react-router';
-
+import {Helmet} from './ReactHelmet';
 
 function extractStateFromDOM() {
   const state = {
@@ -88,6 +87,8 @@ const toExport = {
   Redux: Redux, // backwards compat, remove @ v4
   redux: Redux,
   ReactRedux: ReactRedux, // backwards compat, remove @ v4
+  Helmet: Helmet,
+  helmet: Helmet,
   injecture: injecture,
   isNode,
 
@@ -100,7 +101,6 @@ const toExport = {
   subscribeHotReload,
   ...decoratorUntil,
 };
-
 
 toExport['react-redux'] = ReactRedux;
 toExport['react-dom'] = ReactDOM;

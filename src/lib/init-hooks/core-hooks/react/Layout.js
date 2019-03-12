@@ -1,7 +1,18 @@
 import React from 'react';
 
+function parseStyle(attrs) {
+  const style = attrs.style || {};
+  if ('style' in attrs) delete attrs.style;
+  if (typeof style === 'string') throw new Error('Boring Layout does not support React Helmet style tag as strings.  Please pass in an object');
+  return style;
+}
+
 module.exports = class HTML extends React.Component {
   render() {
+
+    // Object.keys(this.props.helmet).forEach(key => {
+    //   console.log('##' + key, this.props.helmet[key].toString());
+    // });
 
     const pageInjections = {
       headLinks: [],
@@ -51,12 +62,17 @@ module.exports = class HTML extends React.Component {
 
     const styles = this.props.styles || {};
 
+
+    const htmlAttrs = this.props.helmet.htmlAttributes.toComponent();
+    const bodyAttrs = this.props.helmet.bodyAttributes.toComponent();
+
     const htmlStyle = {
       minHeight: '100%',
       padding: '0px',
       margin: '0px',
       overflow: 'auto',
       ...(styles.html || {}),
+      ...parseStyle(htmlAttrs),
     };
 
     const bodyStyle = {
@@ -64,6 +80,7 @@ module.exports = class HTML extends React.Component {
       padding: '0px',
       margin: '0px',
       ...(styles.body || {}),
+      ...parseStyle(bodyAttrs),
     };
 
     const rootStyle = {
@@ -73,13 +90,13 @@ module.exports = class HTML extends React.Component {
     };
 
     return (
-      <html style={htmlStyle}>
+      <html {...htmlAttrs} style={htmlStyle}>
         <head>
-          <meta charSet="utf-8" />
+          {this.props.helmet.title.toComponent()}
+          {this.props.helmet.meta.toComponent()}
 
           <script dangerouslySetInnerHTML={{__html: appVars}}></script>
 
-          <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"></meta>
 
           {
             pageInjections.headScripts.map((scriptObj) => <script key={scriptObj.src} {...scriptObj} />)
@@ -88,14 +105,20 @@ module.exports = class HTML extends React.Component {
           {
             pageInjections.headLinks.map((linkObj) => <link key={linkObj.href} {...linkObj} />)
           }
-        </head>
-        <body style={bodyStyle}>
-          <style dangerouslySetInnerHTML={{__html: this.props.inlineCSS}} id="jss-server-side"></style>
-          <div style={rootStyle} id="root" dangerouslySetInnerHTML={{__html: this.props.containerHTML}}>
 
-          </div>
+          {this.props.helmet.link.toComponent()}
+
+        </head>
+        <body {...bodyAttrs} style={bodyStyle}>
+          <style dangerouslySetInnerHTML={{__html: this.props.inlineCSS}} id="jss-server-side"></style>
+
+          {this.props.helmet.style.toComponent()}
+
+          <div style={rootStyle} id="root" dangerouslySetInnerHTML={{__html: this.props.containerHTML}}></div>
 
           <script dangerouslySetInnerHTML={{__html: reduxHtml}}></script>
+
+          {this.props.helmet.script.toComponent()}
           {
             pageInjections.bodyEndScripts.map((scriptObj) => <script key={scriptObj.src} {...scriptObj} />)
           }
