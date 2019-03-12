@@ -1,4 +1,4 @@
-
+import outerContainer from './defaultOuterContainer';
 
 export default () => {
   const theme = {
@@ -10,6 +10,7 @@ export default () => {
         '"Helvetica Neue"',
       ].join(','),
     },
+    outerContainer: outerContainer,
   };
 
   return theme;

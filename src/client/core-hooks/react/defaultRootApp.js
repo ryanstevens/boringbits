@@ -1,8 +1,7 @@
 import React from 'react';
 import MagicallyDeliciousRouter from './BoringRouter';
 import {withStyles} from '@material-ui/core/styles';
-
-import Grid from '@material-ui/core/Grid';
+import defaultOuterContainer from './defaultOuterContainer';
 
 import {
   MuiThemeProvider,
@@ -12,10 +11,8 @@ import {
 
 @withStyles(theme => ({
   outerContainer: {
-    flexGrow: 1,
-    height: '100%',
-    overflowY: 'auto',
-    width: '100%',
+    ...defaultOuterContainer,
+    ...(theme.outerContainer || {}),
   },
 }))
 class RootApp extends React.Component {
@@ -23,9 +20,9 @@ class RootApp extends React.Component {
   render() {
     const {classes} = this.props;
     return (
-      <Grid container className={classes.outerContainer} justify="center" spacing={0}>
+      <div className={classes.outerContainer + ' boring_outerContainer'}>
         <MagicallyDeliciousRouter />
-      </Grid>
+      </div>
     );
   }
 }
