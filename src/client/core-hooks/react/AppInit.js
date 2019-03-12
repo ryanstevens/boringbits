@@ -1,6 +1,5 @@
 import React from 'react';
-import {SheetsRegistry} from 'react-jss/lib/jss';
-import JssProvider from 'react-jss/lib/JssProvider';
+import {/* createGenerateClassName,*/JssProvider, SheetsRegistry} from 'react-jss';
 import {createStore, applyMiddleware, combineReducers, compose} from 'redux';
 import {Provider} from 'react-redux';
 import {createGenerateClassName} from '@material-ui/core/styles';
@@ -65,8 +64,8 @@ export default function getAppComponents(dependencies) {
   );
 
   // Create a new class name generator.
-  const generateClassName = createGenerateClassName();
   const sheetsRegistry = new SheetsRegistry();
+  const generateClassName = createGenerateClassName();
 
   // eslint-disable-next-line valid-jsdoc
   /**
@@ -78,6 +77,8 @@ export default function getAppComponents(dependencies) {
   }
 
   function Container() {
+
+
     return (
       <Provider store={store}>
         <Router>
