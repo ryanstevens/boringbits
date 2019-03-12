@@ -70,7 +70,7 @@ class <%= className %> extends React.Component {
           </Grid>
         </Grid>
         <Grid item xs={12} className={classes.navButton}>
-          <Button color="primary" onClick={() => this.props.navPush('/demo/cats')} variant="contained" size="large">See Cats</Button>
+          <Button color="primary" onClick={() => this.props.navPush('<%= path %>/cats')} variant="contained" size="large">See Cats</Button>
         </Grid>
       </Grid>
     )

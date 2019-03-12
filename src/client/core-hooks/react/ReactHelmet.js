@@ -25,7 +25,8 @@ export function Helmet(props) {
      * I'm sure someone on the interweb will explain why this is a horrible
      * thing I've done, happy to discuss this on my fake twitter profile.  - RCS
      */
-    newProp.children = props.children.filter(child => {
+    const children = [].concat(props.children || []);
+    newProp.children = children.filter(child => {
       return (child.type !== 'html' && child.type !== 'body');
     });
 
