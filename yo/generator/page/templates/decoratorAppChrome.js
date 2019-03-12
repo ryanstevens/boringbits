@@ -7,6 +7,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import Typography from '@material-ui/core/Typography';
+import {Helmet} from 'boringbits/client';
 
 
 @withStyles(theme => ({
@@ -33,6 +34,16 @@ class AppChrome extends React.Component {
     const {classes, Target, propsForTarget} = this.props;
     return (
       <Grid container className={classes.outerContainer} justify="center" spacing={0}>
+        <Helmet>
+          <title>Boring Bits Demo</title>
+
+          <html style={{height:'100%'}}></html>
+          <body style={{height:'100%'}}></body>
+
+          <link href='https://fonts.googleapis.com/css?family=Roboto:300,400,500' type='text/css' rel='stylesheet'></link>
+          <link href='https://fonts.googleapis.com/icon?family=Material+Icons' type='text/css' rel='stylesheet'></link>
+
+        </Helmet>
         <Grid className={classes.container} item>
           <AppBar position="static">
             <Toolbar>

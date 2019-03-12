@@ -61,9 +61,6 @@ module.exports = function renderRedux(options = {components: {}, layout: {client
     layout.pageInjections.headLinks = [];
   }
 
-  layout.pageInjections.headLinks.push('https://fonts.googleapis.com/css?family=Roboto:300,400,500');
-  layout.pageInjections.headLinks.push('https://fonts.googleapis.com/icon?family=Material+Icons');
-
   let getStyleSheets;
   let store;
   const componentOptions = options.components || {};

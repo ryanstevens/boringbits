@@ -88,7 +88,6 @@ const toExport = {
   redux: Redux,
   ReactRedux: ReactRedux, // backwards compat, remove @ v4
   Helmet: Helmet,
-  helmet: Helmet,
   injecture: injecture,
   isNode,
 
