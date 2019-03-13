@@ -4,14 +4,15 @@ import React from 'react';
 
 class WithStyles extends React.Component {
 
-  componentWillMount() {
-    const Target = this.props.Target;
-    this.WrappedTarget = withStyles(Target);
-  }
+  static hasArgs = true;
 
   render() {
+
+    const Target = this.props.Target;
+    const decoratorArgs = this.props.decoratorArgs;
+    const WrappedTarget = withStyles(...decoratorArgs)(Target);
+
     const {propsForTarget} = this.props;
-    const WrappedTarget = this.WrappedTarget;
     return <WrappedTarget {...propsForTarget} />;
   }
 }
