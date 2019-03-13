@@ -14,8 +14,9 @@ function renderApp() {
 
   const App = mainApp;
   function ThemeMainApp() {
+    const theme = appTheme();
     return (
-      <App theme={appTheme()} />
+      <App theme={theme} />
     );
   }
 

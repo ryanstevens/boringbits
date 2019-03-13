@@ -29,8 +29,21 @@ class RootApp extends React.Component {
 
 export default (props={theme: {}}) => {
 
+  const themeObj = props.theme || {};
+
+  // This is a straight up material-ui
+  // hack to turn off a warning message
+  // and ensure people are using the new
+  // typography
+  if (!themeObj.typography) {
+    themeObj.typography = {
+      useNextVariants: true,
+    };
+  }
+
   // Create a theme instance.
-  const theme = createMuiTheme(props.theme || {});
+  const theme = createMuiTheme(themeObj);
+
 
   return (
     <MuiThemeProvider theme={theme} sheetsManager={new Map()}>
