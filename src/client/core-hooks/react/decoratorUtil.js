@@ -1,8 +1,12 @@
 import React from 'react';
 import hoistNonReactStatic from 'hoist-non-react-statics';
 
-
 function wrapDecorator(Wrapper, options, Target, decoratorArgs=[]) {
+
+  if (Wrapper.beforeDecorate) {
+    Wrapper.beforeDecorate(Target, decoratorArgs);
+  }
+
   const NewTarget = hoistNonReactStatic(class extends React.Component {
     render() {
       return (
