@@ -3,6 +3,13 @@ module.exports = {
   app: {
     port: 4000,
   },
+  // meant to be overriden
+  plugins: {
+    'boring-plugins-default': {
+      foo: 'bar',
+    },
+    'boring-plugins-last': {},
+  },
   isDevelopment: false,
   useWebpackDevServer: false,
   logger: {

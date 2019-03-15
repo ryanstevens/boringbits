@@ -70,8 +70,6 @@ describe('Boring Server', function() {
     assert.ok(finalConfig.webpack_config);
     assert.equal(listenResolved.beep, 'boop', 'should be resolved by now with the value returned from startExpress');
     assert.equal(portToListen, weirdPort);
-
-
   });
 
   it('will be able to ask injecture how many servers were created', async () => {
@@ -86,6 +84,20 @@ describe('Boring Server', function() {
     assert.equal(injecture.allInstances('BoringServer').length, 3);
 
     assert.deepEqual([instance1, instance2, instance3], injecture.allInstances('BoringServer'));
+  });
+
+  // this acts more like an integration test than unit as it will
+  // inspect the finalConfig and look for specific properties the
+  // init pipeline as responsible for
+  it('will return a finalConfig with expected properties', async () => {
+
+    const server = new Server();
+
+    const finalConfig = await server.start();
+    assert.ok(finalConfig.webpack_config);
+    assert.equal(finalConfig.plugins['boring-plugins-default'].value.foo, 'bar');
+    assert.ok(finalConfig.decorators.injecture, 'injecture is a core decorator');
+    assert.ok(finalConfig.decorators.logger.log);
   });
 
 });

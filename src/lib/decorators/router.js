@@ -167,7 +167,7 @@ toExport.post = function post(path) {
   };
 };
 
-createEndpointDecorator('entrypoint', 'get');
+createEndpointDecorator('entrypoint');
 
 injecture.register('decorator.router.endpoint',
   // since we are only using the container
@@ -203,7 +203,7 @@ toExport.subscribeDecorators = function subscribeDecorators(emitter) {
   extenrnalEmitters.push(emitter);
 };
 
-function createEndpointDecorator(decoratorName, method, descriptorWrapper) {
+function createEndpointDecorator(decoratorName, descriptorWrapper) {
 
   if (!descriptorWrapper) {
     descriptorWrapper = function defaultDescriptorWrapper(descriptor) {

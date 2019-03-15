@@ -19,7 +19,7 @@ module.exports = function reactHook(BoringInjections) {
 
   const isDevelopment = config.get('boring.isDevelopment', false);
 
-  decorators.router.createEndpointDecorator('reactEntry', 'get');
+  decorators.router.createEndpointDecorator('reactEntry');
 
 
   const shadowedReactEntry = decorators.router.reactEntry;

@@ -33,7 +33,7 @@ module.exports = function reactHook(BoringInjections) {
     boring,
   } = BoringInjections;
 
-  decorators.router.createEndpointDecorator('staticGen', 'get');
+  decorators.router.createEndpointDecorator('staticGen');
 
   const staticPromises = [];
   emitter.on('decorator.router.staticGen', function(decoratorContext) {

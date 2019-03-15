@@ -5,7 +5,7 @@ const config = require('boring-config');
 module.exports = function boringInection(boring) {
 
 
-  decorators.router.createEndpointDecorator('compress', 'get');
+  decorators.router.createEndpointDecorator('compress');
 
   boring.before('add-middleware', function() {
     boring.after('app.use', function(ctx) {
