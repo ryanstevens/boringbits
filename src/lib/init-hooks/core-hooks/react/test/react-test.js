@@ -8,7 +8,7 @@ cls.createNamespace('http-request');
 describe('React Tests', function reactTests() {
 
   // eslint-disable-next-line no-invalid-this
-  this.timeout(4000);
+  this.timeout(8000);
 
   let reactHook;
   beforeEach(function() {

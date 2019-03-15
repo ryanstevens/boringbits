@@ -3,11 +3,26 @@ import fs from 'fs';
 module.exports = async function initPlugins(BoringInjections) {
 
   const {config, logger} = BoringInjections;
-  const pluginMeta = config.get('boring.plugins', {});
+  const pluginConfig = config.get('boring.plugins', {});
+  // normalize input
+  const pluginMeta = Object.keys(pluginConfig).reduce((acc, name) => {
+    const plugin = pluginConfig[name];
+    if (!plugin.resolve) {
+      acc[name] = {
+        resolve: name,
+        args: plugin,
+      };
+    } else {
+      acc[name] = plugin;
+    }
+    return acc;
+  }, {});
 
   const plugins = Object.keys(pluginMeta).reduce((acc, pluginName) => {
     logger.info('Registering plugin ' + pluginName);
-    acc[pluginName] = require(pluginName)(BoringInjections);
+    const plugin = pluginMeta[pluginName];
+    const pluginModule = (typeof plugin.resolve === 'string') ? require(plugin.resolve) : plugin;
+    acc[pluginName] = pluginModule(BoringInjections);
     return acc;
   }, {});
 
@@ -44,7 +59,7 @@ module.exports = async function initPlugins(BoringInjections) {
   (await Promise.all(
     mapPlugins(pluginName => {
       return plugins[pluginName]
-        .run(pluginMeta[pluginName])
+        .run(pluginMeta[pluginName].args)
         .then(result => {
           return {
             pluginName,

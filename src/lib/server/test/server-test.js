@@ -93,7 +93,12 @@ describe('Boring Server', function() {
 
     const server = new Server();
 
-    const finalConfig = await server.start();
+    const finalConfig = await server.start({
+      startExpress: (app, port) => {
+        return Promise.resolve();
+      },
+    });
+
     assert.ok(finalConfig.webpack_config);
     assert.equal(finalConfig.plugins.active['boring-plugins-default'].value.foo, 'bar');
     assert.equal(finalConfig.plugins.active['boring-plugins-default'].initedRoute, true, 'Proves the router was ran');
