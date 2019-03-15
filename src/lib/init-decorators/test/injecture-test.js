@@ -6,7 +6,11 @@ describe('Injecture decorators', function() {
   it('can use register decorator', async () => {
 
     const initDeocrators = require('../index');
-    const injections = {};
+    const injections = {
+      plugins: {
+        splicePlugins: (name, dirs) => dirs,
+      },
+    };
 
     const decorators = await initDeocrators(injections);
 
@@ -33,7 +37,11 @@ describe('Injecture decorators', function() {
   it('can register a signleton', async () => {
 
     const initDeocrators = require('../index');
-    const injections = {};
+    const injections = {
+      plugins: {
+        splicePlugins: (name, dirs) => dirs,
+      },
+    };
 
     const decorators = await initDeocrators(injections);
 

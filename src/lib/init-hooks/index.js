@@ -13,8 +13,8 @@ module.exports = async function initHooks(BoringInjections) {
     boring,
   } = BoringInjections;
 
-
-  const moduleData = await requireInject([paths.boring_hooks, paths.server_hooks], BoringInjections);
+  const dirs = BoringInjections.plugins.splicePlugins('hooks', [paths.boring_hooks, paths.server_hooks]);
+  const moduleData = await requireInject(dirs, BoringInjections);
 
   return Object.keys(moduleData).reduce(function(prev, key) {
     const hookExport = moduleData[key];

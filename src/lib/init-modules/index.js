@@ -20,8 +20,9 @@ module.exports = async function initModules(BoringInjections) {
     logger,
   } = BoringInjections;
 
+  const dirs = BoringInjections.plugins.splicePlugins('', [paths.boring_app_dir, paths.app_dir]);
 
-  const results = await Promise.all([paths.boring_app_dir, paths.app_dir].map(path => {
+  const results = await Promise.all(dirs.map(path => {
     return syncGlob('**/managed_modules/**/*.{js,ts}', {cwd: path}).then(files => {
       return files.map(file => {
         return path + '/' + file;

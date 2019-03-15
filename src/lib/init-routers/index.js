@@ -44,8 +44,8 @@ module.exports = async function initRoutes(BoringInjections) {
     endpoint_meta.push(endpoint_transformer(metadata));
   });
 
-
-  const moduleData = await requireInject([paths.boring_routers, paths.server_routers], BoringInjections);
+  const dirs = BoringInjections.plugins.splicePlugins('routers', [paths.boring_routers, paths.server_routers]);
+  const moduleData = await requireInject(dirs, BoringInjections);
 
   const route_descriptors = endpoint_meta.concat(Object.keys(moduleData).map((name) => {
     const route = moduleData[name] || {endpoints: []};

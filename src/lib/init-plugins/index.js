@@ -1,4 +1,4 @@
-
+import fs from 'fs';
 
 module.exports = async function initPlugins(BoringInjections) {
 
@@ -11,30 +11,54 @@ module.exports = async function initPlugins(BoringInjections) {
     return acc;
   }, {});
 
-  (
-    await Promise.all(Object
-      .keys(plugins)
-      .sort(function(name1, name2) {
-        const sort1 = plugins[name1].runOrder || 100;
-        const sort2 = plugins[name2].runOrder || 100;
-        if (sort1<sort2) return -1;
-        else if (sort1 === sort2) return 0;
-        else return 1;
-      })
-      .map(pluginName => {
-        return plugins[pluginName]
-          .run(pluginMeta[pluginName])
-          .then(result => {
-            return {
-              pluginName,
-              result,
-            };
-          });
-      })
-    )
-  ).forEach(retVal => {
+  const sortedPlugins = Object
+    .keys(plugins)
+    .sort(function(name1, name2) {
+      const sort1 = plugins[name1].runOrder || 100;
+      const sort2 = plugins[name2].runOrder || 100;
+      if (sort1<sort2) return -1;
+      else if (sort1 === sort2) return 0;
+      else return 1;
+    });
+
+  function mapPlugins(fn) {
+    return sortedPlugins.map(fn);
+  }
+
+  function splicePlugins(dirname, dirsToSplice = []) {
+    const pluginDirs = mapPlugins((pluginName => {
+      const plugin = plugins[pluginName];
+      const path = plugin.baseDir + '/' + dirname;
+      if (fs.existsSync(path)) {
+        return path;
+      } else return null;
+    })).filter(Boolean);
+
+    return [
+      dirsToSplice.shift(),
+      ...pluginDirs,
+      ...dirsToSplice,
+    ].filter(Boolean);
+  }
+
+  (await Promise.all(
+    mapPlugins(pluginName => {
+      return plugins[pluginName]
+        .run(pluginMeta[pluginName])
+        .then(result => {
+          return {
+            pluginName,
+            result,
+          };
+        });
+    })
+  )).forEach(retVal => {
     plugins[retVal.pluginName].value = retVal.result || {};
   });
 
-  return plugins;
+  return {
+    active: plugins,
+    map: mapPlugins,
+    splicePlugins,
+  };
 };

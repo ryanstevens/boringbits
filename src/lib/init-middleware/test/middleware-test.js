@@ -6,6 +6,11 @@ function getMiddlewareFromModule(path) {
   return require(path)({boring: {}}).then(result => Promise.resolve(result));
 }
 
+
+const plugins = {
+  splicePlugins: (name, dirs) => dirs,
+};
+
 describe('Init Middleware', function() {
 
   it('will require all the middleware files in directory', async () => {
@@ -16,7 +21,7 @@ describe('Init Middleware', function() {
       },
     });
 
-    const middlewareReturned = await init({boring: {}});
+    const middlewareReturned = await init({boring: {}, plugins});
 
     assert.equal(Object.keys(middlewareReturned).length, 3);
     assert.ok(middlewareReturned.middlewareB, 'This one exported a function so we took the module as the key');

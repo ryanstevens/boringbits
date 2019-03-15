@@ -14,6 +14,11 @@ describe('Init Hooks', function() {
 
     const init = require('../index');
     const injectionMoch = {
+      plugins: {
+        splicePlugins: () => {
+
+        },
+      },
       boring: {
         paths,
         config,

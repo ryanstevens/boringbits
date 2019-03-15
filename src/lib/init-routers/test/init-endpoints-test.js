@@ -25,6 +25,10 @@ function wipeInjectoreStore() {
 
 }
 
+const plugins = {
+  splicePlugins: () => {},
+};
+
 describe('Init Endpoints', function() {
 
   // eslint-disable-next-line no-invalid-this
@@ -85,7 +89,7 @@ describe('Init Endpoints', function() {
 
     const boring = new Boring();
 
-    init({boring}).then(result => {
+    init({boring, plugins}).then(result => {
 
       const pageA = findByName(result, 'pageA');
       const pageB = findByName(result, 'pageB');
@@ -139,7 +143,7 @@ describe('Init Endpoints', function() {
       }
     }
 
-    init({boring}).then(result => {
+    init({boring, plugins}).then(result => {
       assert.equal(result.length, 1);
       assert.equal(result[0].endpoints.length, 2, 'There should be two endpoints');
       assert.equal(result[0].endpoints[0].methods.get.path, '/beep');
@@ -198,7 +202,7 @@ describe('Init Endpoints', function() {
 
     }
 
-    init({boring}).then(result => {
+    init({boring, plugins}).then(result => {
 
       boring.before('http::get', function(ctx) {
         return new Promise(resolve => {

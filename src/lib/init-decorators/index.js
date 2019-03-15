@@ -6,7 +6,8 @@ import * as baseDecorators from '../decorators';
 // eslint-disable-next-line valid-jsdoc
 module.exports = async function initDecorators(BoringInjections) {
 
-  const decorators = await requireInject([paths.boring_decorators, paths.server_decorators], BoringInjections, baseDecorators);
+  const decoratorDirs = BoringInjections.plugins.splicePlugins('decorators', [paths.boring_decorators, paths.server_decorators]);
+  const decorators = await requireInject(decoratorDirs, BoringInjections, baseDecorators);
 
   return Object.keys(decorators).reduce(function(prev, key) {
     const decoratorExport = decorators[key];

@@ -95,9 +95,11 @@ describe('Boring Server', function() {
 
     const finalConfig = await server.start();
     assert.ok(finalConfig.webpack_config);
-    assert.equal(finalConfig.plugins['boring-plugins-default'].value.foo, 'bar');
+    assert.equal(finalConfig.plugins.active['boring-plugins-default'].value.foo, 'bar');
+    assert.equal(finalConfig.plugins.active['boring-plugins-default'].initedRoute, true, 'Proves the router was ran');
     assert.ok(finalConfig.decorators.injecture, 'injecture is a core decorator');
     assert.ok(finalConfig.decorators.logger.log);
+
   });
 
 });
