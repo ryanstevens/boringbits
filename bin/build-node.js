@@ -4,13 +4,13 @@ process.env.NODE_ENV = 'production';
 
 const fsExtra = require('fs-extra');
 const path = require('path');
-const paths = require('../dist/node_modules/paths');
+const paths = require('../src/node_modules/paths');
 const childProcess = require('child_process');
 const fs = require('fs');
 
-async function build() {
+async function build(buildParams) {
 
-  fsExtra.emptyDirSync(paths.app_dist);
+  fsExtra.emptyDirSync(buildParams.dist);
   let babelPath = '/../node_modules/.bin/babel';
   try {
     fs.statSync(path.normalize(__dirname+babelPath));
@@ -19,17 +19,29 @@ async function build() {
     fs.statSync(path.normalize(__dirname+babelPath));
   }
 
+
+  const presets = [
+    `${paths.boring_dir}src/build/${buildParams.babelEnv}`,
+    `@babel/preset-typescript,@babel/preset-react`,
+  ].join(',');
+
+  const plugins = [
+    `@babel/plugin-proposal-object-rest-spread`,
+    `${paths.boring_dir}src/build/wrapped-babel-plugin-proposal-decorators`,
+    `@babel/plugin-proposal-class-properties`,
+    `@babel/plugin-syntax-dynamic-import`,
+  ].join(',');
+
   const args = [
     '--no-babelrc',
-    'src', '-d', paths.app_dist,
+    buildParams.src,
+    '-d', buildParams.dist,
     `--extensions=.ts,.tsx,.js,.jsx`,
     '--source-maps',
     '--copy-files',
-    `--presets=${paths.boring_dir}dist/build/wrapped-babel-env,@babel/preset-typescript,@babel/preset-react`,
-    `--plugins=@babel/plugin-proposal-object-rest-spread,${paths.boring_dir}dist/build/wrapped-babel-plugin-proposal-decorators,@babel/plugin-proposal-class-properties,@babel/plugin-syntax-dynamic-import`,
+    `--presets=${presets}`,
+    `--plugins=${plugins}`,
   ];
-
-  console.log('babel ' +args.join(' '));
 
   return childProcess.spawnSync(path.normalize(__dirname+babelPath), args,
     {
@@ -42,7 +54,17 @@ async function build() {
 
 module.exports = function(argv) {
   try {
-    return build();
+    const buildParams = (argv.argv.buildClient) ? {
+      babelEnv: 'wrapped-babel-env-client',
+      dist: paths.app_dist+'/client',
+      src: 'src/client',
+    } : {
+      babelEnv: 'wrapped-babel-env',
+      dist: paths.app_dist,
+      src: 'src',
+    };
+    return build(argv.argv.buildParams || buildParams);
+
   } catch (e) {
     console.error('There was a problem running babel on your project', e);
     return Promise.reject({status: 1});
