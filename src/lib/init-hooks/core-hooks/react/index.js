@@ -7,7 +7,7 @@ import {getNamespace} from 'boring-cls';
 import logger from 'boring-logger';
 import requireHandlerPaths from './requireHandlerPaths';
 import config from 'boring-config';
-
+import paths from 'paths';
 
 module.exports = function reactHook(BoringInjections) {
 
@@ -80,7 +80,7 @@ module.exports = function reactHook(BoringInjections) {
 
   boring.after('add-routers', function({routers}) {
     BoringInjections.webpackDone.then(() => {
-      BoringInjections.modules.requireGraph.clearRequireCache(__dirname + '/requireDirectory.js');
+      BoringInjections.modules.requireGraph.clearRequireCache(paths.boring_app_dir + '/node_modules/requireDirectory.js');
     });
   });
 

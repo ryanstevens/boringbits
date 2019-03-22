@@ -92,7 +92,6 @@ function deleteRequireCache(key, evictUp = true) {
   }
 }
 
-const boringKeys = {};
 
 if (config.get('boring.server.disable_cache', false) === true) {
   (function check() {
