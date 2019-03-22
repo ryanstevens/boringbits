@@ -1,5 +1,5 @@
 
-import requireDirectory from './requireDirectory';
+import requireDirectory from 'requireDirectory';
 
 function reduceMods(mods) {
   return mods.reduce((acc, cur) => {
