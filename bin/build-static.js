@@ -11,6 +11,7 @@ const stat = promisify(fs.stat);
 const paths = require('../config/runtime/paths');
 const assert = require('assert');
 const childProcess = require('child_process');
+const runServer = require('./lib/runServer');
 
 
 async function checkDir(name, dir) {
@@ -70,7 +71,7 @@ module.exports = async function(args) {
   return new Promise((resolve, reject) => {
 
     try {
-      require(paths.main_server);
+      runServer(false);
     } catch (e) {
       console.log(e);
     }

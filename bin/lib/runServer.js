@@ -6,17 +6,19 @@ const through2 = require('through2');
 const opn = require('opn');
 const retryerer = require('./retryerer');
 const runBeforeChecks = require('./runBeforeStartChecks');
+const fs = require('fs');
+const normalize = require('path').normalize;
 
 module.exports = async function run(isDevelopment, debug, urlToOpen) {
 
-
-  console.log('running ' + paths.main_server);
+  const appServer = (fs.existsSync(paths.main_server + '.js')) ? paths.main_server: normalize(__dirname + '/../../dist/defaultAppStart');
+  console.log('running ' + appServer);
 
   if (isDevelopment) {
 
     await runBeforeChecks();
 
-    const args = [paths.main_server];
+    const args = [appServer];
     if (debug) args.unshift('--inspect-brk');
 
     const node = childProcess.spawn('node', args, {
@@ -49,11 +51,6 @@ module.exports = async function run(isDevelopment, debug, urlToOpen) {
       cb(null, data+'\n');
     });
 
-    // node.stderr
-    //   .pipe(split())
-    //   .pipe(logIntercept)
-    //   .pipe(bunyan.stdin);
-
     node.stdout
       .pipe(split())
       .pipe(logIntercept)
@@ -61,7 +58,7 @@ module.exports = async function run(isDevelopment, debug, urlToOpen) {
 
   } else {
     // for production, just boot the server by directly requiring
-    require(paths.main_server);
+    require(appServer);
   }
 
   return new Promise((resolve, reject) => {
