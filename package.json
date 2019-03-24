@@ -1,6 +1,6 @@
 {
   "name": "boringbits",
-  "version": "3.36.0",
+  "version": "3.36.1",
   "description": "Frameworks should be boring, applications they build should be exciting",
   "main": "dist/boring.js",
   "scripts": {
@@ -109,7 +109,7 @@
     "react": "^16.8.3",
     "react-dev-utils": "^5.0.2",
     "react-dom": "^16.8.3",
-    "react-frontload": "^1.0.3",
+    "react-frontload": "1.0.3",
     "react-helmet": "^5.2.0",
     "react-hot-loader": "^4.3.6",
     "react-jss": "^8.6.1",
