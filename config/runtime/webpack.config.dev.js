@@ -155,7 +155,6 @@ module.exports = {
                   targets: {
                     ie: 11,
                   },
-                  useBuiltIns: 'usage',
                 }],
                 [require.resolve('@babel/preset-typescript')],
                 [require.resolve('@babel/preset-react')],
