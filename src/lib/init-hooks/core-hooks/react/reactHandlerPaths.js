@@ -51,32 +51,23 @@ export default function getPaths(options = {}) {
   };
 
   reactHandlerPaths.modulesToRequire = {};
+
+  const defaultComponents = {
+    mainApp: 'defaultRootAppProxy',
+    appTheme: 'defaultRootAppThemeProxy',
+    appDecorator: 'defaultRootAppDecoratorProxy',
+    reducers: 'defaultReducersProxy',
+    Router: 'defaultRouterProxy',
+  };
+
+  Object.keys(defaultComponents).forEach(key => {
+    if (!fs.existsSync(options.app_dir +'/'+ reactHandlerPaths[key])) {
+      reactHandlerPaths[key] = __dirname + `/${defaultComponents[key]}.js`;
+    }
+    reactHandlerPaths.modulesToRequire[key] = reactHandlerPaths[key];
+  });
+
   const entryPointPath = options.app_dir +'/'+reactHandlerPaths.entrypoint;
-
-  if (!fs.existsSync(options.app_dir +'/'+ reactHandlerPaths.mainApp)) {
-    reactHandlerPaths.mainApp = __dirname + '/defaultRootAppProxy.js';
-  }
-  reactHandlerPaths.modulesToRequire.mainApp = reactHandlerPaths.mainApp;
-
-  if (!fs.existsSync(options.app_dir +'/'+ reactHandlerPaths.appTheme)) {
-    reactHandlerPaths.appTheme = __dirname + '/defaultRootAppThemeProxy.js';
-  }
-  reactHandlerPaths.modulesToRequire.appTheme = reactHandlerPaths.appTheme;
-
-  if (!fs.existsSync(options.app_dir +'/'+ reactHandlerPaths.appDecorator)) {
-    reactHandlerPaths.appDecorator = __dirname + '/defaultRootAppDecoratorProxy.js';
-  }
-  reactHandlerPaths.modulesToRequire.appDecorator = reactHandlerPaths.appDecorator;
-
-  if (!fs.existsSync(options.app_dir +'/'+ reactHandlerPaths.reducers)) {
-    reactHandlerPaths.reducers = __dirname + '/defaultReducersProxy.js';
-  }
-  reactHandlerPaths.modulesToRequire.reducers = reactHandlerPaths.reducers;
-
-  if (!fs.existsSync(options.app_dir +'/'+ reactHandlerPaths.Router)) {
-    reactHandlerPaths.Router = __dirname + '/defaultRouterProxy.js';
-  }
-  reactHandlerPaths.modulesToRequire.Router = reactHandlerPaths.Router;
 
   // check to make sure entrypoint is real
   if (!fs.existsSync(entryPointPath + '.js') &&

@@ -47,6 +47,8 @@ module.exports = function reactHook(BoringInjections) {
       let afterEntry = '';
 
       const reactHandlerPaths = getReactHandlerPaths(options);
+      // TODO, run interceptors here
+
       const reactNS = getNamespace('http-request');
       reactNS.run(function() {
 

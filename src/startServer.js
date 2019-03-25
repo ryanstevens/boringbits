@@ -1,6 +1,10 @@
 const injecture = require('injecture');
 const logger = require('boring-logger');
-require(process.cwd() + '/dist/server/app');
+const fs = require('fs');
+
+const appServer = process.cwd() + '/dist/server/app';
+
+require(fs.existsSync(appServer) ? appServer : __dirname + '/defaultAppStart');
 
 const servers = injecture.allInstances('BoringServer');
 
