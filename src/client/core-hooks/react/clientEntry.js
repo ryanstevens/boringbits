@@ -3,7 +3,7 @@ import React from 'react';
 import * as Redux from 'redux';
 import * as ReactRedux from 'react-redux';
 import injecture from 'injecture';
-import createBrowserHistory from 'history/createBrowserHistory';
+import {createBrowserHistory} from 'history';
 import getAppComponents from './AppInit';
 import BoringRouter from './BoringRouter';
 import isNode from 'detect-node';
