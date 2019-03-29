@@ -111,7 +111,7 @@ module.exports = function renderRedux(options = {components: {}, layout: {client
         }
       });
 
-    res.send('<!DOCTYPE html>' + ReactDOMServer.renderToStaticMarkup(
+    res.send('<!DOCTYPE html>\n' + ReactDOMServer.renderToStaticMarkup(
       <Layout
         inlineCSS={getStyleSheets()}
         locals={res.locals}

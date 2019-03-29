@@ -31,6 +31,8 @@ function getBoringAppPath(key, defaultVal) {
   return path.normalize(boring_dir + '/' + boring_app_path + config.get(key, defaultVal));
 }
 
+const server_base = config.get('boring.paths.server_base', '/server');
+
 module.exports = {
 
   proj_dir,
@@ -46,11 +48,12 @@ module.exports = {
   app_dir: getProjPath(base_app_path_key, base_app_path),
   boring_app_dir: getBoringAppPath('__no_key__', ''),
 
-  main_server: getAppDirPath('boring.paths.server_app', '/server/app'),
-  server_routers: getAppDirPath('boring.paths.server_routers', '/server/routers'),
-  server_middleware: getAppDirPath('boring.paths.server_middleware', '/server/middleware'),
-  server_hooks: getAppDirPath('boring.paths.server_hooks', '/server/hooks'),
-  server_decorators: getAppDirPath('boring.paths.server_decorators', '/server/decorators'),
+  server_base: server_base,
+  main_server: getAppDirPath('boring.paths.server_app', server_base + '/app'),
+  server_routers: getAppDirPath('boring.paths.server_routers', server_base + '/routers'),
+  server_middleware: getAppDirPath('boring.paths.server_middleware', server_base + '/middleware'),
+  server_hooks: getAppDirPath('boring.paths.server_hooks', server_base + '/hooks'),
+  server_decorators: getAppDirPath('boring.paths.server_decorators', server_base + '/decorators'),
 
   boring_routers: getBoringAppPath('boring.paths.boring_routers', `/lib/init-routers/core-routers`),
   boring_middleware: getBoringAppPath('boring.paths.boring_middleware', `/lib/init-middleware/core-middleware`),

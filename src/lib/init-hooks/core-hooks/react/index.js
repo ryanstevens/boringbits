@@ -49,10 +49,18 @@ module.exports = function reactHook(BoringInjections) {
       const reactHandlerPaths = getReactHandlerPaths(options);
       // TODO, run interceptors here
 
+
       const reactNS = getNamespace('http-request');
       reactNS.run(function() {
 
-        reactNS.set('reactHandlerPaths', reactHandlerPaths);
+        const handerPathContext = {
+          reactHandlerPaths,
+        };
+
+        boring.performSync('setReactHandlerPaths', handerPathContext, () => {
+          reactNS.set('reactHandlerPaths', reactHandlerPaths);
+        });
+
         requireHandlerPaths(reactHandlerPaths);
 
         if (isDevelopment) {
@@ -72,6 +80,10 @@ module.exports = function reactHook(BoringInjections) {
         afterEntry,
       ].filter(Boolean);
 
+      // TODO / COULDDO, make entrypoint accept a promise
+      // (which will queue an executing handler)
+      // so we can convert the performSync('setReactHandlerPaths')
+      // to an async call
       return decorators.router.entrypoint(...entrypointPaths)(
         target,
         field,
