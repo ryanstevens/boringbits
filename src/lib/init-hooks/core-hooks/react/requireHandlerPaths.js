@@ -13,6 +13,7 @@ module.exports = function setHandlerPaths(reactHandlerPaths) {
 
   // actually run `require` on decorators / containers
   reactHandlerPaths.decorators = {
+    ...(reactHandlerPaths.decorators || {}),
     ...reduceMods(requireDirectory(null, __dirname + '/../../../../client/core-hooks/react/decorators')),
     ...reduceMods(requireDirectory(reactHandlerPaths.app_dir, reactHandlerPaths.decoratorsPath)),
   };
@@ -20,6 +21,9 @@ module.exports = function setHandlerPaths(reactHandlerPaths) {
   // it's important reactHandlerPaths.decorators is set BEFORE
   // containers are required because many containers use decorators
   const containers = requireDirectory(reactHandlerPaths.app_dir, reactHandlerPaths.routerContainersPath);
-  reactHandlerPaths.containers = reduceMods(containers);
+  reactHandlerPaths.containers = {
+    ...(reactHandlerPaths.containers || {}),
+    ...reduceMods(containers),
+  };
 
 };

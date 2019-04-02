@@ -3,6 +3,7 @@ import * as fs from 'fs';
 import babel from 'babelCompiler';
 import logger from 'boring-logger';
 import normalize from 'normalize-path';
+import flatten from 'flat';
 
 function mapContainerCode(containers) {
 
@@ -32,14 +33,26 @@ function mapContainerCode(containers) {
 
 function mapModules(modules) {
 
-  return Object.keys(modules).map(moduleName => {
+  const flattendModules = flatten(modules);
+
+  return `
+    const flattendModules = {};
+  `
+  + Object.keys(flattendModules).map(moduleName => {
     return `
       (function requireModule() {
         const requiredMod = require('${normalize(modules[moduleName])}');
-        modules['${moduleName}'] =  (requiredMod.default) ? requiredMod.default : requiredMod;
+        flattendModules['${moduleName}'] =  (requiredMod.default) ? requiredMod.default : requiredMod;
       })();
     `;
-  }).join('\n');
+  }).join('\n') + `
+
+    const unflattend = unflatten(flattendModules);
+    Object.keys(unflattend).forEach(key => {
+      modules[key] = unflattend[key];
+    });
+
+  `;
 }
 
 // eslint-disable-next-line valid-jsdoc
@@ -78,7 +91,7 @@ function mapDecoratorCode(decorators) {
 
 }
 
-export default function getEntryWrappers(reactRoot, containers = {}, modules = {}, decorators = {}) {
+export default function getEntryWrappers(reactRoot, containers = {}, modulesToRequire = {}, decorators = {}) {
 
 
   const prefix = __dirname + '/dist';
@@ -95,6 +108,7 @@ export default function getEntryWrappers(reactRoot, containers = {}, modules = {
     import * as React from 'react';
     import {makeDecorator} from '../../../../../../client/core-hooks/react/decoratorUtil';
     import hoistNonReactStatic from 'hoist-non-react-statics';
+    import {unflatten} from 'flat';
 
     const containers = {};
     const modules = {};
@@ -139,7 +153,11 @@ export default function getEntryWrappers(reactRoot, containers = {}, modules = {
 
   ` + mapDecoratorCode(decorators)
     + mapContainerCode(containers)
-    + mapModules(modules);
+    + mapModules(modulesToRequire)
+    +
+  `
+    // done
+  `;
 
   const babelResults = babel(code);
 

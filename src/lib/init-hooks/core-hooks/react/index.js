@@ -57,11 +57,11 @@ module.exports = function reactHook(BoringInjections) {
           reactHandlerPaths,
         };
 
-        boring.performSync('setReactHandlerPaths', handerPathContext, () => {
-          reactNS.set('reactHandlerPaths', reactHandlerPaths);
-        });
+        reactNS.set('reactHandlerPaths', reactHandlerPaths);
 
-        requireHandlerPaths(reactHandlerPaths);
+        boring.performSync('requireHandlerPaths', handerPathContext, () => {
+          requireHandlerPaths(reactHandlerPaths);
+        });
 
         if (isDevelopment) {
           [beforeEntry, afterEntry] = dynamicComponents(
@@ -98,7 +98,6 @@ module.exports = function reactHook(BoringInjections) {
     });
   });
 
-
   boring.before('http::get', function beforeGet(ctx) {
 
     if (ctx.get.reactEntry) {
@@ -108,6 +107,7 @@ module.exports = function reactHook(BoringInjections) {
 
       if (reactNS && reactNS.set) {
         try {
+          delete ctx.res.reactPaths.requestContext;
           /**
            * IMPORTANT, a fresh shallow clone is made
            * for every request so people can feel free
