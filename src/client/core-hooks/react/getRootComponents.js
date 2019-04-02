@@ -16,6 +16,7 @@ export default function loadComponents() {
   return {
     containers: components.containers,
     decorators: components.decorators,
+    context: components.context,
     ...components.modules,
   };
 }

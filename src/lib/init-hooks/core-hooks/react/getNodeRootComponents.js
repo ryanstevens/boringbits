@@ -26,7 +26,7 @@ module.exports = function get() {
   const ns = getNamespace('http-request');
   const reactHandlerPaths = ns.get('reactHandlerPaths');
 
-  console.log('****', Object.keys((reactHandlerPaths.requestContext || {})).length);
+  // console.log('****', Object.keys((reactHandlerPaths.requestContext || {})).length);
   if (reactHandlerPaths.requestContext) return reactHandlerPaths.requestContext;
 
   if (Object.keys(reactHandlerPaths.containers).length > 0 &&
@@ -61,8 +61,10 @@ module.exports = function get() {
   });
 
   reactHandlerPaths.requestContext = {
-    ...reactHandlerPaths,
+    containers: reactHandlerPaths.containers,
+    decorators: reactHandlerPaths.decorators,
     modules: unflatten(modules),
+    context: {},
   };
 
   return reactHandlerPaths.requestContext;

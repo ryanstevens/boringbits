@@ -118,6 +118,7 @@ export default function getEntryWrappers(reactRoot, containers = {}, modulesToRe
       window.__boring_internals = {
         wutsthis: 'DO NOT LOOK HERE OR YOU ARE FIRED',
         freshModules: {},
+        context: {},
       };
     }
 
