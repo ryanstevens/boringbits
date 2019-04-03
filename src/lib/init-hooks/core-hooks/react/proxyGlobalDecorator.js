@@ -1,4 +1,4 @@
-import {makeDecorator} from './decoratorUtil';
+import {makeDecorator} from '../../../../client/core-hooks/react/decoratorUtil';
 import hoistNonReactStatic from 'hoist-non-react-statics';
 import React from 'react';
 

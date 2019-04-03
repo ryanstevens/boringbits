@@ -1,7 +1,7 @@
 import {getNamespace} from 'boring-cls';
 import React from 'react';
 import Loadable from 'react-loadable';
-import makeDecorator from '../../../../client/core-hooks/react/proxyGlobalDecorator';
+import makeDecorator from './proxyGlobalDecorator';
 import {unflatten} from 'flat';
 
 function requireModule(importPath) {
