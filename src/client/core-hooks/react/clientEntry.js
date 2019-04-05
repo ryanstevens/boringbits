@@ -12,6 +12,8 @@ import {Frontload} from 'react-frontload';
 import {preloadReady} from 'react-loadable';
 import getRootComponents from './getRootComponents';
 import {Helmet} from './ReactHelmet';
+import NoSsr from '@material-ui/core/NoSsr';
+
 
 function extractStateFromDOM() {
   const state = {
@@ -90,6 +92,7 @@ const toExport = {
   Helmet: Helmet,
   injecture: injecture,
   isNode,
+  NoSsr,
 
   // boring components
   renderRedux,
