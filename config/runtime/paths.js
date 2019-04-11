@@ -12,6 +12,8 @@ const base_app_path_key = 'boring.paths.base_app_path';
 
 const base_app_path = path.normalize(config.get(base_app_path_key, 'dist'));
 const boring_dir = path.normalize(__dirname + '/../../');
+
+// this will really only be set to src for unit tests purposes
 const boring_app_path = path.normalize(config.get('boring.paths.boring_app_path', 'dist'));
 
 
