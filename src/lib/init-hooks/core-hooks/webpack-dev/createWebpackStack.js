@@ -34,6 +34,7 @@ export default function createWebpackStack(BoringInjections) {
       modules: [],
     };
     if (fs.existsSync(statsJsonPath)) stats = require(statsJsonPath);
+    logger.info(`webpackStats.json loaded with ${Object.keys(stats.modules).length} modules`);
     nodenopack.registerWebpackStats(stats);
   }
 
