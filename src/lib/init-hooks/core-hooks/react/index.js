@@ -93,6 +93,7 @@ module.exports = function reactHook(BoringInjections) {
   boring.after('add-routers', function({routers}) {
     BoringInjections.webpackDone.then(() => {
       BoringInjections.modules.requireGraph.clearRequireCache(paths.boring_app_dir + '/node_modules/requireDirectory.js');
+      BoringInjections.modules.requireGraph.clearRequireCache(paths.boring_app_dir + '/node_modules/require-inject-all');
     });
   });
 
