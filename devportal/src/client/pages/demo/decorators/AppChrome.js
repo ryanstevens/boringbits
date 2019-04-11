@@ -14,7 +14,6 @@ import Typography from '@material-ui/core/Typography';
     flexGrow: 1,
     height: '100%',
     backgroundColor: '#eee',
-    overflowY: 'auto',
   },
   container: {
     width: '100%',

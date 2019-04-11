@@ -15,7 +15,6 @@ import {Helmet} from 'boringbits/client';
     flexGrow: 1,
     height: '100%',
     backgroundColor: '#eee',
-    overflowY: 'auto',
   },
   container: {
     width: '100%',
