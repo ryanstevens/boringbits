@@ -1,12 +1,19 @@
 [![boringbits](https://raw.githubusercontent.com/ryanstevens/boringbits/master/docs/logo.png)](https://github.com/ryanstevens/boringbits)
 
-A web framework that is fairly opininated, making as many boring boilerplate decisions for you so you can focus on your application.  React based, universial server side rendering by default, takes care of webpack and bablfying your code base out of the box.  A core design principle of `boringbits` is a concept of [progressive recomposition](https://github.com/ryanstevens/boringbits/blob/master/docs/design-decisions.md#progressive-recomposition), which is the ability to break down boringbit's magic over time and replace it with your own magic.
+A web framework that is fairly opininated, making as many boring boilerplate decisions for you so you can focus on your application.  React based, universial server side rendering by default, takes care of webpack and bablfying your code base out of the box.  
+
+### Design Principles
+* A core design principle of `boringbits` is a concept of [progressive recomposition](https://github.com/ryanstevens/boringbits/blob/master/docs/design-decisions.md#progressive-recomposition), which is the ability to break down boringbit's magic over time and replace it with your own magic.  
+* Another key design approach of `boringbits` is to never run bundled code on the server, rather simply allow node to use it's tried and true native `require` even on ES7 and / or TypeScript react modules.  Bundlers such as `webpack` were originally designed to allow node style modules to un in the browsers, however bundling frontend code to run on node never made sense to the authors. Instead `boringbits` simply transpiles frontend code node compatable code, in other words `boringbits` babel's frontend code but does not webpack it for server execution, but it does both for client side execution.  This has a couple clear advantages
+    * debugging and tooling will work better as node code runs the way node code is designed to run
+    * There can be a cleaner seperation between node code, browser code, and browser code that needs to run in node.  Ultimately this will reduce the chance of server code ever from accidentally bundling onto the client.  
+
 
 ### Consider `boringapp` when...
 * You are a backend engineer who wants to crank out a modern frontend web application and ship it straight to production where it just works and is rock solid.
 * You are a frontend engineer who is tired of making all the millions of choices when developing a full stack node.js react application.
 * You want a framework that is designed for you to go outside of it's guardrails, encouraging programmers to remove `boringbits` magic over time by replacing bits with your own magic.
-* `boringbits` never runs bundle code for node server HTTP requests.  This is a key difference between other frameworks where many others will use `webpack` to bundle frontend React code for server side rendering, `boringbits` will transform frontend code via `babel` but execute all `node` server calls as plain old node modules.
+
 
 ### Technical Features
 * Express based universal server side rendering
